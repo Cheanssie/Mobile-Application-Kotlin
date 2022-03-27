@@ -124,7 +124,6 @@ class RequestFragment : Fragment() {
             }
             .show()
 
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
