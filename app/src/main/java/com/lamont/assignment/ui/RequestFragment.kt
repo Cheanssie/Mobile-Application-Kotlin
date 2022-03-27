@@ -1,5 +1,6 @@
 package com.lamont.assignment.ui
 
+import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -21,6 +22,10 @@ class RequestFragment : Fragment() {
 
     private var _binding: FragmentRequestBinding? = null
     private  val binding get() = _binding!!
+
+    companion object {
+        val IMAGE_REQUEST_CODE = 100;
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -104,18 +109,29 @@ class RequestFragment : Fragment() {
 
             }
             .setNegativeButton("Gallery") { dialog, which->
-                val intent = Intent()
+//                val intent = Intent()
+//                intent.type = "image/*"
+//                intent.action = Intent.ACTION_PICK
+//                startActivityForResult(intent, 100)
+                val intent = Intent(Intent.ACTION_PICK)
                 intent.type = "image/*"
-                intent.action = Intent.ACTION_PICK
-                startActivityForResult(intent, 100)
+                startActivityForResult(intent, IMAGE_REQUEST_CODE)
             }
             .setPositiveButton("Camera") { dialog, which->
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                startActivityForResult(intent, 100)
+                startActivityForResult(intent, IMAGE_REQUEST_CODE)
 
             }
             .show()
 
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
+            binding.ivImg.setImageURI(data?.data)
+
+        }
     }
 }
