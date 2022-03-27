@@ -131,7 +131,6 @@ class RequestFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
             binding.ivImg.setImageURI(data?.data)
-
         }
     }
 }
