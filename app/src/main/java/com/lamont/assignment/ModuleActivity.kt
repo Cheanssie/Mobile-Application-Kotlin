@@ -50,7 +50,8 @@ class ModuleActivity : AppCompatActivity() {
 
                 }
                 else -> {
-                   navController.navigate(R.id.requestFragment)
+                    navController.navigateUp()
+                    navController.navigate(R.id.requestFragment)
                 }
             }
             return@setOnMenuItemClickListener true
