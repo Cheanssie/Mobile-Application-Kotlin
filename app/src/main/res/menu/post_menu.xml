@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/addForum"
+        android:title="@string/add_forum"
+        />
+
+    <item
+        android:id="@+id/addRequest"
+        android:title="@string/add_request"
+        />
+
+</menu>

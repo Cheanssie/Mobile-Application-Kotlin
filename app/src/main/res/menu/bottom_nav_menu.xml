@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/forumFragment"
+        android:icon="@drawable/home_icon"
+        android:title="@string/home"
+        />
+    <item
+        android:id="@+id/whiteFlagFragment"
+        android:icon="@drawable/white_flag"
+        android:title="@string/white_flag"
+        />
+
+    <item
+        android:id="@+id/quizFragment"
+        android:icon="@drawable/puzzle_piece"
+        android:title="@string/quiz"
+        />
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/profile"
+        android:title="@string/profile" />
+</menu>
+
