@@ -67,7 +67,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:background="#0F0241"
-        app:menu="@menu/bottom_nav"
+        app:menu="@menu/bottom_nav_menu"
         app:itemRippleColor="@color/white"
         app:itemIconTint="@color/icons_color"
         app:itemTextColor="@color/icons_color"

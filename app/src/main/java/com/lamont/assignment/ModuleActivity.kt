@@ -2,25 +2,19 @@ package com.lamont.assignment
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
-import com.lamont.assignment.databinding.ActivityMainBinding
 import com.lamont.assignment.databinding.ActivityModuleBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
-import kotlin.coroutines.coroutineContext
+import com.lamont.assignment.ui.RequestFragment
 
 
 class ModuleActivity : AppCompatActivity() {
@@ -37,27 +31,18 @@ class ModuleActivity : AppCompatActivity() {
         val navController = findNavController(R.id.main_fragment)
         bottomNavigationView.setupWithNavController(navController)
 
-
+        //Check user status when auto login
         val sharedPreferences = getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
-        val db = FirebaseFirestore.getInstance()
         var username = sharedPreferences!!.getString("username", null)
         var password = sharedPreferences!!.getString("password", null)
-        db.collection("users")
-            .document(username!!)
-            .get()
-            .addOnSuccessListener { document ->
-                if (document.data?.get("password") != password) {
-                    val intent = Intent(applicationContext, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
-            }
+        checkUserStatus(username, password, sharedPreferences)
+
 
     }
 
     fun displayPopupMenu(view: View) {
         val popupMenu = PopupMenu(applicationContext, findViewById(R.id.addPost))
-        popupMenu.inflate(R.menu.popup_menu)
+        popupMenu.inflate(R.menu.post_menu)
         popupMenu.setOnMenuItemClickListener {
             val navController = findNavController(R.id.main_fragment)
             when(it.itemId) {
@@ -65,12 +50,31 @@ class ModuleActivity : AppCompatActivity() {
 
                 }
                 else -> {
-                    navController.navigate(R.id.requestFragment)
+                   navController.navigate(R.id.requestFragment)
                 }
             }
             return@setOnMenuItemClickListener true
         }
         popupMenu.show()
+    }
+
+    fun checkUserStatus(username:String?, password:String?, sharedPreferences:SharedPreferences) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("users")
+            .document(username!!)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.data?.get("password") != password) {
+                    val sharedPreferencesEditor = sharedPreferences.edit()
+                    sharedPreferencesEditor.remove("password")
+                    sharedPreferencesEditor.remove("username")
+                    sharedPreferencesEditor.commit()
+                    val intent = Intent(applicationContext, MainActivity::class.java)
+                    startActivity(intent)
+                    Toast.makeText(this, "Please login again!", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
 }
