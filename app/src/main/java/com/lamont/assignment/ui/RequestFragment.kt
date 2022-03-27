@@ -65,11 +65,11 @@ class RequestFragment : Fragment() {
         return binding.root
     }
 
-    fun showToast(text: String) {
+    private fun showToast(text: String) {
         Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
     }
 
-    fun addRequest(request: Request) {
+    private fun addRequest(request: Request) {
         val db = FirebaseFirestore.getInstance()
 
         db.collection("request")
