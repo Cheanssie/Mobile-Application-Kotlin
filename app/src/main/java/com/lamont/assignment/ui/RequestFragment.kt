@@ -1,13 +1,17 @@
 package com.lamont.assignment.ui
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lamont.assignment.R
 import com.lamont.assignment.databinding.FragmentRequestBinding
@@ -24,6 +28,19 @@ class RequestFragment : Fragment() {
     ): View? {
         _binding = FragmentRequestBinding.inflate(inflater, container, false)
         val sharedPreferences = this.activity?.getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
+
+        binding.btnUploadImg.setOnClickListener {
+           when{
+               binding.ivImg.drawable == null -> {
+                   showDialog()
+               }
+               else ->
+               {
+                   binding.ivImg.setImageDrawable(null)
+                   binding.btnUploadImg.text = "Upload Photo"
+               }
+           }
+        }
 
         binding.btnCancel.setOnClickListener {
             findNavController().navigateUp()
@@ -58,7 +75,6 @@ class RequestFragment : Fragment() {
 
             }
 
-
         }
 
         // Inflate the layout for this fragment
@@ -80,4 +96,26 @@ class RequestFragment : Fragment() {
 
     }
 
+    private fun showDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Select Photo")
+            .setMessage("Please choose a method to upload photo.")
+            .setNeutralButton("Cancel") { dialog, which->
+
+            }
+            .setNegativeButton("Gallery") { dialog, which->
+                val intent = Intent()
+                intent.type = "image/*"
+                intent.action = Intent.ACTION_PICK
+                startActivityForResult(intent, 100)
+            }
+            .setPositiveButton("Camera") { dialog, which->
+                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                startActivityForResult(intent, 100)
+
+            }
+            .show()
+
+
+    }
 }
