@@ -4,6 +4,8 @@ import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
@@ -14,17 +16,28 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.lamont.assignment.R
 import com.lamont.assignment.databinding.FragmentRequestBinding
 import com.lamont.assignment.model.Request
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import java.net.URI
 
 class RequestFragment : Fragment() {
 
     private var _binding: FragmentRequestBinding? = null
-    private  val binding get() = _binding!!
+    private val binding get() = _binding!!
+
+    //Img Uri
+    lateinit var imgUri: Uri
+    lateinit var  imgBit : Bitmap
 
     companion object {
-        val IMAGE_REQUEST_CODE = 100;
+        const val IMAGE_REQUEST_CODE = 100
+        const val CAMERA_REQUEST_CODE = 200
     }
 
     override fun onCreateView(
@@ -32,19 +45,19 @@ class RequestFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentRequestBinding.inflate(inflater, container, false)
-        val sharedPreferences = this.activity?.getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            this.activity?.getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
 
         binding.btnUploadImg.setOnClickListener {
-           when{
-               binding.ivImg.drawable == null -> {
-                   showDialog()
-               }
-               else ->
-               {
-                   binding.ivImg.setImageDrawable(null)
-                   binding.btnUploadImg.text = "Upload Photo"
-               }
-           }
+            when {
+                binding.ivImg.drawable == null -> {
+                    showDialog()
+                }
+                else -> {
+                    binding.ivImg.setImageDrawable(null)
+                    binding.btnUploadImg.text = "Upload Photo"
+                }
+            }
         }
 
         binding.btnCancel.setOnClickListener {
@@ -68,7 +81,7 @@ class RequestFragment : Fragment() {
             }
 
             if (validity) {
-                val category: String = when(binding.rgCategory.checkedRadioButtonId) {
+                val category: String = when (binding.rgCategory.checkedRadioButtonId) {
                     R.id.foodBeverage -> "Food&Beverage"
                     R.id.education -> "Education"
                     else -> "Other"
@@ -92,12 +105,17 @@ class RequestFragment : Fragment() {
 
     private fun addRequest(request: Request) {
         val db = FirebaseFirestore.getInstance()
+        val dbImg = Firebase.storage.getReference()
 
         db.collection("request")
             .add(request)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(),request.desc, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Successfully Sent", Toast.LENGTH_SHORT).show()
             }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Upload Fail", Toast.LENGTH_SHORT).show()
+            }
+
 
     }
 
@@ -105,10 +123,10 @@ class RequestFragment : Fragment() {
         AlertDialog.Builder(requireContext())
             .setTitle("Select Photo")
             .setMessage("Please choose a method to upload photo.")
-            .setNeutralButton("Cancel") { dialog, which->
+            .setNeutralButton("Cancel") { dialog, which ->
 
             }
-            .setNegativeButton("Gallery") { dialog, which->
+            .setNegativeButton("Gallery") { dialog, which ->
 //                val intent = Intent()
 //                intent.type = "image/*"
 //                intent.action = Intent.ACTION_PICK
@@ -117,9 +135,9 @@ class RequestFragment : Fragment() {
                 intent.type = "image/*"
                 startActivityForResult(intent, IMAGE_REQUEST_CODE)
             }
-            .setPositiveButton("Camera") { dialog, which->
+            .setPositiveButton("Camera") { dialog, which ->
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                startActivityForResult(intent, IMAGE_REQUEST_CODE)
+                startActivityForResult(intent, CAMERA_REQUEST_CODE)
 
             }
             .show()
@@ -128,8 +146,17 @@ class RequestFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK) {
-            binding.ivImg.setImageURI(data?.data)
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == IMAGE_REQUEST_CODE) {
+                imgUri = data?.data!!
+                binding.ivImg.setImageURI(imgUri)
+                binding.btnUploadImg.text = "Remove"
+            } else if (requestCode == CAMERA_REQUEST_CODE) {
+                imgBit = data?.extras?.get("data")!! as Bitmap
+                binding.ivImg.setImageBitmap(imgBit)
+                binding.btnUploadImg.text = "Remove"
+            }
         }
     }
 }
