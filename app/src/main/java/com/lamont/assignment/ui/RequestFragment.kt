@@ -14,9 +14,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.internal.Storage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.FirebaseStorageKtxRegistrar
 import com.google.firebase.storage.ktx.storage
 import com.lamont.assignment.R
 import com.lamont.assignment.databinding.FragmentRequestBinding
@@ -25,6 +28,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.net.URI
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RequestFragment : Fragment() {
 
@@ -105,15 +110,22 @@ class RequestFragment : Fragment() {
 
     private fun addRequest(request: Request) {
         val db = FirebaseFirestore.getInstance()
-        val dbImg = Firebase.storage.getReference()
+        val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
+        val imgName = formatter.format(Date())
+        val dbImg = FirebaseStorage.getInstance().reference.child("images/$imgName")
 
         db.collection("request")
             .add(request)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Successfully Sent", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Upload Successful", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
                 Toast.makeText(requireContext(), "Upload Fail", Toast.LENGTH_SHORT).show()
+            }
+
+        dbImg.putFile(imgUri)
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
             }
 
 

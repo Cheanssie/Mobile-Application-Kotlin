@@ -112,7 +112,6 @@
             android:layout_margin="0dp"
             android:layout_gravity="center"
             android:scaleType="centerInside"
-            android:src="@drawable/download"
         />
         <Button
             android:id="@+id/btnUploadImg"
