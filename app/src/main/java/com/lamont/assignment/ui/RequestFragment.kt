@@ -112,7 +112,7 @@ class RequestFragment : Fragment() {
         val db = FirebaseFirestore.getInstance()
         val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
         val imgName = formatter.format(Date())
-        val dbImg = FirebaseStorage.getInstance().reference.child("images/$imgName")
+        val storageRef = FirebaseStorage.getInstance().reference.child("images/$imgName")
 
         db.collection("request")
             .add(request)
@@ -123,7 +123,7 @@ class RequestFragment : Fragment() {
                 Toast.makeText(requireContext(), "Upload Fail", Toast.LENGTH_SHORT).show()
             }
 
-        dbImg.putFile(imgUri)
+        storageRef.putFile(imgUri)
             .addOnFailureListener {
                 Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
             }
