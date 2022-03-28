@@ -27,6 +27,7 @@ import com.lamont.assignment.model.Request
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
 import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.*
@@ -123,10 +124,21 @@ class RequestFragment : Fragment() {
                 Toast.makeText(requireContext(), "Upload Fail", Toast.LENGTH_SHORT).show()
             }
 
-        storageRef.putFile(imgUri)
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
-            }
+        if(imgBit != null) {
+            val baos = ByteArrayOutputStream()
+            imgBit.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val data = baos.toByteArray()
+            storageRef.putBytes(data)
+                .addOnFailureListener {
+                    Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
+                }
+
+        } else if(imgUri != null) {
+            storageRef.putFile(imgUri)
+                .addOnFailureListener {
+                    Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
+                }
+        }
 
 
     }
