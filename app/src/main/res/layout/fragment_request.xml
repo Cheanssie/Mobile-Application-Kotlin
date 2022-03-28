@@ -112,6 +112,8 @@
             android:layout_margin="0dp"
             android:layout_gravity="center"
             android:scaleType="centerInside"
+            android:adjustViewBounds="true"
+            android:maxHeight="200dp"
         />
         <Button
             android:id="@+id/btnUploadImg"

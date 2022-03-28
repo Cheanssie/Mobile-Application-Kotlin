@@ -11,7 +11,16 @@
         android:label="fragment_forum"
         tools:layout="@layout/fragment_forum" >
         <action
-            android:id="@+id/action_forumFragment_to_requestFragment22"
+            android:id="@+id/action_forumFragment_to_quizFragment"
+            app:destination="@id/quizFragment" />
+        <action
+            android:id="@+id/action_forumFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_forumFragment_to_whiteFlagFragment"
+            app:destination="@id/whiteFlagFragment" />
+        <action
+            android:id="@+id/action_forumFragment_to_requestFragment2"
             app:destination="@id/requestFragment" />
     </fragment>
     <fragment
@@ -23,7 +32,13 @@
             android:id="@+id/action_profileFragment_to_forumFragment"
             app:destination="@id/forumFragment" />
         <action
-            android:id="@+id/action_profileFragment_to_requestFragment22"
+            android:id="@+id/action_profileFragment_to_quizFragment"
+            app:destination="@id/quizFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_whiteFlagFragment"
+            app:destination="@id/whiteFlagFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_requestFragment2"
             app:destination="@id/requestFragment" />
     </fragment>
     <fragment
@@ -35,7 +50,13 @@
             android:id="@+id/action_quizFragment_to_forumFragment"
             app:destination="@id/forumFragment" />
         <action
-            android:id="@+id/action_quizFragment_to_requestFragment22"
+            android:id="@+id/action_quizFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_quizFragment_to_whiteFlagFragment"
+            app:destination="@id/whiteFlagFragment" />
+        <action
+            android:id="@+id/action_quizFragment_to_requestFragment2"
             app:destination="@id/requestFragment" />
     </fragment>
     <fragment
@@ -46,6 +67,15 @@
         <action
             android:id="@+id/action_whiteFlagFragment_to_forumFragment"
             app:destination="@id/forumFragment" />
+        <action
+            android:id="@+id/action_whiteFlagFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_whiteFlagFragment_to_quizFragment"
+            app:destination="@id/quizFragment" />
+        <action
+            android:id="@+id/action_whiteFlagFragment_to_requestFragment2"
+            app:destination="@id/requestFragment" />
     </fragment>
     <fragment
         android:id="@+id/requestFragment"

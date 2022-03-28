@@ -44,6 +44,15 @@
                 android:text="sample a b c d e"
                 android:textColor="@color/black" />
 
+            <ImageView
+                android:id="@+id/ivImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxHeight="200dp"
+                android:adjustViewBounds="true"
+                />
+
+
             <TextView
                 android:id="@+id/tvCat"
                 android:layout_width="wrap_content"

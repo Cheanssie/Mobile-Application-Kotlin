@@ -45,12 +45,13 @@ class ModuleActivity : AppCompatActivity() {
         popupMenu.inflate(R.menu.post_menu)
         popupMenu.setOnMenuItemClickListener {
             val navController = findNavController(R.id.main_fragment)
+            navController.navigateUp()
+
             when(it.itemId) {
                 R.id.addForum -> {
 
                 }
                 else -> {
-                    navController.navigateUp()
                     navController.navigate(R.id.requestFragment)
                 }
             }
@@ -59,7 +60,7 @@ class ModuleActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
-    fun checkUserStatus(username:String?, password:String?, sharedPreferences:SharedPreferences) {
+    private fun checkUserStatus(username:String?, password:String?, sharedPreferences:SharedPreferences) {
         val db = FirebaseFirestore.getInstance()
 
         db.collection("users")

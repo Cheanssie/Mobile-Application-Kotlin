@@ -38,8 +38,8 @@ class RequestFragment : Fragment() {
     private val binding get() = _binding!!
 
     //Img Uri
-    lateinit var imgUri: Uri
-    lateinit var  imgBit : Bitmap
+    private var imgUri: Uri? = null
+    private var  imgBit : Bitmap? = null
 
     companion object {
         const val IMAGE_REQUEST_CODE = 100
@@ -55,12 +55,14 @@ class RequestFragment : Fragment() {
             this.activity?.getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
 
         binding.btnUploadImg.setOnClickListener {
-            when {
-                binding.ivImg.drawable == null -> {
+            when (binding.ivImg.drawable) {
+                null -> {
                     showDialog()
                 }
                 else -> {
                     binding.ivImg.setImageDrawable(null)
+                    imgBit = null
+                    imgUri = null
                     binding.btnUploadImg.text = "Upload Photo"
                 }
             }
@@ -94,11 +96,12 @@ class RequestFragment : Fragment() {
                 }
                 val description = binding.etRequestDesc.text.toString()
                 val username = sharedPreferences?.getString("username", null)!!
-                val request = Request(username, description, category)
+                val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
+
+                val imgName = "${username}_${formatter.format(Date())}" //Kae Lun_22_03_28_11_11_11
+                val request = Request(username, description, category, imgName)
                 addRequest(request)
-
             }
-
         }
 
         // Inflate the layout for this fragment
@@ -111,9 +114,7 @@ class RequestFragment : Fragment() {
 
     private fun addRequest(request: Request) {
         val db = FirebaseFirestore.getInstance()
-        val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
-        val imgName = formatter.format(Date())
-        val storageRef = FirebaseStorage.getInstance().reference.child("images/$imgName")
+        val storageRef = FirebaseStorage.getInstance().reference.child("images/${request.imgName}")
 
         db.collection("request")
             .add(request)
@@ -126,7 +127,7 @@ class RequestFragment : Fragment() {
 
         if(imgBit != null) {
             val baos = ByteArrayOutputStream()
-            imgBit.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            imgBit!!.compress(Bitmap.CompressFormat.JPEG, 100, baos)
             val data = baos.toByteArray()
             storageRef.putBytes(data)
                 .addOnFailureListener {
@@ -134,13 +135,11 @@ class RequestFragment : Fragment() {
                 }
 
         } else if(imgUri != null) {
-            storageRef.putFile(imgUri)
+            storageRef.putFile(imgUri!!)
                 .addOnFailureListener {
                     Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
                 }
         }
-
-
     }
 
     private fun showDialog() {
