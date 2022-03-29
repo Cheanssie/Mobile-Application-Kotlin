@@ -7,7 +7,6 @@
     <string name="add_post">Add Post</string>
     <string name="quiz">Quiz</string>
     <string name="profile">Profile</string>
-    <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="register">Register</string>
@@ -26,4 +25,9 @@
     <string name="description">Description</string>
     <string name="submit">Submit</string>
     <string name="cancel">Cancel</string>
+    <string name="logout">Logout</string>
+    <string name="edit">Edit</string>
+    <string name="username">Username</string>
+    <string name="email_address">Email Address :</string>
+    <string name="contact_number">Contact Number :</string>
 </resources>

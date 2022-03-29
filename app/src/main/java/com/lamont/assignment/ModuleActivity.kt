@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
@@ -45,8 +46,6 @@ class ModuleActivity : AppCompatActivity() {
         popupMenu.inflate(R.menu.post_menu)
         popupMenu.setOnMenuItemClickListener {
             val navController = findNavController(R.id.main_fragment)
-            navController.navigateUp()
-
             when(it.itemId) {
                 R.id.addForum -> {
 
@@ -60,7 +59,7 @@ class ModuleActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
-    private fun checkUserStatus(username:String?, password:String?, sharedPreferences:SharedPreferences) {
+    fun checkUserStatus(username:String?, password:String?, sharedPreferences:SharedPreferences) {
         val db = FirebaseFirestore.getInstance()
 
         db.collection("users")

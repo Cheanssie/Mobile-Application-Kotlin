@@ -5,21 +5,26 @@
         android:id="@+id/forumFragment"
         android:icon="@drawable/home_icon"
         android:title="@string/home"
+        android:menuCategory="container"
         />
     <item
         android:id="@+id/whiteFlagFragment"
         android:icon="@drawable/white_flag"
         android:title="@string/white_flag"
+        android:menuCategory="container"
         />
 
     <item
         android:id="@+id/quizFragment"
         android:icon="@drawable/puzzle_piece"
         android:title="@string/quiz"
+        android:menuCategory="container"
         />
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/profile"
-        android:title="@string/profile" />
+        android:title="@string/profile"
+        android:menuCategory="container"
+        />
 </menu>
 

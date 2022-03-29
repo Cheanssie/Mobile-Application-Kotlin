@@ -4,11 +4,13 @@
     <item
         android:id="@+id/addForum"
         android:title="@string/add_forum"
+        android:menuCategory="secondary"
         />
 
     <item
         android:id="@+id/addRequest"
         android:title="@string/add_request"
+        android:menuCategory="secondary"
         />
 
 </menu>
