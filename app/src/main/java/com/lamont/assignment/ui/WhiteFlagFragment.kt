@@ -47,10 +47,10 @@ class WhiteFlagFragment : Fragment() {
             }
         }
 
-        binding.swipeToRefresh.setOnRefreshListener {
-            Toast.makeText(requireContext(), "Refreshed", Toast.LENGTH_SHORT).show()
-            binding.swipeToRefresh.isRefreshing = false
-        }
+//        binding.swipeToRefresh.setOnRefreshListener {
+//            Toast.makeText(requireContext(), "Refreshed", Toast.LENGTH_SHORT).show()
+//            binding.swipeToRefresh.isRefreshing = false
+//        }
 
         // Inflate the layout for this fragment
         return binding.root

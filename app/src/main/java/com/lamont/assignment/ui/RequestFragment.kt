@@ -51,8 +51,7 @@ class RequestFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentRequestBinding.inflate(inflater, container, false)
-        val sharedPreferences =
-            this.activity?.getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
+        val sharedPreferences = this.activity?.getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
 
         binding.btnUploadImg.setOnClickListener {
             when (binding.ivImg.drawable) {

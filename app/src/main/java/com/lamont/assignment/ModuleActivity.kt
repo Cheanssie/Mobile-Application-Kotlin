@@ -13,6 +13,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lamont.assignment.databinding.ActivityModuleBinding
 import com.lamont.assignment.ui.RequestFragment
@@ -21,11 +22,16 @@ import com.lamont.assignment.ui.RequestFragment
 class ModuleActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityModuleBinding
+    lateinit var sharedPreferences: SharedPreferences
+    lateinit var db : FirebaseFirestore
+    lateinit var dbAuth : FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityModuleBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        db = FirebaseFirestore.getInstance()
+        dbAuth = FirebaseAuth.getInstance()
 
         //Bottom Navigation Bar
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
@@ -34,9 +40,9 @@ class ModuleActivity : AppCompatActivity() {
 
         //Check user status when auto login
         val sharedPreferences = getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
-        var username = sharedPreferences!!.getString("username", null)
+        var email = sharedPreferences!!.getString("email", null)
         var password = sharedPreferences!!.getString("password", null)
-        checkUserStatus(username, password, sharedPreferences)
+        checkUserStatus(email, password, sharedPreferences)
 
 
     }
@@ -59,22 +65,22 @@ class ModuleActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
-    fun checkUserStatus(username:String?, password:String?, sharedPreferences:SharedPreferences) {
-        val db = FirebaseFirestore.getInstance()
-
-        db.collection("users")
-            .document(username!!)
+    fun checkUserStatus(email:String?, password:String?, sharedPreferences:SharedPreferences) {
+        db.collection("users").document(dbAuth.currentUser?.uid!!)
             .get()
-            .addOnSuccessListener { document ->
-                if (document.data?.get("password") != password) {
-                    val sharedPreferencesEditor = sharedPreferences.edit()
-                    sharedPreferencesEditor.remove("password")
-                    sharedPreferencesEditor.remove("username")
-                    sharedPreferencesEditor.commit()
-                    val intent = Intent(applicationContext, MainActivity::class.java)
+            .addOnSuccessListener {
+                if(it.get("password").toString() != password || it.get("email").toString() != email) {
+                    dbAuth.signOut()
+                    val editPref = sharedPreferences.edit()
+                    editPref.remove("email")
+                    editPref.remove("password")
+                    editPref.commit()
+                    val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
-                    Toast.makeText(this, "Please login again!", Toast.LENGTH_SHORT).show()
                 }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
             }
     }
 

@@ -2,6 +2,7 @@ package com.lamont.assignment.ui
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,7 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.lamont.assignment.ModuleActivity
 import com.lamont.assignment.R
 import com.lamont.assignment.databinding.FragmentLoginBinding
@@ -18,6 +22,9 @@ class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
+    lateinit var sharedPreferences: SharedPreferences
+    lateinit var db : FirebaseFirestore
+    lateinit var dbAuth : FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,65 +33,52 @@ class LoginFragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        binding.registerButton.setOnClickListener {
-            val navController = findNavController()
-            navController.navigate(R.id.registerFragment)
-        }
-
         // Inflate the layout for this fragment
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sharedPreferences =
-            requireActivity().getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
-        val db = FirebaseFirestore.getInstance()
-        var username = sharedPreferences!!.getString("username", null)
+        sharedPreferences = requireActivity().getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
+
+        var email = sharedPreferences!!.getString("email", null)
         var password = sharedPreferences!!.getString("password", null)
 
-            if (username != null && password != null) {
-                enterModuleActivity()
-            }
+        if (email != null && password != null) {
+            enterModuleActivity()
+        }
 
+        binding.registerButton.setOnClickListener {
+            val navController = findNavController()
+            navController.navigate(R.id.registerFragment)
+        }
+        db = FirebaseFirestore.getInstance()
+        dbAuth = FirebaseAuth.getInstance()
         binding.loginButton.setOnClickListener {
-            username = binding.etUsername.text.toString()
-            password = binding.etPassword.text.toString()
+            val email = binding.etEmail.text.toString()
+            val password = binding.etPassword.text.toString()
 
-            db.collection("users")
-                .document(username!!)
-                .get()
-                .addOnSuccessListener { document ->
-                    if (document.exists()) {
-                        when {
-                            password.toString() != document.data?.get("password").toString() -> {
-                                Toast.makeText(requireContext(), "Login fail", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                            else -> {
-                                val sharedPreferencesEditor = sharedPreferences!!.edit()
-                                sharedPreferencesEditor.putString("username", username)
-                                sharedPreferencesEditor.putString("password", password)
-                                sharedPreferencesEditor.commit()
-
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Login Successful",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                enterModuleActivity()
-                            }
-                        }
-                    } else {
-                        Toast.makeText(requireContext(), "Username not found", Toast.LENGTH_SHORT)
-                            .show()
+            if (email != "" && password != "") {
+                dbAuth.signInWithEmailAndPassword(email, password)
+                    .addOnSuccessListener {
+                        Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
+                        val editPref = sharedPreferences.edit()
+                        editPref.putString("email", email)
+                        editPref.putString("password", password)
+                        editPref.commit()
+                        enterModuleActivity()
                     }
-                }
+                    .addOnFailureListener {
+                        Toast.makeText(requireContext(), "Incorrect Email or Password", Toast.LENGTH_SHORT).show()
+                    }
+            } else {
+                Toast.makeText(requireContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
 
-    private fun enterModuleActivity() {
+    fun enterModuleActivity() {
         val intent = Intent(requireContext(), ModuleActivity::class.java)
         context?.startActivity(intent)
         activity?.finish()
