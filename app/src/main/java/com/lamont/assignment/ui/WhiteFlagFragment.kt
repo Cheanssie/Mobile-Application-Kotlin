@@ -28,21 +28,6 @@ class WhiteFlagFragment : Fragment() {
         val db = FirebaseFirestore.getInstance()
         val requestList = arrayListOf<Request>()
 
-//        db.collection("request")
-//            .get()
-//            .addOnSuccessListener{
-//                for (doc in it) {
-//                    val name = doc.get("name").toString()
-//                    val desc= doc.get("desc").toString()
-//                    val category = doc.get("category").toString()
-//                    val imgName = doc.get("imgName").toString()
-//
-//                    val request = Request(name, desc, category, imgName)
-//                    requestList.add(request)
-//                }
-//                binding.requestRecycler.adapter = RequestAdapter(requireContext(), requestList)
-//                }
-
         db.collection("request").addSnapshotListener { querySnapshot, firebaseFirestoreException ->
             firebaseFirestoreException?.let {
                 Toast.makeText(requireContext(), "refresh", Toast.LENGTH_SHORT).show()
@@ -62,7 +47,10 @@ class WhiteFlagFragment : Fragment() {
             }
         }
 
-
+        binding.swipeToRefresh.setOnRefreshListener {
+            Toast.makeText(requireContext(), "Refreshed", Toast.LENGTH_SHORT).show()
+            binding.swipeToRefresh.isRefreshing = false
+        }
 
         // Inflate the layout for this fragment
         return binding.root
