@@ -34,98 +34,150 @@
         android:layout_marginEnd="50dp"
         android:background="@drawable/custom_grey_round_card"
         android:paddingHorizontal="10dp"
-        android:paddingVertical="6dp"
-        android:layout_marginBottom="20dp"
+        android:paddingVertical="7dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/uid_pro"
         android:textColor="@color/theme_blue"
         android:scrollHorizontally="true"
         android:singleLine="true"
-        android:ellipsize="end"
-        app:layout_constraintBottom_toBottomOf="@+id/tvUsername"
+        app:layout_constraintBottom_toTopOf="@+id/tvUsername"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profilePic"
         app:layout_constraintTop_toTopOf="@id/profilePic"
         android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:clickable="false"
         />
 
-    <TextView
+    <EditText
         android:id="@+id/tvUsername"
         android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="50dp"
         android:background="@drawable/custom_grey_round_card"
         android:paddingHorizontal="10dp"
-        android:paddingVertical="6dp"
+        android:paddingVertical="7dp"
+        android:scrollHorizontally="true"
         android:singleLine="true"
         android:textColor="@color/theme_blue"
         app:layout_constraintBottom_toBottomOf="@+id/profilePic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profilePic"
         app:layout_constraintTop_toBottomOf="@id/tvUid"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:clickable="false"
       />
 
     <TextView
         android:id="@+id/tvEmail"
-        android:layout_width="match_parent"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="6dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/custom_grey_round_card"
-        android:singleLine="true"
         android:text="@string/email_address_pro"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="50dp"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/profilePic"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profilePic" />
+        android:background="@drawable/custom_grey_round_card"/>
+
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="50dp"
+        android:padding="6dp"
+        app:layout_constraintStart_toEndOf="@id/tvEmail"
+        app:layout_constraintTop_toTopOf="@id/tvEmail"
+        android:background="@drawable/custom_grey_round_card"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:focusable="false"
+        android:singleLine="true"
+        android:scrollHorizontally="true"
+        />
 
     <TextView
         android:id="@+id/tvPhone"
-        android:layout_width="match_parent"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="6dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:background="@drawable/custom_grey_round_card"
+        android:gravity="center"
         android:text="@string/phone_pro"
+        android:layout_marginTop="30dp"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvEmail"
+        app:layout_constraintStart_toStartOf="@id/tvEmail"
+        android:background="@drawable/custom_grey_round_card"/>
+
+    <EditText
+        android:id="@+id/etPhone"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="50dp"
+        android:padding="6dp"
+        android:singleLine="true"
+        app:layout_constraintStart_toEndOf="@id/tvPhone"
+        app:layout_constraintTop_toTopOf="@id/tvPhone"
+        android:background="@drawable/custom_grey_round_card"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvEmail" />
+        android:focusable="false"
+        android:scrollHorizontally="true"
+        />
 
     <TextView
         android:id="@+id/tvAddress"
-        android:layout_width="match_parent"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="6dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:background="@drawable/custom_grey_round_card"
+        android:gravity="center"
         android:text="@string/address_pro"
+        android:layout_marginTop="30dp"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvPhone"
+        app:layout_constraintStart_toStartOf="@id/tvPhone"
+        android:background="@drawable/custom_grey_round_card"/>
+
+    <EditText
+        android:id="@+id/etAddress"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="50dp"
+        android:padding="6dp"
         android:singleLine="true"
-        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toEndOf="@id/tvAddress"
+        app:layout_constraintTop_toTopOf="@id/tvAddress"
+        android:background="@drawable/custom_grey_round_card"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPhone" />
+        android:focusable="false"
+        android:scrollHorizontally="true"
+        />
 
     <TextView
         android:id="@+id/tvDOB"
-        android:layout_width="match_parent"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="10dp"
-        android:paddingVertical="6dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:background="@drawable/custom_grey_round_card"
-        android:layout_marginTop="20dp"
+        android:gravity="center"
         android:text="@string/dob_pro"
+        android:layout_marginTop="30dp"
+        android:padding="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvAddress"
+        app:layout_constraintStart_toStartOf="@id/tvAddress"
+        android:background="@drawable/custom_grey_round_card"/>
+
+    <EditText
+        android:id="@+id/etDOB"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="50dp"
+        android:padding="6dp"
+        android:singleLine="true"
+        app:layout_constraintStart_toEndOf="@id/tvDOB"
+        app:layout_constraintTop_toTopOf="@id/tvDOB"
+        android:background="@drawable/custom_grey_round_card"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAddress" />
+        android:focusable="false"
+        android:scrollHorizontally="true"
+        android:clickable="false"
+        />
 
     <Button
         android:id="@+id/editProfile"
@@ -137,7 +189,9 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDOB" />
+        app:layout_constraintTop_toBottomOf="@id/etDOB"
+        android:textAllCaps="false"
+        />
 
     <Button
         android:id="@+id/logout"
@@ -149,6 +203,8 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/editProfile"
+        android:textAllCaps="false"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

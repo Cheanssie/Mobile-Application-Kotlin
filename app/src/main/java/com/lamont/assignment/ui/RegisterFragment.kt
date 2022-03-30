@@ -26,8 +26,10 @@ class RegisterFragment : Fragment(){
     private val binding get() = _binding!!
     lateinit var sharedPreferences : SharedPreferences
 
-    private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
-    private val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$"
+    companion object {
+        const val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+        const val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

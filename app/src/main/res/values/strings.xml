@@ -15,10 +15,10 @@
     <string name="email">Email</string>
     <string name="phone_number">Phone Number</string>
     <string name="address">Address</string>
-    <string name="address_pro">Address : %s</string>
+    <string name="address_pro">Address</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="date_of_birth">Date of Birth</string>
-    <string name="dob_pro">DOB : %s</string>
+    <string name="dob_pro">DOB</string>
     <string name="add_forum">Add Forum</string>
     <string name="add_request">Add Request</string>
     <string name="other">Other</string>
@@ -31,7 +31,7 @@
     <string name="edit">Edit Profile</string>
     <string name="username">Username</string>
     <string name="username_pro">Username : %s</string>
-    <string name="email_address_pro">Email : %s</string>
-    <string name="phone_pro">Phone : %s</string>
+    <string name="email_address_pro">Email</string>
+    <string name="phone_pro">Phone</string>
     <string name="uid_pro">UID : %s</string>
 </resources>
