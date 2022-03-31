@@ -24,7 +24,7 @@ class RequestAdapter(): RecyclerView.Adapter<RequestAdapter.RequestViewHolder>()
         val tvName = view.findViewById<TextView>(R.id.tvName)
         val tvDesc = view.findViewById<TextView>(R.id.tvDesc)
         val tvCat = view.findViewById<TextView>(R.id.tvCat)
-        //val ivImg = view.findViewById<ImageView>(R.id.ivImg)
+        val ivImg = view.findViewById<ImageView>(R.id.ivImg)
 
     }
 
@@ -42,22 +42,23 @@ class RequestAdapter(): RecyclerView.Adapter<RequestAdapter.RequestViewHolder>()
         holder.tvCat.text = request.category.toString()
 
         //Retrieve images
-//        val storageRef = FirebaseStorage.getInstance().reference.child("images/${request.imgName}")
-//        val localFile = File.createTempFile("tempImg", "jpg")
-//        storageRef.getFile(localFile).addOnSuccessListener {
-//            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-//            holder.ivImg.setImageBitmap(bitmap)
-//        }
+        val storageRef = FirebaseStorage.getInstance().reference.child("images/${request.imgName}")
+        val localFile = File.createTempFile("tempImg", "jpg")
+        storageRef.getFile(localFile).addOnSuccessListener {
+            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+            holder.ivImg.setImageBitmap(bitmap)
+        }
     }
 
     override fun getItemCount(): Int {
         return oldRequestList.size
     }
 
-    fun setData(newRequestList: MutableList<Request>) {
+    fun setData(newRequestList: List<Request>) {
         val diffUtil = RequestDiffUtil(newRequestList ,oldRequestList)
         val diffResult = DiffUtil.calculateDiff(diffUtil)
-        oldRequestList = newRequestList
+        oldRequestList.clear()
+        oldRequestList.addAll(newRequestList)
         diffResult.dispatchUpdatesTo(this)
     }
 
