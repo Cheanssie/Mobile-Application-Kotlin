@@ -124,7 +124,7 @@ class RegisterFragment : Fragment(){
                             error = true
                             break
                         }
-                        age < 0 -> {
+                        age < 12 -> {
                             Toast.makeText(requireContext(), "Underage", Toast.LENGTH_SHORT).show()
                             error = true
                             break
@@ -144,6 +144,7 @@ class RegisterFragment : Fragment(){
                                     val editPref = sharedPreferences.edit()
                                     editPref.putString("email", email)
                                     editPref.putString("password", password)
+                                    editPref.putString("username", username)
                                     editPref.commit()
                                     val intent = Intent(requireContext(), ModuleActivity::class.java)
                                     context?.startActivity(intent)

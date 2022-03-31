@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -36,6 +37,7 @@ class RequestFragment : Fragment() {
 
     private var _binding: FragmentRequestBinding? = null
     private val binding get() = _binding!!
+    lateinit var sharedPreferences : SharedPreferences
 
     //Img Uri
     private var imgUri: Uri? = null
@@ -51,7 +53,7 @@ class RequestFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentRequestBinding.inflate(inflater, container, false)
-        val sharedPreferences = this.activity?.getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
+        sharedPreferences = requireActivity()!!.getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
 
         binding.btnUploadImg.setOnClickListener {
             when (binding.ivImg.drawable) {
@@ -94,7 +96,7 @@ class RequestFragment : Fragment() {
                     else -> "Other"
                 }
                 val description = binding.etRequestDesc.text.toString()
-                val username = sharedPreferences?.getString("username", null)!!
+                val username = sharedPreferences.getString("username", null)!!
                 val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
 
                 val imgName = "${username}_${formatter.format(Date())}" //Kae Lun_22_03_28_11_11_11

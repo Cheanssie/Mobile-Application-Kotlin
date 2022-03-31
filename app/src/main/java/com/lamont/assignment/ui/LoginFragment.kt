@@ -61,12 +61,18 @@ class LoginFragment : Fragment() {
             if (email != "" && password != "") {
                 dbAuth.signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
-                        val editPref = sharedPreferences.edit()
-                        editPref.putString("email", email)
-                        editPref.putString("password", password)
-                        editPref.commit()
-                        enterModuleActivity()
+                        db.collection("users").document(dbAuth.currentUser!!.uid)
+                            .get()
+                            .addOnSuccessListener {
+                                Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
+                                val editPref = sharedPreferences.edit()
+                                editPref.putString("email", email)
+                                editPref.putString("password", password)
+                                editPref.putString("username", it.data!!["username"].toString())
+                                editPref.commit()
+                                enterModuleActivity()
+                            }
+
                     }
                     .addOnFailureListener {
                         Toast.makeText(requireContext(), "Incorrect Email or Password", Toast.LENGTH_SHORT).show()

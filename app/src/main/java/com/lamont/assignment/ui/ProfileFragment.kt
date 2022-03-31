@@ -151,6 +151,7 @@ class ProfileFragment : Fragment() {
             val editPref = sharedPreferences.edit()
             editPref.remove("email")
             editPref.remove("password")
+            editPref.remove("username")
             editPref.commit()
             val intent = Intent(requireActivity(), MainActivity::class.java)
             startActivity(intent)

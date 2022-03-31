@@ -39,7 +39,7 @@ class ModuleActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
 
         //Check user status when auto login
-        val sharedPreferences = getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
         var email = sharedPreferences!!.getString("email", null)
         var password = sharedPreferences!!.getString("password", null)
         checkUserStatus(email, password, sharedPreferences)
@@ -74,6 +74,7 @@ class ModuleActivity : AppCompatActivity() {
                     val editPref = sharedPreferences.edit()
                     editPref.remove("email")
                     editPref.remove("password")
+                    editPref.remove("username")
                     editPref.commit()
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)

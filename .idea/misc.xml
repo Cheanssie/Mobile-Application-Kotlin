@@ -71,11 +71,9 @@
         <entry key="..\:/Year 2/SEM 3/Mobile App Development/Assignment_Backup/app/src/main/res/menu/bottom_nav.xml" value="0.1" />
         <entry key="..\:/Year 2/SEM 3/Mobile App Development/Assignment_Latest/app/src/main/res/drawable/custom_grey_round_card.xml" value="0.1905" />
         <entry key="..\:/Year 2/SEM 3/Mobile App Development/Assignment_Latest/app/src/main/res/layout/fragment_request.xml" value="0.15172101449275363" />
+        <entry key="..\:/Year 2/SEM 3/Mobile App Development/Assignment_Latest/app/src/main/res/layout/fragment_white_flag.xml" value="0.11481481481481481" />
       </map>
     </option>
-  </component>
-  <component name="ProjectPlainTextFileTypeManager">
-    <file url="file://$PROJECT_DIR$/app/src/main/java/com/lamont/assignment/ui/EditProfileFragment.kt" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
