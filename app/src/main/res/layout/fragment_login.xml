@@ -36,20 +36,29 @@
         android:inputType="text"
         android:autofillHints="username" />
 
-    <EditText
-        android:id="@+id/etPassword"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordOnOff"
         android:layout_width="250dp"
         android:layout_height="48dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/custom_input"
-        android:hint="@string/password"
-        android:padding="10dp"
-        android:textColorHint="#757575"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etEmail"
-        android:inputType="textPassword"
-        android:autofillHints="password" />
+        app:passwordToggleEnabled="true"
+        app:hintEnabled="false">
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/custom_input"
+            android:hint="@string/password"
+            android:padding="10dp"
+            android:textColorHint="#757575"
+            android:inputType="textPassword"
+            android:autofillHints="password" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/forgot_password"
@@ -57,8 +66,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/forgot_password"
-        app:layout_constraintEnd_toEndOf="@id/etPassword"
-        app:layout_constraintTop_toBottomOf="@id/etPassword" />
+        app:layout_constraintEnd_toEndOf="@id/passwordOnOff"
+        app:layout_constraintTop_toBottomOf="@id/passwordOnOff" />
 
     <Button
         android:id="@+id/loginButton"
