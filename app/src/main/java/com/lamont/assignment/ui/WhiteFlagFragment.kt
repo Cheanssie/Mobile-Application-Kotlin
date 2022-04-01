@@ -39,6 +39,7 @@ class WhiteFlagFragment : Fragment() {
 
         binding.swipeToRefresh.setOnRefreshListener {
             binding.swipeToRefresh.isRefreshing = false
+            binding.requestRecycler.adapter = requestAdapter
         }
 
         // Inflate the layout for this fragment
