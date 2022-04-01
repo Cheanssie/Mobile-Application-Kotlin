@@ -49,7 +49,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etUsername"
         android:inputType="textEmailAddress"
-        android:drawableRight="@drawable/mail_field_icon" />
+        android:drawableRight="@drawable/mail_field_icon"
+        />
 
     <EditText
         android:id="@+id/etPassword"

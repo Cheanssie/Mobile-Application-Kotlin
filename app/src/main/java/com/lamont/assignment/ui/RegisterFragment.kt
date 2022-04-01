@@ -51,17 +51,18 @@ class RegisterFragment : Fragment(){
 
         binding.registerButton.setOnClickListener {
             val username = binding.etUsername.text.toString()
-            val email = binding.etEmail.text.toString()
+            val email = binding.etEmail.text.toString().lowercase()
             val password = binding.etPassword.text.toString()
             val conPassword = binding.etConPassword.text.toString()
             val phone = binding.etPhone.text.toString()
             val birthdate = binding.etDob.text.toString()
 
-            if (username != "" && email != "" && password != "" && conPassword != "" && phone != "" && birthdate != "")
+            binding.etEmail.setText(binding.etEmail.text.toString().lowercase())
+            if (username != "" && email != "" && password != "" && conPassword != "" && phone != "" && birthdate != "") {
                 addUser(username, email, password, conPassword, phone, birthdate)
-            else
+            }  else {
                 Toast.makeText(requireContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show()
-
+            }
         }
 
         val systemCal = Calendar.getInstance()
@@ -159,4 +160,5 @@ class RegisterFragment : Fragment(){
                 }
             }
     }
+
 }

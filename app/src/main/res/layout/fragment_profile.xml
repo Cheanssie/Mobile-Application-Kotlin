@@ -95,6 +95,7 @@
         android:focusable="false"
         android:singleLine="true"
         android:scrollHorizontally="true"
+        android:textAllCaps="false"
         />
 
     <TextView
@@ -187,8 +188,22 @@
         android:background="@drawable/custom_oval_button"
         android:text="@string/edit"
         android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/changePassword"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etDOB"
+        android:textAllCaps="false"
+        />
+
+    <Button
+        android:id="@+id/changePassword"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/custom_oval_button"
+        android:text="Change Password"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editProfile"
         app:layout_constraintTop_toBottomOf="@id/etDOB"
         android:textAllCaps="false"
         />
@@ -198,9 +213,9 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:background="@drawable/custom_oval_button"
+        android:background="@drawable/custom_oval_button_light"
         android:text="@string/logout"
-        android:textColor="@color/white"
+        android:textColor="@color/theme_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editProfile"
