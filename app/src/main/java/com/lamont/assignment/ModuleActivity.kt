@@ -41,8 +41,7 @@ class ModuleActivity : AppCompatActivity() {
         //Check user status when auto login
         sharedPreferences = getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
         var email = sharedPreferences!!.getString("email", null)
-        var password = sharedPreferences!!.getString("password", null)
-        checkUserStatus(email, password, sharedPreferences)
+        checkUserStatus(email, sharedPreferences)
 
 
     }
@@ -65,11 +64,11 @@ class ModuleActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
-    fun checkUserStatus(email:String?, password:String?, sharedPreferences:SharedPreferences) {
+    fun checkUserStatus(email:String?, sharedPreferences:SharedPreferences) {
         db.collection("users").document(dbAuth.currentUser?.uid!!)
             .get()
             .addOnSuccessListener {
-                if(it.get("password").toString() != password || it.get("email").toString() != email) {
+                if(it.get("email").toString() != email) {
                     dbAuth.signOut()
                     val editPref = sharedPreferences.edit()
                     editPref.remove("email")

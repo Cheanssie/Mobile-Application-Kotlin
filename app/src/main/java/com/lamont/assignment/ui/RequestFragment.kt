@@ -150,10 +150,6 @@ class RequestFragment : Fragment() {
 
             }
             .setNegativeButton("Gallery") { dialog, which ->
-//                val intent = Intent()
-//                intent.type = "image/*"
-//                intent.action = Intent.ACTION_PICK
-//                startActivityForResult(intent, 100)
                 val intent = Intent(Intent.ACTION_PICK)
                 intent.type = "image/*"
                 startActivityForResult(intent, IMAGE_REQUEST_CODE)

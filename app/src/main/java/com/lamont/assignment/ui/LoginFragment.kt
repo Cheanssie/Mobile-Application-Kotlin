@@ -1,5 +1,6 @@
 package com.lamont.assignment.ui
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
@@ -80,6 +82,33 @@ class LoginFragment : Fragment() {
             } else {
                 Toast.makeText(requireContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.forgotPassword.setOnClickListener {
+            val dialog = AlertDialog.Builder(requireContext())
+            val emailInput = EditText(requireContext())
+            dialog
+                .setTitle("Reset Password")
+                .setMessage("Enter email to reset password")
+                .setView(emailInput)
+                .setNeutralButton("Cancel", null)
+                .setPositiveButton("Confirm") { dialog, which ->
+                    db.collection("users")
+                        .whereEqualTo("email", emailInput.text.toString())
+                        .get()
+                        .addOnSuccessListener {
+                            if(!it.isEmpty) {
+                                dbAuth.sendPasswordResetEmail(emailInput.text.toString())
+                                Toast.makeText(requireContext(), "Check your email", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(requireContext(), "Email not exist", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                        }
+                }
+                .show()
         }
 
     }

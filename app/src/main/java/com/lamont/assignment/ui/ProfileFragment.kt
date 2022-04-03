@@ -251,23 +251,14 @@ class ProfileFragment : Fragment() {
                     } else if (newPswd != conNewPswd) {
                         Toast.makeText(requireContext(), "New Password not Match", Toast.LENGTH_SHORT).show()
                     } else if (!newPswd.matches(RegisterFragment.passwordPattern.toRegex())) {
-                        Toast.makeText(requireContext(), "Please enter 8 characters with at least a special character, capital letter, and small letter", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Password must contains 8 characters with at least one special character, one capital letter and one small letter", Toast.LENGTH_SHORT).show()
                     } else if (newPswd == password) {
                         Toast.makeText(requireContext(), "Old Password Same With New Password", Toast.LENGTH_SHORT).show()
                     } else {
-                        val user = mapOf<String, Any>(
-                            "password" to newPswd
-                        )
-                        db.collection("users").document(dbAuth.currentUser?.uid!!).update(user)
-                            .addOnSuccessListener {
-                                dbAuth.currentUser?.updatePassword(newPswd)
-                                dialog.dismiss()
-                                sharedPreferences.edit().putString("password", newPswd).commit()
-                                Toast.makeText(requireContext(), "Password Update Successful", Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                            }
+                        Toast.makeText(requireContext(), "Password update successfully", Toast.LENGTH_SHORT).show()
+                        dbAuth.currentUser?.updatePassword(newPswd)
+                        dialog.dismiss()
+
                     }
                 }
         }

@@ -85,7 +85,7 @@ class RegisterFragment : Fragment(){
             .addOnSuccessListener {
                 val birthdate = SimpleDateFormat("dd/MM/yyyy").parse(dob.toString())
                 val age = (Date().time - birthdate.time)/(31556952000)
-                val user: User = User(username, email, password, phone, dob)
+                val user: User = User(username, email, phone, dob)
                 var error = false
 
                 for (doc in it) {
@@ -121,7 +121,7 @@ class RegisterFragment : Fragment(){
                             break
                         }
                         !password.matches(passwordPattern.toRegex()) -> {
-                            Toast.makeText(requireContext(), "Please enter 8 alphanumeric characters", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "Password must contains 8 characters with at least one special character, one capital letter and one small letter", Toast.LENGTH_SHORT).show()
                             error = true
                             break
                         }
