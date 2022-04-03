@@ -86,20 +86,21 @@ class LoginFragment : Fragment() {
 
         binding.forgotPassword.setOnClickListener {
             val dialog = AlertDialog.Builder(requireContext())
-            val emailInput = EditText(requireContext())
+            val emailLayout = layoutInflater.inflate(R.layout.cutom_edit_text, null, false)
             dialog
                 .setTitle("Reset Password")
                 .setMessage("Enter email to reset password")
-                .setView(emailInput)
+                .setView(emailLayout)
                 .setNeutralButton("Cancel", null)
                 .setPositiveButton("Confirm") { dialog, which ->
+                    val emailInput = emailLayout.findViewById<EditText>(R.id.etEmail)
                     db.collection("users")
                         .whereEqualTo("email", emailInput.text.toString())
                         .get()
                         .addOnSuccessListener {
                             if(!it.isEmpty) {
                                 dbAuth.sendPasswordResetEmail(emailInput.text.toString())
-                                Toast.makeText(requireContext(), "Check your email", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), "Check your email to reset password", Toast.LENGTH_SHORT).show()
                             } else {
                                 Toast.makeText(requireContext(), "Email not exist", Toast.LENGTH_SHORT).show()
                             }
