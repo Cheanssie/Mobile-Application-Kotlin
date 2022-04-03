@@ -46,6 +46,13 @@ class WhiteFlagFragment : Fragment() {
             binding.requestRecycler.adapter = requestAdapter
         }
 
+        requestAdapter.onItemClickListner(object: RequestAdapter.onItemClickListener{
+            override fun onItemClick(position: Int) {
+                Toast.makeText(requireContext(), requestModel.getRequestList().value?.get(position)!!.desc, Toast.LENGTH_SHORT).show()
+            }
+
+        })
+
         // Inflate the layout for this fragment
         return binding.root
     }

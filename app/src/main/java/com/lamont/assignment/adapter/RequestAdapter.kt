@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
@@ -18,21 +19,37 @@ import java.io.File
 
 class RequestAdapter(): RecyclerView.Adapter<RequestAdapter.RequestViewHolder>() {
 
+    private lateinit var itemListener : onItemClickListener
+
+    interface onItemClickListener {
+        fun onItemClick(position: Int)
+    }
+
     var oldRequestList: MutableList<Request> = mutableListOf()
 
-    class RequestViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
+    class RequestViewHolder(private val view: View, listener: onItemClickListener): RecyclerView.ViewHolder(view) {
         val tvName = view.findViewById<TextView>(R.id.tvName)
         val tvDesc = view.findViewById<TextView>(R.id.tvDesc)
         val tvCat = view.findViewById<TextView>(R.id.tvCat)
         val ivImg = view.findViewById<ImageView>(R.id.ivImg)
 
+        init {
+            view.findViewById<Button>(R.id.btnDonate).setOnClickListener {
+                listener.onItemClick(adapterPosition)
+            }
+        }
+
+    }
+
+    fun onItemClickListner(listener: onItemClickListener) {
+        itemListener = listener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RequestViewHolder {
         val adapterLayout = LayoutInflater.from(parent.context)
             .inflate(R.layout.request_item, parent, false)
 
-        return RequestViewHolder(adapterLayout)
+        return RequestViewHolder(adapterLayout, itemListener)
     }
 
     override fun onBindViewHolder(holder: RequestViewHolder, position: Int) {
