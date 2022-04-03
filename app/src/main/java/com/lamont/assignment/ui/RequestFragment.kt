@@ -98,7 +98,6 @@ class RequestFragment : Fragment() {
                 val description = binding.etRequestDesc.text.toString()
                 val username = sharedPreferences.getString("username", null)!!
                 val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
-
                 val imgName = "${username}_${formatter.format(Date())}" //Kae Lun_22_03_28_11_11_11
                 val request = Request(username, description, category, imgName)
                 addRequest(request)
@@ -143,7 +142,7 @@ class RequestFragment : Fragment() {
         }
     }
 
-    private fun showDialog() {
+    fun showDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Select Photo")
             .setMessage("Please choose a method to upload photo.")
@@ -165,7 +164,6 @@ class RequestFragment : Fragment() {
 
             }
             .show()
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

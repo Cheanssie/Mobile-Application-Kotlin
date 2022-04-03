@@ -15,6 +15,9 @@ import com.lamont.assignment.data.RequestSource
 import com.lamont.assignment.databinding.FragmentWhiteFlagBinding
 import com.lamont.assignment.model.Request
 import com.lamont.assignment.viewModel.RequestViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import javax.sql.DataSource
 
 class WhiteFlagFragment : Fragment() {
@@ -36,6 +39,7 @@ class WhiteFlagFragment : Fragment() {
         requestModel.getRequestList().observe(requireActivity(), Observer {
             requestAdapter.setData(it)
         })
+
 
         binding.swipeToRefresh.setOnRefreshListener {
             binding.swipeToRefresh.isRefreshing = false
