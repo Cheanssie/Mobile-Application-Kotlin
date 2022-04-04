@@ -23,7 +23,7 @@ class RequestDiffUtil (
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return when {
-            oldRequestList[oldItemPosition]?.name != newRequestList[newItemPosition].name ->
+            oldRequestList[oldItemPosition]?.owner != newRequestList[newItemPosition].owner ->
                 false
             oldRequestList[oldItemPosition]?.desc != newRequestList[newItemPosition].desc ->
                 false

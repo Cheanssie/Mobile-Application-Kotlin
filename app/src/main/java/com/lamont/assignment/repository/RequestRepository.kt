@@ -30,11 +30,14 @@ class RequestRepository() {
             querySnapshot?.let {
                 var requestData : MutableList<Request> = mutableListOf()
                 for (document in it) {
-                    val name = document.get("name").toString()
+                    val requestId = document.get("requestId").toString()
+                    val name = document.get("owner").toString()
                     val desc= document.get("desc").toString()
                     val category = document.get("category").toString()
                     val imgName = document.get("imgName").toString()
-                    val request = Request(name, desc, category, imgName)
+                    val status = document.get("status").toString().toIntOrNull()
+                    val donor = document.get("donor").toString()
+                    val request = Request(requestId, name, desc, category, imgName, donor, status!!)
                     requestData.add(request)
                 }
                 _requestList.value = requestData

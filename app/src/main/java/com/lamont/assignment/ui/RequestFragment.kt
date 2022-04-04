@@ -43,6 +43,10 @@ class RequestFragment : Fragment() {
     private var imgUri: Uri? = null
     private var  imgBit : Bitmap? = null
 
+    //database
+    lateinit var db : FirebaseFirestore
+    lateinit var storageRef : FirebaseStorage
+
     companion object {
         const val IMAGE_REQUEST_CODE = 100
         const val CAMERA_REQUEST_CODE = 200
@@ -54,6 +58,8 @@ class RequestFragment : Fragment() {
     ): View? {
         _binding = FragmentRequestBinding.inflate(inflater, container, false)
         sharedPreferences = requireActivity()!!.getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
+        db = FirebaseFirestore.getInstance()
+        storageRef = FirebaseStorage.getInstance()
 
         binding.btnUploadImg.setOnClickListener {
             when (binding.ivImg.drawable) {
@@ -99,7 +105,7 @@ class RequestFragment : Fragment() {
                 val username = sharedPreferences.getString("username", null)!!
                 val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
                 val imgName = "${username}_${formatter.format(Date())}" //Kae Lun_22_03_28_11_11_11
-                val request = Request(username, description, category, imgName)
+                val request = Request(null, username, description, category, imgName, null)
                 addRequest(request)
             }
         }
@@ -113,33 +119,40 @@ class RequestFragment : Fragment() {
     }
 
     private fun addRequest(request: Request) {
-        val db = FirebaseFirestore.getInstance()
-        val storageRef = FirebaseStorage.getInstance().reference.child("images/${request.imgName}")
 
         db.collection("request")
             .add(request)
             .addOnSuccessListener {
+                updateId(it.id)
+                if(imgBit != null) {
+                    val baos = ByteArrayOutputStream()
+                    imgBit!!.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                    val data = baos.toByteArray()
+                    storageRef.reference.child("images/${request.imgName}").putBytes(data)
+                        .addOnFailureListener {
+                            Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
+                        }
+
+                } else if(imgUri != null) {
+                    storageRef.reference.child("images/${request.imgName}").putFile(imgUri!!)
+                        .addOnFailureListener {
+                            Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
+                        }
+                }
+
                 Toast.makeText(requireContext(), "Upload Successful", Toast.LENGTH_SHORT).show()
+                findNavController().navigateUp()
             }
             .addOnFailureListener {
                 Toast.makeText(requireContext(), "Upload Fail", Toast.LENGTH_SHORT).show()
             }
 
-        if(imgBit != null) {
-            val baos = ByteArrayOutputStream()
-            imgBit!!.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-            val data = baos.toByteArray()
-            storageRef.putBytes(data)
-                .addOnFailureListener {
-                    Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
-                }
+    }
 
-        } else if(imgUri != null) {
-            storageRef.putFile(imgUri!!)
-                .addOnFailureListener {
-                    Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
-                }
-        }
+    fun updateId(requestId: String){
+        db.collection("request")
+            .document(requestId)
+            .update("requestId", requestId)
     }
 
     fun showDialog() {
