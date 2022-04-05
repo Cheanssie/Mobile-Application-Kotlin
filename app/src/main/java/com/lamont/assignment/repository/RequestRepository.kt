@@ -1,13 +1,14 @@
 package com.lamont.assignment.repository
 
+import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lamont.assignment.model.Request
 
 class RequestRepository() {
-    lateinit var db : FirebaseFirestore
-    lateinit var dbAuth : FirebaseAuth
+    var db : FirebaseFirestore = FirebaseFirestore.getInstance()
     var _requestList : MutableLiveData<MutableList<Request>> = MutableLiveData(mutableListOf())
 
     fun loadRequestList(): MutableLiveData<MutableList<Request>> {
@@ -21,10 +22,10 @@ class RequestRepository() {
             .update("status", status)
     }
 
-    fun updateDonor(requestId: String, donor: String) {
+    fun updateDonor(requestId: String, donorId: String) {
         db.collection("request")
             .document(requestId)
-            .update("donor", donor)
+            .update("donorId", donorId)
     }
 
     fun removeRequest(requestId: String) {
@@ -32,8 +33,14 @@ class RequestRepository() {
             .document(requestId)
             .delete()
     }
+
+    fun updateId(requestId: String) {
+        db.collection("request")
+            .document(requestId)
+            .update("requestId", requestId)
+    }
+
     private fun readRequestList() {
-        db = FirebaseFirestore.getInstance()
         db.collection("request").addSnapshotListener { querySnapshot, firebaseFirestoreException ->
             firebaseFirestoreException?.let {
                 return@addSnapshotListener
@@ -42,13 +49,15 @@ class RequestRepository() {
                 var requestData : MutableList<Request> = mutableListOf()
                 for (document in it) {
                     val requestId = document.get("requestId").toString()
+                    val ownerId = document.get("ownerId").toString()
                     val name = document.get("owner").toString()
                     val desc= document.get("desc").toString()
                     val category = document.get("category").toString()
                     val imgName = document.get("imgName").toString()
                     val status = document.get("status").toString().toIntOrNull()
-                    val donor = document.get("donor").toString()
-                    val request = Request(requestId, name, desc, category, imgName, donor, status!!)
+                    val donor = document.get("donorId").toString()
+                    val createdDate = document.get("createdDate").toString()
+                    val request = Request(requestId, ownerId, name, desc, category, imgName, donor, createdDate, status!!)
                     requestData.add(request)
                 }
                 _requestList.value = requestData

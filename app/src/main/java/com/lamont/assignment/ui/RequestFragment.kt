@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.internal.Storage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -25,6 +26,7 @@ import com.google.firebase.storage.ktx.storage
 import com.lamont.assignment.R
 import com.lamont.assignment.databinding.FragmentRequestBinding
 import com.lamont.assignment.model.Request
+import com.lamont.assignment.viewModel.RequestViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -45,6 +47,7 @@ class RequestFragment : Fragment() {
 
     //database
     lateinit var db : FirebaseFirestore
+    lateinit var dbAuth : FirebaseAuth
     lateinit var storageRef : FirebaseStorage
 
     companion object {
@@ -59,6 +62,8 @@ class RequestFragment : Fragment() {
         _binding = FragmentRequestBinding.inflate(inflater, container, false)
         sharedPreferences = requireActivity()!!.getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
         db = FirebaseFirestore.getInstance()
+        dbAuth = FirebaseAuth.getInstance()
+
         storageRef = FirebaseStorage.getInstance()
 
         binding.btnUploadImg.setOnClickListener {
@@ -103,10 +108,14 @@ class RequestFragment : Fragment() {
                 }
                 val description = binding.etRequestDesc.text.toString()
                 val username = sharedPreferences.getString("username", null)!!
+                val ownerId = dbAuth.currentUser!!.uid
                 val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
                 val imgName = "${username}_${formatter.format(Date())}" //Kae Lun_22_03_28_11_11_11
-                val request = Request(null, username, description, category, imgName, null)
-                addRequest(request)
+
+                val request = Request(null, ownerId, username, description, category, imgName, null, formatter.format(Date()))
+                        addRequest(request, imgName)
+
+
             }
         }
 
@@ -118,28 +127,26 @@ class RequestFragment : Fragment() {
         Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
     }
 
-    private fun addRequest(request: Request) {
+    private fun addRequest(request: Request, imgName:String) {
 
         db.collection("request")
             .add(request)
             .addOnSuccessListener {
-                updateId(it.id)
+                RequestViewModel().updateId(it.id)
                 if(imgBit != null) {
                     val baos = ByteArrayOutputStream()
                     imgBit!!.compress(Bitmap.CompressFormat.JPEG, 100, baos)
                     val data = baos.toByteArray()
-                    storageRef.reference.child("images/${request.imgName}").putBytes(data)
+                    storageRef.reference.child("images/${imgName}").putBytes(data)
                         .addOnFailureListener {
                             Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
                         }
-
                 } else if(imgUri != null) {
-                    storageRef.reference.child("images/${request.imgName}").putFile(imgUri!!)
+                    storageRef.reference.child("images/${imgName}").putFile(imgUri!!)
                         .addOnFailureListener {
                             Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
                         }
                 }
-
                 Toast.makeText(requireContext(), "Upload Successful", Toast.LENGTH_SHORT).show()
                 findNavController().navigateUp()
             }
@@ -147,12 +154,6 @@ class RequestFragment : Fragment() {
                 Toast.makeText(requireContext(), "Upload Fail", Toast.LENGTH_SHORT).show()
             }
 
-    }
-
-    fun updateId(requestId: String){
-        db.collection("request")
-            .document(requestId)
-            .update("requestId", requestId)
     }
 
     fun showDialog() {
@@ -173,11 +174,6 @@ class RequestFragment : Fragment() {
 
             }
             .show()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

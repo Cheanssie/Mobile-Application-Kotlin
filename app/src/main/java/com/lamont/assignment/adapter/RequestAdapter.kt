@@ -2,26 +2,31 @@ package com.lamont.assignment.adapter
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.lamont.assignment.R
 import com.lamont.assignment.diffUtil.RequestDiffUtil
 import com.lamont.assignment.model.Request
+import com.squareup.picasso.Picasso
 import java.io.File
 
-class RequestAdapter(context: Context): RecyclerView.Adapter<RequestAdapter.RequestViewHolder>() {
+class RequestAdapter(val context: Context): RecyclerView.Adapter<RequestAdapter.RequestViewHolder>() {
 
     private lateinit var itemListener : onItemClickListener
-    val sharedPref = context.getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
+    var dbAuth : FirebaseAuth = FirebaseAuth.getInstance()
 
     interface onItemClickListener {
         fun onItemClick(position: Int)
@@ -57,36 +62,37 @@ class RequestAdapter(context: Context): RecyclerView.Adapter<RequestAdapter.Requ
 
     override fun onBindViewHolder(holder: RequestViewHolder, position: Int) {
         val request = oldRequestList[position]
-        val currentUsername = sharedPref.getString("username", null)!!
+        val currentUserId = dbAuth.currentUser!!.uid
         holder.tvName.text = request.owner
         holder.tvDesc.text = request.desc
         holder.tvCat.text = request.category
 
         var buttonText = ""
 
-        if (currentUsername == request.owner) {
+        if (currentUserId == request.ownerId) {
             when(request.status){
                 1 ->  buttonText = "REMOVE"
                 2 ->  buttonText = "RECEIVED"
             }
+        } else if (currentUserId == request.donorId){
+            when(request.status){
+                2 ->  buttonText = "INFO"
+
+            }
         } else {
             when(request.status){
                 1 ->  buttonText = "DONATE"
-                2 ->  buttonText = "DONE"
+                2->  buttonText = "N/A"
             }
         }
         holder.btnDonate.text = buttonText
 
-
-
         //Retrieve images
         val storageRef = FirebaseStorage.getInstance().reference.child("images/${request.imgName}")
-        val localFile = File.createTempFile("tempImg", "jpg")
-
-        storageRef.getFile(localFile).addOnSuccessListener {
-            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-            holder.ivImg.setImageBitmap(bitmap)
+        storageRef.downloadUrl.addOnSuccessListener {
+            Picasso.with(context).load(it).into(holder.ivImg)
         }
+
     }
 
     override fun getItemCount(): Int {

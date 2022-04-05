@@ -114,11 +114,6 @@ class LoginFragment : Fragment() {
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     fun enterModuleActivity() {
         val intent = Intent(requireContext(), ModuleActivity::class.java)
         context?.startActivity(intent)

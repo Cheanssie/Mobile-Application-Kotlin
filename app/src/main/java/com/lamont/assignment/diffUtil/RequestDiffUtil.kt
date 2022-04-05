@@ -25,14 +25,7 @@ class RequestDiffUtil (
         return when {
             oldRequestList[oldItemPosition]?.requestId != newRequestList[newItemPosition].requestId ->
                 false
-            oldRequestList[oldItemPosition]?.owner != newRequestList[newItemPosition].owner ->
-                false
-            oldRequestList[oldItemPosition]?.desc != newRequestList[newItemPosition].desc ->
-                false
-            oldRequestList[oldItemPosition]?.category != newRequestList[newItemPosition].category ->
-                false
-            oldRequestList[oldItemPosition]?.imgName != newRequestList[newItemPosition].imgName ->
-                false
+
             else -> true
 
         }
