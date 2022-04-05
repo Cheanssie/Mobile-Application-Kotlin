@@ -1,15 +1,9 @@
 package com.lamont.assignment.repository
 
-import android.app.Activity
-import android.content.Context
-import android.widget.Toast
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.lamont.assignment.ModuleActivity
 import com.lamont.assignment.model.Request
-import kotlin.coroutines.coroutineContext
 
 class RequestRepository() {
     lateinit var db : FirebaseFirestore
@@ -21,6 +15,23 @@ class RequestRepository() {
         return _requestList
     }
 
+    fun updateStatus(requestId: String, status: Int) {
+        db.collection("request")
+            .document(requestId)
+            .update("status", status)
+    }
+
+    fun updateDonor(requestId: String, donor: String) {
+        db.collection("request")
+            .document(requestId)
+            .update("donor", donor)
+    }
+
+    fun removeRequest(requestId: String) {
+        db.collection("request")
+            .document(requestId)
+            .delete()
+    }
     private fun readRequestList() {
         db = FirebaseFirestore.getInstance()
         db.collection("request").addSnapshotListener { querySnapshot, firebaseFirestoreException ->
@@ -44,6 +55,8 @@ class RequestRepository() {
             }
         }
     }
+
+
 }
 
 internal var _requestList : MutableLiveData<MutableList<Request>>

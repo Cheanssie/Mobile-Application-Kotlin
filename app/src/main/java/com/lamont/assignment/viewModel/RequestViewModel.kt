@@ -8,7 +8,7 @@ import com.lamont.assignment.repository.RequestRepository
 class RequestViewModel() {
 
     private var requestRepo: RequestRepository
-    lateinit var requestList : LiveData<MutableList<Request>>
+    var requestList : LiveData<MutableList<Request>>
 
     init {
         requestRepo = RequestRepository()
@@ -16,8 +16,21 @@ class RequestViewModel() {
 
     }
 
-//    fun getRequestList() : LiveData<MutableList<Request>>{
-//        return requestList
-//    }
+    fun loadRequestList() : LiveData<MutableList<Request>>{
+        //requestList = requestRepo.loadRequestList()
+        return requestList
+    }
+
+    fun updateStatus(requestId: String, status: Int) {
+        requestRepo.updateStatus(requestId, status)
+    }
+
+    fun updateDonor(requestId: String, donor:String) {
+        requestRepo.updateDonor(requestId, donor)
+    }
+
+    fun removeRequest(requestId: String) {
+        requestRepo.removeRequest(requestId)
+    }
 
 }

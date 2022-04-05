@@ -24,6 +24,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import javax.sql.DataSource
+import com.lamont.assignment.R
+
 
 class WhiteFlagFragment : Fragment() {
 
@@ -43,7 +45,7 @@ class WhiteFlagFragment : Fragment() {
         requestAdapter = RequestAdapter(requireContext())
         binding.requestRecycler.adapter = requestAdapter
 
-        requestModel.requestList.observe(requireActivity(), Observer {
+        requestModel.loadRequestList().observe(requireActivity(), Observer {
             requestAdapter.setData(it)
         })
 
@@ -55,11 +57,35 @@ class WhiteFlagFragment : Fragment() {
 
         requestAdapter.onItemClickListner(object: RequestAdapter.onItemClickListener{
             override fun onItemClick(position: Int) {
-                Toast.makeText(requireContext(), requestModel.requestList.value?.get(position)!!.desc, Toast.LENGTH_SHORT).show()
-                val item = requestModel.requestList.value!!.get(position)!!.copy()
-//                item.donor = activity?.getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)!!.getString("username", null).toString()
-//                item.status = 2
-//                updateStatus(item.requestId!!, item.status, item.donor!!)
+                val item = requestModel.requestList.value!![position]!!.copy()
+                val action = binding.requestRecycler.findViewHolderForAdapterPosition(position)!!.itemView.findViewById<Button>(R.id.btnDonate).text
+                Toast.makeText(requireContext(), action, Toast.LENGTH_SHORT).show()
+                val dialog = AlertDialog.Builder(requireContext())
+                when(action){
+                    "DONATE" -> {
+                        dialog.setTitle("Donate")
+                            .setMessage("Are you sure to donate?")
+                            .setNeutralButton("Cancel", null)
+                            .setPositiveButton("Confirm") { dialog, which ->
+                                item.donor = activity!!.getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)!!
+                                    .getString("username", null).toString()
+                                item.status = 2
+                                requestModel.updateStatus(item.requestId!!, item.status)
+                                requestModel.updateDonor(item.requestId, item.donor!!)
+                            }.show()
+
+
+                    }
+                    "REMOVE" -> {
+                        dialog.setTitle("Donate")
+                            .setMessage("Are you sure to remove?")
+                            .setNeutralButton("Cancel", null)
+                            .setPositiveButton("Confirm") { dialog, which ->
+                                requestModel.removeRequest(item.requestId!!)
+                            }.show()
+                    }
+                }
+
             }
 
         })
@@ -68,16 +94,6 @@ class WhiteFlagFragment : Fragment() {
         return binding.root
     }
 
-    fun updateStatus(requestId: String, status: Int, donor: String) {
-        var request = mapOf<String, Any>(
-            "status" to status,
-            "donor" to donor
-        )
-
-        db.collection("request")
-            .document(requestId)
-            .update(request)
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

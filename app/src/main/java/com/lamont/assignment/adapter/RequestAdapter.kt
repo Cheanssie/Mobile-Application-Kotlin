@@ -66,13 +66,13 @@ class RequestAdapter(context: Context): RecyclerView.Adapter<RequestAdapter.Requ
 
         if (currentUsername == request.owner) {
             when(request.status){
-                1 ->  buttonText = "Remove"
-                2 ->  buttonText = "Received"
+                1 ->  buttonText = "REMOVE"
+                2 ->  buttonText = "RECEIVED"
             }
         } else {
             when(request.status){
-                1 ->  buttonText = "Donate"
-                2 ->  buttonText = "Done"
+                1 ->  buttonText = "DONATE"
+                2 ->  buttonText = "DONE"
             }
         }
         holder.btnDonate.text = buttonText
@@ -82,6 +82,7 @@ class RequestAdapter(context: Context): RecyclerView.Adapter<RequestAdapter.Requ
         //Retrieve images
         val storageRef = FirebaseStorage.getInstance().reference.child("images/${request.imgName}")
         val localFile = File.createTempFile("tempImg", "jpg")
+
         storageRef.getFile(localFile).addOnSuccessListener {
             val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
             holder.ivImg.setImageBitmap(bitmap)
