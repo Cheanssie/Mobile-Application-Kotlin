@@ -113,9 +113,7 @@ class RequestFragment : Fragment() {
                 val imgName = "${username}_${formatter.format(Date())}" //Kae Lun_22_03_28_11_11_11
 
                 val request = Request(null, ownerId, username, description, category, imgName, null, formatter.format(Date()))
-                        addRequest(request, imgName)
-
-
+                addRequest(request)
             }
         }
 
@@ -127,7 +125,7 @@ class RequestFragment : Fragment() {
         Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
     }
 
-    private fun addRequest(request: Request, imgName:String) {
+    private fun addRequest(request: Request) {
 
         db.collection("request")
             .add(request)
@@ -137,23 +135,16 @@ class RequestFragment : Fragment() {
                     val baos = ByteArrayOutputStream()
                     imgBit!!.compress(Bitmap.CompressFormat.JPEG, 100, baos)
                     val data = baos.toByteArray()
-                    storageRef.reference.child("images/${imgName}").putBytes(data)
-                        .addOnFailureListener {
-                            Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
-                        }
+                    storageRef.reference.child("images/${request.imgName}").putBytes(data)
                 } else if(imgUri != null) {
-                    storageRef.reference.child("images/${imgName}").putFile(imgUri!!)
-                        .addOnFailureListener {
-                            Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
-                        }
+                    storageRef.reference.child("images/${request.imgName}").putFile(imgUri!!)
                 }
-                Toast.makeText(requireContext(), "Upload Successful", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity().applicationContext, "Upload Successful", Toast.LENGTH_SHORT).show()
                 findNavController().navigateUp()
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Upload Fail", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity().applicationContext, "Upload Fail", Toast.LENGTH_SHORT).show()
             }
-
     }
 
     fun showDialog() {

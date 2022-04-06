@@ -85,7 +85,7 @@ class RegisterFragment : Fragment(){
             .addOnSuccessListener {
                 val birthdate = SimpleDateFormat("dd/MM/yyyy").parse(dob.toString())
                 val age = (Date().time - birthdate.time)/(31556952000)
-                val user: User = User(username, email, phone, dob)
+                val user: User = User(username, email, password, phone, dob)
                 var error = false
 
                 for (doc in it) {

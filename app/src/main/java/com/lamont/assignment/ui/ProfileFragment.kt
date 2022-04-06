@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -125,23 +126,16 @@ class ProfileFragment : Fragment() {
                 }
 
             } else {
-                binding.etEmail.isFocusableInTouchMode = false
-                binding.etPhone.isFocusableInTouchMode = false
-                binding.etAddress.isFocusableInTouchMode = false
-                binding.etEmail.isFocusable = false
-                binding.etPhone.isFocusable = false
-                binding.etAddress.isFocusable = false
-                binding.ivProfile.isClickable = false
-                binding.editProfile.text = getString(R.string.edit)
 
                 val email = binding.etEmail.text.toString()
                 val phone = binding.etPhone.text.toString()
                 val address = binding.etAddress.text.toString()
-                var error = false
+
 
                 db.collection("users")
                     .get()
                     .addOnSuccessListener {
+                        var error = false
                         for (doc in it) {
                             if (doc.id.toString() == dbAuth.currentUser?.uid) {
                                 continue
@@ -172,50 +166,62 @@ class ProfileFragment : Fragment() {
                                 }
                             }
                         }
-                    }
-                if (!error) {
-                    val user = mutableMapOf<String, Any>(
-                        "email" to binding.etEmail.text.toString(),
-                        "phone" to binding.etPhone.text.toString(),
-                        "address" to binding.etAddress.text.toString()
-                    )
-                    if(imgChange) {
-                        val username = sharedPreferences.getString("username", null)!!
-                        val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
-                        val imgName = "${username}_${formatter.format(Date())}" //Kae Lun_22_03_28_11_11_11
-                        user["imgName"] = imgName
-                    }
-
-                    db.collection("users").document(dbAuth.currentUser?.uid!!).update(user)
-                        .addOnSuccessListener {
-                            dbAuth.currentUser?.updateEmail(user["email"]!!.toString())
-
+                        if (!error) {
+                            val user = mutableMapOf<String, Any>(
+                                "email" to binding.etEmail.text.toString(),
+                                "phone" to binding.etPhone.text.toString(),
+                                "address" to binding.etAddress.text.toString()
+                            )
                             if(imgChange) {
-                                if (imgBit != null) {
-                                    val baos = ByteArrayOutputStream()
-                                    imgBit!!.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                                    val data = baos.toByteArray()
-                                    storageRef.child("profile/${user["imgName"]}").putBytes(data)
-                                        .addOnFailureListener {
-                                            Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
-                                        }
-
-                                } else if (imgUri != null) {
-                                    storageRef.child("profile/${user["imgName"]}").putFile(imgUri!!)
-                                        .addOnFailureListener {
-                                            Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
-                                        }
-                                }
-                                binding.pbImg.visibility = View.GONE
-                                imgChange = false
+                                val username = sharedPreferences.getString("username", null)!!
+                                val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
+                                val imgName = "${username}_${formatter.format(Date())}" //Kae Lun_22_03_28_11_11_11
+                                user["imgName"] = imgName
                             }
-                            Toast.makeText(requireContext(), "Update Successful", Toast.LENGTH_SHORT).show()
+                            dbAuth.currentUser?.updateEmail(user["email"]!!.toString())
+                            val editSharedPref = sharedPreferences.edit()
+                            editSharedPref.putString("email", user["email"]!!.toString())
+                            editSharedPref.commit()
+
+                            db.collection("users").document(dbAuth.currentUser?.uid!!).update(user)
+                                .addOnSuccessListener {
+                                    if(imgChange) {
+                                        if (imgBit != null) {
+                                            val baos = ByteArrayOutputStream()
+                                            imgBit!!.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                                            val data = baos.toByteArray()
+                                            storageRef.child("profile/${user["imgName"]}").putBytes(data)
+                                                .addOnFailureListener {
+                                                    Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
+                                                }
+
+                                        } else if (imgUri != null) {
+                                            storageRef.child("profile/${user["imgName"]}").putFile(imgUri!!)
+                                                .addOnFailureListener {
+                                                    Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
+                                                }
+                                        }
+                                        //update the field status to uneditable
+                                        binding.etEmail.isFocusableInTouchMode = false
+                                        binding.etPhone.isFocusableInTouchMode = false
+                                        binding.etAddress.isFocusableInTouchMode = false
+                                        binding.etEmail.isFocusable = false
+                                        binding.etPhone.isFocusable = false
+                                        binding.etAddress.isFocusable = false
+                                        binding.ivProfile.isClickable = false
+                                        binding.pbImg.visibility = View.GONE
+                                        imgChange = false
+                                    }
+                                    binding.editProfile.text = getString(R.string.edit)
+                                    Toast.makeText(requireContext(), "Update Successful", Toast.LENGTH_SHORT).show()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
+                                }
+                            binding.etEmail.setText(binding.etEmail.text.toString().lowercase())
+                            findNavController().navigate(R.id.profileFragment)
                         }
-                        .addOnFailureListener {
-                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                        }
-                    binding.etEmail.setText(binding.etEmail.text.toString().lowercase())
-                }
+                    }
             }
         }
 
@@ -257,6 +263,11 @@ class ProfileFragment : Fragment() {
                     } else {
                         Toast.makeText(requireContext(), "Password update successfully", Toast.LENGTH_SHORT).show()
                         dbAuth.currentUser?.updatePassword(newPswd)
+                        val editSharedPref = sharedPreferences.edit()
+                        editSharedPref.putString("password", newPswd)
+                        editSharedPref.commit()
+                        db.collection("users").document(dbAuth.currentUser!!.uid)
+                            .update("password", newPswd)
                         dialog.dismiss()
 
                     }

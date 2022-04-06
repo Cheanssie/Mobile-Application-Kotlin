@@ -1,8 +1,13 @@
 package com.lamont.assignment.ui
 
 import android.app.AlertDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,10 +17,14 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Observer
+import androidx.navigation.NavDeepLinkBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
+import com.lamont.assignment.ModuleActivity
 import com.lamont.assignment.adapter.RequestAdapter
 import com.lamont.assignment.databinding.FragmentWhiteFlagBinding
 import com.lamont.assignment.viewModel.RequestViewModel
@@ -29,6 +38,10 @@ class WhiteFlagFragment : Fragment() {
     private val binding get() = _binding!!
     lateinit var requestAdapter : RequestAdapter
     lateinit var dbAuth : FirebaseAuth
+
+    //notification
+    private val CHANNEL_ID = "Request_Fulfilled"
+    private val NOTIFICATION_ID = 100
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,12 +57,45 @@ class WhiteFlagFragment : Fragment() {
             var requestAvailable = mutableListOf<Request>()
             for (request in it) {
                 if(request.ownerId == dbAuth.currentUser!!.uid || request.donorId == dbAuth.currentUser!!.uid || request.donorId == "null") {
-                    requestAvailable.add(request)
+                    if(request.ownerId == dbAuth.currentUser!!.uid && request.status == 3) {
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            val name = CHANNEL_ID
+                            val descriptionText = "Your donor has donated your need(s)!"
+                            val importance = NotificationManager.IMPORTANCE_HIGH
+                            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                                description = descriptionText
+                            }
+                            val notificationManager: NotificationManager =  activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                            notificationManager.createNotificationChannel(channel)
+
+                            val intent = Intent(requireContext(), ModuleActivity::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            }
+                            val pendingIntent = NavDeepLinkBuilder(requireContext())
+                                .setComponentName(ModuleActivity::class.java)
+                                .setGraph(R.navigation.general_nav)
+                                .setDestination(R.id.whiteFlagFragment)
+                                .createPendingIntent()
+
+
+                            val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+                                .setSmallIcon(R.drawable.logo_dark)
+                                .setContentTitle(CHANNEL_ID)
+                                .setContentText("Your donor has donated your need(s)!")
+                                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                .setContentIntent(pendingIntent)
+                                .setOnlyAlertOnce(true)
+                            with(NotificationManagerCompat.from(requireContext())) {
+                                notify(NOTIFICATION_ID, builder.build())
+                            }
+
+                        }
+                    }
+                    //requestAvailable.add(request)
                 }
             }
-                    requestAvailable.sortByDescending{ it.createdDate
-                it.status }
-            requestAdapter.setData(requestAvailable)
+            requestAvailable
+            requestAdapter.setData(it)
         })
 
 
@@ -74,7 +120,6 @@ class WhiteFlagFragment : Fragment() {
                                     requestModel.updateStatus(item.requestId!!, item.status)
                                     requestModel.updateDonor(item.requestId, item.donorId!!)
                                 }.show()
-                            Toast.makeText(requireContext(), "You have exceeded the maximum of on-hold donation", Toast.LENGTH_SHORT).show()
                     }
                     "INFO" -> {
                         val infoDialogView = layoutInflater.inflate(R.layout.recipient_information_dialog, null, false)
@@ -124,6 +169,9 @@ class WhiteFlagFragment : Fragment() {
                                     .setView(infoDialogView)
                                     .setMessage("Contact recipient for more information")
                                     .setNegativeButton("Close", null)
+                                    .setPositiveButton("Donated") { dialog, which ->
+                                        requestModel.updateStatus(item.requestId!!, 3)
+                                    }
                                     .show()
                             }
 
@@ -147,6 +195,9 @@ class WhiteFlagFragment : Fragment() {
 
                     "N/A" -> {
                         Toast.makeText(requireContext(), "The request is accepted by other", Toast.LENGTH_SHORT).show()
+                    }
+                    "DONE" -> {
+                        Toast.makeText(requireContext(), "Pending for confirmation by Receiver", Toast.LENGTH_SHORT).show()
                     }
                 }
 

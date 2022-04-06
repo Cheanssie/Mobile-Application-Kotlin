@@ -32,6 +32,7 @@ class ModuleActivity : AppCompatActivity() {
         setContentView(binding.root)
         db = FirebaseFirestore.getInstance()
         dbAuth = FirebaseAuth.getInstance()
+        sharedPreferences = getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
 
         //Bottom Navigation Bar
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
@@ -39,9 +40,7 @@ class ModuleActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
 
         //Check user status when auto login
-        sharedPreferences = getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
-        var email = sharedPreferences!!.getString("email", null)
-        checkUserStatus(email, sharedPreferences)
+        checkUserStatus(sharedPreferences)
 
 
     }
@@ -64,24 +63,25 @@ class ModuleActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
-    fun checkUserStatus(email:String?, sharedPreferences:SharedPreferences) {
+    fun checkUserStatus(sharedPreferences: SharedPreferences) {
         db.collection("users").document(dbAuth.currentUser?.uid!!)
-            .get()
-            .addOnSuccessListener {
-                if(it.get("email").toString() != email) {
-                    dbAuth.signOut()
-                    val editPref = sharedPreferences.edit()
-                    editPref.remove("email")
-                    editPref.remove("password")
-                    editPref.remove("username")
-                    editPref.commit()
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
+            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+                var email = sharedPreferences!!.getString("email", null)
+                var password = sharedPreferences!!.getString("password", null)
+                if (querySnapshot != null) {
+                    if(querySnapshot.get("email").toString() != email || querySnapshot.get("password").toString() != password) {
+                        dbAuth.signOut()
+                        val editPref = sharedPreferences.edit()
+                        editPref.remove("email")
+                        editPref.remove("password")
+                        editPref.remove("username")
+                        editPref.commit()
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                    }
                 }
             }
-            .addOnFailureListener {
-                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
-            }
+
     }
 
 }

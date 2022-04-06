@@ -42,6 +42,8 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedPreferences = requireActivity().getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
+        db = FirebaseFirestore.getInstance()
+        dbAuth = FirebaseAuth.getInstance()
 
         var email = sharedPreferences!!.getString("email", null)
         var password = sharedPreferences!!.getString("password", null)
@@ -54,8 +56,7 @@ class LoginFragment : Fragment() {
             val navController = findNavController()
             navController.navigate(R.id.registerFragment)
         }
-        db = FirebaseFirestore.getInstance()
-        dbAuth = FirebaseAuth.getInstance()
+
         binding.loginButton.setOnClickListener {
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()

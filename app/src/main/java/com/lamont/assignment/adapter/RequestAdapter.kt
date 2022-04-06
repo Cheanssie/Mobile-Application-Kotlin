@@ -72,24 +72,27 @@ class RequestAdapter(val context: Context): RecyclerView.Adapter<RequestAdapter.
         if (currentUserId == request.ownerId) {
             when(request.status){
                 1 ->  buttonText = "REMOVE"
-                2 ->  buttonText = "RECEIVED"
+                2, 3->  buttonText = "RECEIVED"
             }
         } else if (currentUserId == request.donorId){
             when(request.status){
+                1 -> buttonText = "DONATE"
                 2 ->  buttonText = "INFO"
+                3 ->  buttonText = "DONE"
 
             }
         } else {
             when(request.status){
                 1 ->  buttonText = "DONATE"
-                2->  buttonText = "N/A"
+                2, 3->  buttonText = "N/A"
             }
         }
         holder.btnDonate.text = buttonText
 
         //Retrieve images
         val storageRef = FirebaseStorage.getInstance().reference.child("images/${request.imgName}")
-        storageRef.downloadUrl.addOnSuccessListener {
+        storageRef.downloadUrl
+            .addOnSuccessListener {
             Picasso.with(context).load(it).into(holder.ivImg)
         }
 
