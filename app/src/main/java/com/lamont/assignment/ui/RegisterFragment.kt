@@ -34,7 +34,7 @@ class RegisterFragment : Fragment(){
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
         // Inflate the layout for this fragment
@@ -43,7 +43,7 @@ class RegisterFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedPreferences = requireActivity().getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
+        sharedPreferences = requireActivity().getSharedPreferences(getString(R.string.share_pref), Context.MODE_PRIVATE)
         binding.loginButton.setOnClickListener {
             val navController = findNavController()
             navController.navigate(R.id.loginFragment)
@@ -77,7 +77,7 @@ class RegisterFragment : Fragment(){
         }
     }
 
-    fun addUser(username:String, email:String, password:String, conPassword:String, phone:String, dob:String) {
+    private fun addUser(username:String, email:String, password:String, conPassword:String, phone:String, dob:String) {
         val db = FirebaseFirestore.getInstance()
         val dbAuth = FirebaseAuth.getInstance()
         db.collection("users")
@@ -85,48 +85,48 @@ class RegisterFragment : Fragment(){
             .addOnSuccessListener {
                 val birthdate = SimpleDateFormat("dd/MM/yyyy").parse(dob.toString())
                 val age = (Date().time - birthdate.time)/(31556952000)
-                val user: User = User(username, email, password, phone, dob)
+                val user = User(username, email, password, phone, dob)
                 var error = false
 
                 for (doc in it) {
                     when {
-                        username.toString() == doc.data.get("username").toString() -> {
-                            Toast.makeText(requireContext(), "Username existed", Toast.LENGTH_SHORT).show()
+                        username == doc.data.get("username").toString() -> {
+                            Toast.makeText(requireContext(), getString(R.string.usernameExist), Toast.LENGTH_SHORT).show()
                             error = true
                             break
                         }
-                        email.toString() == doc.data.get("email").toString() -> {
-                            Toast.makeText(requireContext(), "Email existed", Toast.LENGTH_SHORT).show()
+                        email == doc.data.get("email").toString() -> {
+                            Toast.makeText(requireContext(), getString(R.string.emailEixst), Toast.LENGTH_SHORT).show()
                             error = true
                             break
                         }
                         !email.matches(emailPattern.toRegex()) -> {
-                            Toast.makeText(requireContext(), "Invalid email address",Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), getString(R.string.emailInvalid),Toast.LENGTH_SHORT).show()
                             error = true
                             break
                         }
-                        phone.toString() == doc.data.get("phone").toString() -> {
-                            Toast.makeText(requireContext(), "Phone existed", Toast.LENGTH_SHORT).show()
+                        phone == doc.data.get("phone").toString() -> {
+                            Toast.makeText(requireContext(), getString(R.string.phoneExist), Toast.LENGTH_SHORT).show()
                             error = true
                             break
                         }
-                        phone.toString().length > 11 || phone.toString().length < 10-> {
-                            Toast.makeText(requireContext(), "Phone Invalid", Toast.LENGTH_SHORT).show()
+                        phone.length > 11 || phone.length < 10-> {
+                            Toast.makeText(requireContext(), getString(R.string.phoneInvalid), Toast.LENGTH_SHORT).show()
                             error = true
                             break
                         }
-                        password.toString() != conPassword.toString() -> {
-                            Toast.makeText(requireContext(), "Password does not match", Toast.LENGTH_SHORT).show()
+                        password != conPassword -> {
+                            Toast.makeText(requireContext(), getString(R.string.pswdNotMatch), Toast.LENGTH_SHORT).show()
                             error = true
                             break
                         }
                         !password.matches(passwordPattern.toRegex()) -> {
-                            Toast.makeText(requireContext(), "Password must contains 8 characters with at least one special character, one capital letter and one small letter", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), getString(R.string.pswdValidation), Toast.LENGTH_SHORT).show()
                             error = true
                             break
                         }
                         age < 12 -> {
-                            Toast.makeText(requireContext(), "Underage", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), getString(R.string.underage), Toast.LENGTH_SHORT).show()
                             error = true
                             break
                         }
@@ -141,7 +141,7 @@ class RegisterFragment : Fragment(){
                         .addOnSuccessListener {
                             db.collection("users").document(dbAuth.currentUser?.uid!!)
                                 .set(user).addOnSuccessListener {
-                                    Toast.makeText(requireContext(), "Registered successful", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(requireContext(), getString(R.string.registerSuccess), Toast.LENGTH_SHORT).show()
                                     val editPref = sharedPreferences.edit()
                                     editPref.putString("email", email)
                                     editPref.putString("password", password)

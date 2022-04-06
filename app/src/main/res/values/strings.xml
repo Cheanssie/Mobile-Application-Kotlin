@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Assignment</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
     <string name="white_flag">White Flag</string>
     <string name="add_post">Add Post</string>
@@ -26,7 +25,6 @@
     <string name="f_amp_b"><![CDATA[F&B]]></string>
     <string name="description">Description</string>
     <string name="submit">Submit</string>
-    <string name="cancel">Cancel</string>
     <string name="logout">Logout</string>
     <string name="edit">Edit Profile</string>
     <string name="username">Username</string>
@@ -34,4 +32,60 @@
     <string name="email_address_pro">Email</string>
     <string name="phone_pro">Phone</string>
     <string name="uid_pro">UID : %s</string>
+    <string name="uploadPhoto">Upload Photo</string>
+    <string name="remove">REMOVE</string>
+    <string name="done">DONE</string>
+    <string name="n_a">N/A</string>
+    <string name="received">RECEIVED</string>
+    <string name="info">INFO</string>
+    <string name="donate">DONATE</string>
+    <string name="descText">Your donor has donated your need(s)!</string>
+    <string name="noAddressFound">No address found!</string>
+    <string name="nullAddressMsg">The user doesn\'t provide address</string>
+    <string name="donated">Donated</string>
+    <string name="close">Close</string>
+    <string name="contactForInfo">Contact recipient for more information</string>
+    <string name="recipientInfo">Recipient\'s Information</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="rmReq">Remove Request</string>
+    <string name="reqFulfilled">Request Fulfilled</string>
+    <string name="finishConfirmation">Are you sure to finish this request?</string>
+    <string name="rmConfirmation">Are you sure to remove?</string>
+    <string name="otherAccpeted">The request is accepted by other</string>
+    <string name="pendForConfirmation">Pending for confirmation by Receiver</string>
+    <string name="share_pref" translatable="false">SHARE_PREF</string>
+    <string name="loginSuccess">Login Successful</string>
+    <string name="incorrectLoginMsg">Incorrect Email or Password</string>
+    <string name="requireFillIn">Please fill in all the fields</string>
+    <string name="resetPassword">Reset Password</string>
+    <string name="enterEmailResetPswd">Enter email to reset password</string>
+    <string name="chkEmailPswd">Check your email to reset password</string>
+    <string name="emailNotExist">Email not exist</string>
+    <string name="save">Save</string>
+    <string name="selectPhoto">Select Photo</string>
+    <string name="getPhotoMethod">Please choose a method to upload photo.</string>
+    <string name="gallery">Gallery</string>
+    <string name="camera">Camera</string>
+    <string name="uploadSuccess">Upload Successful</string>
+    <string name="uploadFail">Upload Fail</string>
+    <string name="registerSuccess">Registered successful</string>
+    <string name="underage">Underage</string>
+    <string name="pswdValidation">Password must contains 8 characters with at least one special character, one capital letter and one small letter</string>
+    <string name="pswdNotMatch">Password does not match</string>
+    <string name="phoneInvalid">Phone Invalid</string>
+    <string name="phoneExist">Phone existed</string>
+    <string name="emailInvalid">Invalid email address</string>
+    <string name="emailEixst">Email existed</string>
+    <string name="usernameExist">Username existed</string>
+    <string name="wrgOldPswd">Wrong Old Password</string>
+    <string name="nPswdNotMatch">New Password not match</string>
+    <string name="OpswdSameNpswd">Old Password Same With New Password</string>
+    <string name="pswdUpdateSuccess">Password update successfully</string>
+    <string name="updateSuccess">Update Successful</string>
+    <string name="storageErrMsg" translatable="false">FirebaseStorage API Error</string>
+    <string name="DOBnoEdit">DOB is not editable!</string>
+    <string name="usernameNoEdit">Username is not editable!</string>
+    <string name="UIDNoEdit">UID is not editable!</string>
+    <string name="donateConfirmation">Are you sure to donate?</string>
 </resources>

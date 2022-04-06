@@ -6,18 +6,13 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lamont.assignment.databinding.ActivityModuleBinding
-import com.lamont.assignment.ui.RequestFragment
-
 
 class ModuleActivity : AppCompatActivity() {
 
@@ -32,7 +27,7 @@ class ModuleActivity : AppCompatActivity() {
         setContentView(binding.root)
         db = FirebaseFirestore.getInstance()
         dbAuth = FirebaseAuth.getInstance()
-        sharedPreferences = getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(getString(R.string.share_pref), Context.MODE_PRIVATE)
 
         //Bottom Navigation Bar
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
@@ -41,8 +36,6 @@ class ModuleActivity : AppCompatActivity() {
 
         //Check user status when auto login
         checkUserStatus(sharedPreferences)
-
-
     }
 
     fun displayPopupMenu(view: View) {

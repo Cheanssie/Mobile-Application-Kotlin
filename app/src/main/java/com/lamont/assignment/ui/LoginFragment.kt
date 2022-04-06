@@ -14,8 +14,6 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.lamont.assignment.ModuleActivity
 import com.lamont.assignment.R
 import com.lamont.assignment.databinding.FragmentLoginBinding
@@ -24,29 +22,28 @@ class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-    lateinit var sharedPreferences: SharedPreferences
-    lateinit var db : FirebaseFirestore
-    lateinit var dbAuth : FirebaseAuth
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var db : FirebaseFirestore
+    private lateinit var dbAuth : FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
-        val view = binding.root
 
         // Inflate the layout for this fragment
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        sharedPreferences = requireActivity().getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
+        sharedPreferences = requireActivity().getSharedPreferences(getString(R.string.share_pref), Context.MODE_PRIVATE)
         db = FirebaseFirestore.getInstance()
         dbAuth = FirebaseAuth.getInstance()
 
-        var email = sharedPreferences!!.getString("email", null)
-        var password = sharedPreferences!!.getString("password", null)
+        val email = sharedPreferences.getString("email", null)
+        val password = sharedPreferences.getString("password", null)
 
         if (email != null && password != null) {
             enterModuleActivity()
@@ -67,7 +64,7 @@ class LoginFragment : Fragment() {
                         db.collection("users").document(dbAuth.currentUser!!.uid)
                             .get()
                             .addOnSuccessListener {
-                                Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), getString(R.string.loginSuccess), Toast.LENGTH_SHORT).show()
                                 val editPref = sharedPreferences.edit()
                                 editPref.putString("email", email)
                                 editPref.putString("password", password)
@@ -78,10 +75,10 @@ class LoginFragment : Fragment() {
 
                     }
                     .addOnFailureListener {
-                        Toast.makeText(requireContext(), "Incorrect Email or Password", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.incorrectLoginMsg), Toast.LENGTH_SHORT).show()
                     }
             } else {
-                Toast.makeText(requireContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.requireFillIn), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -89,11 +86,11 @@ class LoginFragment : Fragment() {
             val dialog = AlertDialog.Builder(requireContext())
             val emailLayout = layoutInflater.inflate(R.layout.cutom_edit_text, null, false)
             dialog
-                .setTitle("Reset Password")
-                .setMessage("Enter email to reset password")
+                .setTitle(getString(R.string.resetPassword))
+                .setMessage(getString(R.string.enterEmailResetPswd))
                 .setView(emailLayout)
-                .setNeutralButton("Cancel", null)
-                .setPositiveButton("Confirm") { dialog, which ->
+                .setNeutralButton(getString(R.string.cancel), null)
+                .setPositiveButton(getString(R.string.confirm)) { dialog, which ->
                     val emailInput = emailLayout.findViewById<EditText>(R.id.etEmail)
                     db.collection("users")
                         .whereEqualTo("email", emailInput.text.toString())
@@ -101,9 +98,9 @@ class LoginFragment : Fragment() {
                         .addOnSuccessListener {
                             if(!it.isEmpty) {
                                 dbAuth.sendPasswordResetEmail(emailInput.text.toString())
-                                Toast.makeText(requireContext(), "Check your email to reset password", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), getString(R.string.chkEmailPswd), Toast.LENGTH_SHORT).show()
                             } else {
-                                Toast.makeText(requireContext(), "Email not exist", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), getString(R.string.emailNotExist), Toast.LENGTH_SHORT).show()
                             }
                         }
                         .addOnFailureListener {
@@ -115,7 +112,7 @@ class LoginFragment : Fragment() {
 
     }
 
-    fun enterModuleActivity() {
+    private fun enterModuleActivity() {
         val intent = Intent(requireContext(), ModuleActivity::class.java)
         context?.startActivity(intent)
         activity?.finish()

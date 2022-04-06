@@ -1,9 +1,6 @@
 package com.lamont.assignment.repository
 
-import android.net.Uri
-import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lamont.assignment.model.Request
 

@@ -1,7 +1,5 @@
 package com.lamont.assignment.model
 
-import android.net.Uri
-
 data class Request(val requestId: String?, val ownerId:String, val owner: String, val desc: String, val category: String, val imgName: String?, var donorId: String?, val createdDate: String, var status: Int = 1) {
     //username is unique
     //username of the post's owner will be stored as owner

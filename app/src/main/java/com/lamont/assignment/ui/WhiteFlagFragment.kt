@@ -3,7 +3,6 @@ package com.lamont.assignment.ui
 import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -19,7 +18,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Observer
 import androidx.navigation.NavDeepLinkBuilder
 import com.google.firebase.auth.FirebaseAuth
@@ -29,14 +27,12 @@ import com.lamont.assignment.adapter.RequestAdapter
 import com.lamont.assignment.databinding.FragmentWhiteFlagBinding
 import com.lamont.assignment.viewModel.RequestViewModel
 import com.lamont.assignment.R
-import com.lamont.assignment.model.Request
-
 
 class WhiteFlagFragment : Fragment() {
 
     private var _binding: FragmentWhiteFlagBinding? = null
     private val binding get() = _binding!!
-    lateinit var requestAdapter : RequestAdapter
+    private lateinit var requestAdapter : RequestAdapter
     lateinit var dbAuth : FirebaseAuth
 
     //notification
@@ -46,7 +42,7 @@ class WhiteFlagFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentWhiteFlagBinding.inflate(inflater, container, false)
         dbAuth = FirebaseAuth.getInstance()
         val requestModel = RequestViewModel()
@@ -58,7 +54,7 @@ class WhiteFlagFragment : Fragment() {
                     if(request.ownerId == dbAuth.currentUser!!.uid && request.status == 3) {
                         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             val name = CHANNEL_ID
-                            val descriptionText = "Your donor has donated your need(s)!"
+                            val descriptionText = getString(R.string.descText)
                             val importance = NotificationManager.IMPORTANCE_HIGH
                             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                                 description = descriptionText
@@ -66,7 +62,7 @@ class WhiteFlagFragment : Fragment() {
                             val notificationManager: NotificationManager =  activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                             notificationManager.createNotificationChannel(channel)
 
-                            val intent = Intent(requireContext(), ModuleActivity::class.java).apply {
+                            Intent(requireContext(), ModuleActivity::class.java).apply {
                                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             }
                             val pendingIntent = NavDeepLinkBuilder(requireContext())
@@ -79,7 +75,7 @@ class WhiteFlagFragment : Fragment() {
                             val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
                                 .setSmallIcon(R.drawable.logo_dark)
                                 .setContentTitle(CHANNEL_ID)
-                                .setContentText("Your donor has donated your need(s)!")
+                                .setContentText(descriptionText)
                                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                                 .setContentIntent(pendingIntent)
                                 .setOnlyAlertOnce(true)
@@ -99,24 +95,24 @@ class WhiteFlagFragment : Fragment() {
             binding.requestRecycler.adapter = requestAdapter
         }
 
-        requestAdapter.onItemClickListner(object: RequestAdapter.onItemClickListener{
+        requestAdapter.onItemClickListner(object: RequestAdapter.OnItemClickListener{
             override fun onItemClick(position: Int) {
-                val item = requestModel.requestList.value!![position]!!.copy()
+                val item = requestModel.requestList.value!![position].copy()
                 val action = binding.requestRecycler.findViewHolderForAdapterPosition(position)!!.itemView.findViewById<Button>(R.id.btnDonate).text
                 val dialog = AlertDialog.Builder(requireContext())
                 when(action){
-                    "DONATE" -> {
-                            dialog.setTitle("Donate")
-                                .setMessage("Are you sure to donate?")
-                                .setNeutralButton("Cancel", null)
-                                .setPositiveButton("Confirm") { dialog, which ->
+                    getString(R.string.donate) -> {
+                            dialog.setTitle(getString(R.string.donate))
+                                .setMessage(getString(R.string.donateConfirmation))
+                                .setNeutralButton(getString(R.string.cancel), null)
+                                .setPositiveButton(getString(R.string.confirm)) { dialog, which ->
                                     item.donorId = dbAuth.currentUser!!.uid
                                     item.status = 2
                                     requestModel.updateStatus(item.requestId!!, item.status)
                                     requestModel.updateDonor(item.requestId, item.donorId!!)
                                 }.show()
                     }
-                    "INFO" -> {
+                    getString(R.string.info) -> {
                         val infoDialogView = layoutInflater.inflate(R.layout.recipient_information_dialog, null, false)
                         val db = FirebaseFirestore.getInstance()
                         db.collection("users")
@@ -138,7 +134,7 @@ class WhiteFlagFragment : Fragment() {
                                 infoDialogView.findViewById<TextView>(R.id.tvPhone).text = phone
                                 infoDialogView.findViewById<ImageButton>(R.id.btnPhone).setOnClickListener {
                                     intent = Intent(Intent.ACTION_DIAL)
-                                    intent.data = Uri.parse("tel:" + phone)
+                                    intent.data = Uri.parse("tel:$phone")
                                     startActivity(intent)
                                 }
 
@@ -146,13 +142,13 @@ class WhiteFlagFragment : Fragment() {
                                 if (it.data?.get("address") != "") {
                                     infoDialogView.findViewById<TextView>(R.id.tvAddress).text = address
                                     infoDialogView.findViewById<ImageButton>(R.id.btnAddress).setOnClickListener {
-                                        intent = Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + address))
+                                        intent = Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=$address"))
                                         startActivity(intent)
                                     }
                                 } else {
-                                    infoDialogView.findViewById<TextView>(R.id.tvAddress).text = "No address found!"
+                                    infoDialogView.findViewById<TextView>(R.id.tvAddress).text = getString(R.string.noAddressFound)
                                     infoDialogView.findViewById<ImageButton>(R.id.btnAddress).setOnClickListener {
-                                        Toast.makeText(requireContext(), "The user doesn't provide address", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(requireContext(), getString(R.string.nullAddressMsg), Toast.LENGTH_SHORT).show()
                                     }
                                 }
 
@@ -160,39 +156,39 @@ class WhiteFlagFragment : Fragment() {
                                 infoDialogView.findViewById<ImageButton>(R.id.btnPhone)
 
 
-                                dialog.setTitle("Recipient's Information")
+                                dialog.setTitle(getString(R.string.recipientInfo))
                                     .setView(infoDialogView)
-                                    .setMessage("Contact recipient for more information")
-                                    .setNegativeButton("Close", null)
-                                    .setPositiveButton("Donated") { dialog, which ->
+                                    .setMessage(getString(R.string.contactForInfo))
+                                    .setNegativeButton(getString(R.string.close), null)
+                                    .setPositiveButton(getString(R.string.donated)) { dialog, which ->
                                         requestModel.updateStatus(item.requestId!!, 3)
                                     }
                                     .show()
                             }
 
                     }
-                    "REMOVE" -> {
-                        dialog.setTitle("Remove Request")
-                            .setMessage("Are you sure to remove?")
-                            .setNeutralButton("Cancel", null)
-                            .setPositiveButton("Confirm") { dialog, which ->
+                    getString(R.string.remove) -> {
+                        dialog.setTitle(getString(R.string.rmReq))
+                            .setMessage(getString(R.string.rmConfirmation))
+                            .setNeutralButton(getString(R.string.cancel), null)
+                            .setPositiveButton(getString(R.string.confirm)) { dialog, which ->
                                 requestModel.removeRequest(item.requestId!!)
                             }.show()
                     }
-                    "RECEIVED" -> {
-                        dialog.setTitle("Request Fulfilled")
-                            .setMessage("Are you sure to finish this request?")
-                            .setNeutralButton("Cancel", null)
-                            .setPositiveButton("Confirm") { dialog, which ->
+                    getString(R.string.received) -> {
+                        dialog.setTitle(getString(R.string.reqFulfilled))
+                            .setMessage(getString(R.string.finishConfirmation))
+                            .setNeutralButton(getString(R.string.cancel), null)
+                            .setPositiveButton(getString(R.string.confirm)) { dialog, which ->
                                 requestModel.removeRequest(item.requestId!!)
                             }.show()
                     }
 
-                    "N/A" -> {
-                        Toast.makeText(requireContext(), "The request is accepted by other", Toast.LENGTH_SHORT).show()
+                    getString(R.string.n_a) -> {
+                        Toast.makeText(requireContext(), getString(R.string.otherAccpeted), Toast.LENGTH_SHORT).show()
                     }
-                    "DONE" -> {
-                        Toast.makeText(requireContext(), "Pending for confirmation by Receiver", Toast.LENGTH_SHORT).show()
+                    getString(R.string.done) -> {
+                        Toast.makeText(requireContext(), getString(R.string.pendForConfirmation), Toast.LENGTH_SHORT).show()
                     }
                 }
 

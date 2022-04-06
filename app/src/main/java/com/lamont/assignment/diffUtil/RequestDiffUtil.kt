@@ -1,7 +1,5 @@
 package com.lamont.assignment.diffUtil
 
-import android.app.DownloadManager
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import com.lamont.assignment.model.Request
 
@@ -23,7 +21,7 @@ class RequestDiffUtil (
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         return when {
-            oldRequestList[oldItemPosition]?.requestId != newRequestList[newItemPosition].requestId ->
+            oldRequestList[oldItemPosition].requestId != newRequestList[newItemPosition].requestId ->
                 false
 
             else -> true

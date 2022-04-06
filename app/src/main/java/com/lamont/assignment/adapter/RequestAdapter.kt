@@ -1,49 +1,42 @@
 package com.lamont.assignment.adapter
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.net.toUri
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.lamont.assignment.R
 import com.lamont.assignment.diffUtil.RequestDiffUtil
 import com.lamont.assignment.model.Request
 import com.squareup.picasso.Picasso
-import java.io.File
 
 class RequestAdapter(val context: Context): RecyclerView.Adapter<RequestAdapter.RequestViewHolder>() {
 
-    private lateinit var itemListener : onItemClickListener
-    var dbAuth : FirebaseAuth = FirebaseAuth.getInstance()
+    private lateinit var itemListener : OnItemClickListener
+    private var dbAuth : FirebaseAuth = FirebaseAuth.getInstance()
 
-    interface onItemClickListener {
+    interface OnItemClickListener {
         fun onItemClick(position: Int)
     }
 
-    var oldRequestList: MutableList<Request> = mutableListOf()
+    private var oldRequestList: MutableList<Request> = mutableListOf()
 
-    class RequestViewHolder(private val view: View, listener: onItemClickListener): RecyclerView.ViewHolder(view) {
-        val cardViewParent = view.findViewById<ConstraintLayout>(R.id.cardRequestParent)
-        val cardView = view.findViewById<CardView>(R.id.cardRequest)
-        val tvName = view.findViewById<TextView>(R.id.tvName)
-        val tvDesc = view.findViewById<TextView>(R.id.tvDesc)
-        val tvCat = view.findViewById<TextView>(R.id.tvCat)
-        val ivImg = view.findViewById<ImageView>(R.id.ivImg)
-        val btnDonate = view.findViewById<Button>(R.id.btnDonate)
+    class RequestViewHolder(view: View, listener: OnItemClickListener): RecyclerView.ViewHolder(view) {
+        val cardViewParent = view.findViewById<ConstraintLayout>(R.id.cardRequestParent)!!
+        val cardView = view.findViewById<CardView>(R.id.cardRequest)!!
+        val tvName = view.findViewById<TextView>(R.id.tvName)!!
+        val tvDesc = view.findViewById<TextView>(R.id.tvDesc)!!
+        val tvCat = view.findViewById<TextView>(R.id.tvCat)!!
+        val ivImg = view.findViewById<ImageView>(R.id.ivImg)!!
+        val btnDonate = view.findViewById<Button>(R.id.btnDonate)!!
 
         init {
             btnDonate.setOnClickListener {
@@ -53,7 +46,7 @@ class RequestAdapter(val context: Context): RecyclerView.Adapter<RequestAdapter.
 
     }
 
-    fun onItemClickListner(listener: onItemClickListener) {
+    fun onItemClickListner(listener: OnItemClickListener) {
         itemListener = listener
     }
 
@@ -75,22 +68,26 @@ class RequestAdapter(val context: Context): RecyclerView.Adapter<RequestAdapter.
 
             var buttonText = ""
 
-            if (currentUserId == request.ownerId) {
-                when (request.status) {
-                    1 -> buttonText = "REMOVE"
-                    2, 3 -> buttonText = "RECEIVED"
+            when (currentUserId) {
+                request.ownerId -> {
+                    when (request.status) {
+                        1 -> buttonText = context.getString(R.string.remove)
+                        2, 3 -> buttonText = context.getString(R.string.received)
+                    }
                 }
-            } else if (currentUserId == request.donorId) {
-                when (request.status) {
-                    1 -> buttonText = "DONATE"
-                    2 -> buttonText = "INFO"
-                    3 -> buttonText = "DONE"
+                request.donorId -> {
+                    when (request.status) {
+                        1 -> buttonText = context.getString(R.string.donate)
+                        2 -> buttonText = context.getString(R.string.info)
+                        3 -> buttonText = context.getString(R.string.done)
 
+                    }
                 }
-            } else {
-                when (request.status) {
-                    1 -> buttonText = "DONATE"
-                    2, 3 -> buttonText = "N/A"
+                else -> {
+                    when (request.status) {
+                        1 -> buttonText = context.getString(R.string.donate)
+                        2, 3 -> buttonText = context.getString(R.string.n_a)
+                    }
                 }
             }
             holder.btnDonate.text = buttonText

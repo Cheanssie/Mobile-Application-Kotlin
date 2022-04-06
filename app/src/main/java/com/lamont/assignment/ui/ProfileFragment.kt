@@ -2,7 +2,6 @@ package com.lamont.assignment.ui
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -16,7 +15,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
@@ -30,26 +28,24 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-
 class ProfileFragment : Fragment() {
 
-    var _binding : FragmentProfileBinding? = null
-    val binding get() = _binding!!
-    lateinit var sharedPreferences: SharedPreferences
-    lateinit var db : FirebaseFirestore
-    lateinit var dbAuth : FirebaseAuth
-    lateinit var dbStorage : FirebaseStorage
+    private var _binding : FragmentProfileBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var db : FirebaseFirestore
+    private lateinit var dbAuth : FirebaseAuth
+    private lateinit var dbStorage : FirebaseStorage
 
     //image holder
-    var imgBit:Bitmap? = null
+    private var imgBit:Bitmap? = null
     var imgUri:Uri? = null
     var imgChange = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
         // Inflate the layout for this fragment
@@ -63,7 +59,7 @@ class ProfileFragment : Fragment() {
         dbAuth = FirebaseAuth.getInstance()
         dbStorage = FirebaseStorage.getInstance()
         val storageRef = dbStorage.reference
-        sharedPreferences = requireActivity().getSharedPreferences("SHARE_PREF", Context.MODE_PRIVATE)
+        sharedPreferences = requireActivity().getSharedPreferences(getString(R.string.share_pref), Context.MODE_PRIVATE)
 
         db.collection("users").document(dbAuth.currentUser?.uid!!)
             .addSnapshotListener { doc, error ->
@@ -95,29 +91,29 @@ class ProfileFragment : Fragment() {
                 binding.etAddress.isFocusableInTouchMode = true
                 binding.ivProfile.isClickable = true
                 binding.tvUid.setOnClickListener {
-                    Toast.makeText(requireContext(), "UID is not editable!", Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(), getString(R.string.UIDNoEdit), Toast.LENGTH_SHORT)
                         .show()
                 }
                 binding.tvUsername.setOnClickListener {
-                    Toast.makeText(requireContext(), "Username is not editable!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.usernameNoEdit), Toast.LENGTH_SHORT).show()
                 }
                 binding.etDOB.setOnClickListener {
-                    Toast.makeText(requireContext(), "DOB is not editable!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.DOBnoEdit), Toast.LENGTH_SHORT).show()
                 }
-                binding.editProfile.text = "Save"
+                binding.editProfile.text = getString(R.string.save)
 
                 binding.ivProfile.setOnClickListener {
                     AlertDialog.Builder(requireContext())
-                        .setTitle("Select Photo")
-                        .setMessage("Please choose a method to upload photo.")
-                        .setNeutralButton("Cancel") { dialog, which ->
+                        .setTitle(getString(R.string.selectPhoto))
+                        .setMessage(getString(R.string.getPhotoMethod))
+                        .setNeutralButton(getString(R.string.cancel)) { dialog, which ->
                         }
-                        .setNegativeButton("Gallery") { dialog, which ->
+                        .setNegativeButton(getString(R.string.gallery)) { dialog, which ->
                             val intent = Intent(Intent.ACTION_PICK)
                             intent.type = "image/*"
                             startActivityForResult(intent, RequestFragment.IMAGE_REQUEST_CODE)
                         }
-                        .setPositiveButton("Camera") { dialog, which ->
+                        .setPositiveButton(getString(R.string.camera)) { dialog, which ->
                             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                             startActivityForResult(intent, RequestFragment.CAMERA_REQUEST_CODE)
 
@@ -129,35 +125,34 @@ class ProfileFragment : Fragment() {
 
                 val email = binding.etEmail.text.toString()
                 val phone = binding.etPhone.text.toString()
-                val address = binding.etAddress.text.toString()
-
+                //val address = binding.etAddress.text.toString()
 
                 db.collection("users")
                     .get()
                     .addOnSuccessListener {
                         var error = false
                         for (doc in it) {
-                            if (doc.id.toString() == dbAuth.currentUser?.uid) {
+                            if (doc.id == dbAuth.currentUser?.uid) {
                                 continue
                             }
                             when {
-                                email == doc.data.get("email").toString() -> {
-                                    Toast.makeText(requireContext(), "Email existed", Toast.LENGTH_SHORT).show()
+                                email == doc.data["email"].toString() -> {
+                                    Toast.makeText(requireContext(), getString(R.string.emailEixst), Toast.LENGTH_SHORT).show()
                                     error = true
                                     break
                                 }
                                 !email.matches(RegisterFragment.emailPattern.toRegex()) -> {
-                                    Toast.makeText(requireContext(), "Invalid email address", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(requireContext(), getString(R.string.emailInvalid), Toast.LENGTH_SHORT).show()
                                     error = true
                                     break
                                 }
-                                phone == doc.data.get("phone").toString() -> {
-                                    Toast.makeText(requireContext(), "Phone existed", Toast.LENGTH_SHORT).show()
+                                phone == doc.data["phone"].toString() -> {
+                                    Toast.makeText(requireContext(), getString(R.string.phoneExist), Toast.LENGTH_SHORT).show()
                                     error = true
                                     break
                                 }
                                 phone.length > 11 || phone.length < 10 -> {
-                                    Toast.makeText(requireContext(), "Phone Invalid", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(requireContext(), getString(R.string.phoneInvalid), Toast.LENGTH_SHORT).show()
                                     error = true
                                     break
                                 }
@@ -192,13 +187,13 @@ class ProfileFragment : Fragment() {
                                             val data = baos.toByteArray()
                                             storageRef.child("profile/${user["imgName"]}").putBytes(data)
                                                 .addOnFailureListener {
-                                                    Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
+                                                    Toast.makeText(requireContext(), getString(R.string.storageErrMsg), Toast.LENGTH_SHORT).show()
                                                 }
 
                                         } else if (imgUri != null) {
                                             storageRef.child("profile/${user["imgName"]}").putFile(imgUri!!)
                                                 .addOnFailureListener {
-                                                    Toast.makeText(requireContext(), "FirebaseStorage API Error", Toast.LENGTH_SHORT).show()
+                                                    Toast.makeText(requireContext(), getString(R.string.storageErrMsg), Toast.LENGTH_SHORT).show()
                                                 }
                                         }
                                         //update the field status to uneditable
@@ -213,7 +208,7 @@ class ProfileFragment : Fragment() {
                                         imgChange = false
                                     }
                                     binding.editProfile.text = getString(R.string.edit)
-                                    Toast.makeText(requireContext(), "Update Successful", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(requireContext(), getString(R.string.updateSuccess), Toast.LENGTH_SHORT).show()
                                 }
                                 .addOnFailureListener {
                                     Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
@@ -241,10 +236,10 @@ class ProfileFragment : Fragment() {
         binding.changePassword.setOnClickListener {
             val dialogView = layoutInflater.inflate(R.layout.reset_password, null, false)
             val dialog = AlertDialog.Builder(requireContext())
-                .setTitle("Reset Password")
+                .setTitle(getString(R.string.resetPassword))
                 .setView(dialogView)
-                .setNeutralButton("Cancel") { dialog, which -> }
-                .setPositiveButton("Confirm", null)
+                .setNeutralButton(getString(R.string.cancel)) { dialog, which -> }
+                .setPositiveButton(getString(R.string.confirm), null)
                 .show()
             dialog.getButton(AlertDialog. BUTTON_POSITIVE)
                 .setOnClickListener {
@@ -253,15 +248,15 @@ class ProfileFragment : Fragment() {
                     val conNewPswd = dialogView.findViewById<EditText>(R.id.etConNewPswd).text.toString()
 
                     if (password != sharedPreferences.getString("password", null).toString()) {
-                        Toast.makeText(requireContext(), "Wrong Old Password", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.wrgOldPswd), Toast.LENGTH_SHORT).show()
                     } else if (newPswd != conNewPswd) {
-                        Toast.makeText(requireContext(), "New Password not Match", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.nPswdNotMatch), Toast.LENGTH_SHORT).show()
                     } else if (!newPswd.matches(RegisterFragment.passwordPattern.toRegex())) {
-                        Toast.makeText(requireContext(), "Password must contains 8 characters with at least one special character, one capital letter and one small letter", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.pswdValidation), Toast.LENGTH_SHORT).show()
                     } else if (newPswd == password) {
-                        Toast.makeText(requireContext(), "Old Password Same With New Password", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.OpswdSameNpswd), Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(requireContext(), "Password update successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), getString(R.string.pswdUpdateSuccess), Toast.LENGTH_SHORT).show()
                         dbAuth.currentUser?.updatePassword(newPswd)
                         val editSharedPref = sharedPreferences.edit()
                         editSharedPref.putString("password", newPswd)
