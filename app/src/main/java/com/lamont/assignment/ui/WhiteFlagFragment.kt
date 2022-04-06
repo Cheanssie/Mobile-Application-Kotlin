@@ -54,9 +54,7 @@ class WhiteFlagFragment : Fragment() {
         binding.requestRecycler.adapter = requestAdapter
 
         requestModel.loadRequestList().observe(requireActivity(), Observer {
-            var requestAvailable = mutableListOf<Request>()
             for (request in it) {
-                if(request.ownerId == dbAuth.currentUser!!.uid || request.donorId == dbAuth.currentUser!!.uid || request.donorId == "null") {
                     if(request.ownerId == dbAuth.currentUser!!.uid && request.status == 3) {
                         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             val name = CHANNEL_ID
@@ -90,11 +88,8 @@ class WhiteFlagFragment : Fragment() {
                             }
 
                         }
-                    }
-                    //requestAvailable.add(request)
                 }
             }
-            requestAvailable
             requestAdapter.setData(it)
         })
 

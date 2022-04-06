@@ -10,6 +10,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
@@ -35,6 +37,8 @@ class RequestAdapter(val context: Context): RecyclerView.Adapter<RequestAdapter.
     var oldRequestList: MutableList<Request> = mutableListOf()
 
     class RequestViewHolder(private val view: View, listener: onItemClickListener): RecyclerView.ViewHolder(view) {
+        val cardViewParent = view.findViewById<ConstraintLayout>(R.id.cardRequestParent)
+        val cardView = view.findViewById<CardView>(R.id.cardRequest)
         val tvName = view.findViewById<TextView>(R.id.tvName)
         val tvDesc = view.findViewById<TextView>(R.id.tvDesc)
         val tvCat = view.findViewById<TextView>(R.id.tvCat)
@@ -62,38 +66,49 @@ class RequestAdapter(val context: Context): RecyclerView.Adapter<RequestAdapter.
 
     override fun onBindViewHolder(holder: RequestViewHolder, position: Int) {
         val request = oldRequestList[position]
-        val currentUserId = dbAuth.currentUser!!.uid
-        holder.tvName.text = request.owner
-        holder.tvDesc.text = request.desc
-        holder.tvCat.text = request.category
 
-        var buttonText = ""
+        if(request.ownerId == dbAuth.currentUser!!.uid || request.donorId == dbAuth.currentUser!!.uid || request.donorId == "null") {
+            val currentUserId = dbAuth.currentUser!!.uid
+            holder.tvName.text = request.owner
+            holder.tvDesc.text = request.desc
+            holder.tvCat.text = request.category
 
-        if (currentUserId == request.ownerId) {
-            when(request.status){
-                1 ->  buttonText = "REMOVE"
-                2, 3->  buttonText = "RECEIVED"
+            var buttonText = ""
+
+            if (currentUserId == request.ownerId) {
+                when (request.status) {
+                    1 -> buttonText = "REMOVE"
+                    2, 3 -> buttonText = "RECEIVED"
+                }
+            } else if (currentUserId == request.donorId) {
+                when (request.status) {
+                    1 -> buttonText = "DONATE"
+                    2 -> buttonText = "INFO"
+                    3 -> buttonText = "DONE"
+
+                }
+            } else {
+                when (request.status) {
+                    1 -> buttonText = "DONATE"
+                    2, 3 -> buttonText = "N/A"
+                }
             }
-        } else if (currentUserId == request.donorId){
-            when(request.status){
-                1 -> buttonText = "DONATE"
-                2 ->  buttonText = "INFO"
-                3 ->  buttonText = "DONE"
+            holder.btnDonate.text = buttonText
 
-            }
+            //Retrieve images
+            val storageRef =
+                FirebaseStorage.getInstance().reference.child("images/${request.imgName}")
+            storageRef.downloadUrl
+                .addOnSuccessListener {
+                    Picasso.with(context).load(it).into(holder.ivImg)
+                }
         } else {
-            when(request.status){
-                1 ->  buttonText = "DONATE"
-                2, 3->  buttonText = "N/A"
-            }
-        }
-        holder.btnDonate.text = buttonText
-
-        //Retrieve images
-        val storageRef = FirebaseStorage.getInstance().reference.child("images/${request.imgName}")
-        storageRef.downloadUrl
-            .addOnSuccessListener {
-            Picasso.with(context).load(it).into(holder.ivImg)
+            holder.btnDonate.visibility = View.GONE
+            holder.tvName.visibility = View.GONE
+            holder.tvDesc.visibility = View.GONE
+            holder.tvCat.visibility = View.GONE
+            holder.cardView.visibility = View.GONE
+            holder.cardViewParent.visibility = View.GONE
         }
 
     }

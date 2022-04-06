@@ -3,6 +3,7 @@ package com.lamont.assignment.viewModel
 import android.app.DownloadManager
 import android.net.Uri
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.lamont.assignment.model.Request
 import com.lamont.assignment.model.User
 import com.lamont.assignment.repository.RequestRepository
@@ -10,7 +11,7 @@ import com.lamont.assignment.repository.RequestRepository
 class RequestViewModel() {
 
     private var requestRepo: RequestRepository = RequestRepository()
-    lateinit var requestList : LiveData<MutableList<Request>>
+    lateinit var requestList : MutableLiveData<MutableList<Request>>
 
     fun loadRequestList() : LiveData<MutableList<Request>>{
         requestList = requestRepo.loadRequestList()
