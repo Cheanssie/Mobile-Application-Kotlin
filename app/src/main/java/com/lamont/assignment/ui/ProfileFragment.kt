@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -47,6 +48,7 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        Log.d("Tag", "ProfileFragment.onCreateView() has been called.")
 
         // Inflate the layout for this fragment
         return binding.root
@@ -54,6 +56,7 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("Tag", "ProfileFragment.onViewCreated() has been called.")
 
         db = FirebaseFirestore.getInstance()
         dbAuth = FirebaseAuth.getInstance()
@@ -268,6 +271,12 @@ class ProfileFragment : Fragment() {
                     }
                 }
         }
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        Log.d("Tag", "ProfileFragment.onDestroyView() has been called.")
+        super.onDestroyView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

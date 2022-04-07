@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -43,7 +44,17 @@ class WhiteFlagFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d("Tag", "WFFragment.onCreateView() has been called.");
         _binding = FragmentWhiteFlagBinding.inflate(inflater, container, false)
+
+        // Inflate the layout for this fragment
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d("Tag", "WFFragment.onViewCreated() has been called.");
+
         dbAuth = FirebaseAuth.getInstance()
         val requestModel = RequestViewModel()
         requestAdapter = RequestAdapter(requireContext())
@@ -51,39 +62,39 @@ class WhiteFlagFragment : Fragment() {
 
         requestModel.loadRequestList().observe(requireActivity(), Observer {
             for (request in it) {
-                    if(request.ownerId == dbAuth.currentUser!!.uid && request.status == 3) {
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            val name = CHANNEL_ID
-                            val descriptionText = getString(R.string.descText)
-                            val importance = NotificationManager.IMPORTANCE_HIGH
-                            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                                description = descriptionText
-                            }
-                            val notificationManager: NotificationManager =  activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                            notificationManager.createNotificationChannel(channel)
-
-                            Intent(requireContext(), ModuleActivity::class.java).apply {
-                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            }
-                            val pendingIntent = NavDeepLinkBuilder(requireContext())
-                                .setComponentName(ModuleActivity::class.java)
-                                .setGraph(R.navigation.general_nav)
-                                .setDestination(R.id.whiteFlagFragment)
-                                .createPendingIntent()
-
-
-                            val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
-                                .setSmallIcon(R.drawable.logo_dark)
-                                .setContentTitle(CHANNEL_ID)
-                                .setContentText(descriptionText)
-                                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                                .setContentIntent(pendingIntent)
-                                .setOnlyAlertOnce(true)
-                            with(NotificationManagerCompat.from(requireContext())) {
-                                notify(NOTIFICATION_ID, builder.build())
-                            }
-
+                if(request.ownerId == dbAuth.currentUser!!.uid && request.status == 3) {
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val name = CHANNEL_ID
+                        val descriptionText = getString(R.string.descText)
+                        val importance = NotificationManager.IMPORTANCE_HIGH
+                        val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                            description = descriptionText
                         }
+                        val notificationManager: NotificationManager =  activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        notificationManager.createNotificationChannel(channel)
+
+                        Intent(requireContext(), ModuleActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        }
+                        val pendingIntent = NavDeepLinkBuilder(requireContext())
+                            .setComponentName(ModuleActivity::class.java)
+                            .setGraph(R.navigation.general_nav)
+                            .setDestination(R.id.whiteFlagFragment)
+                            .createPendingIntent()
+
+
+                        val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+                            .setSmallIcon(R.drawable.logo_dark)
+                            .setContentTitle(CHANNEL_ID)
+                            .setContentText(descriptionText)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setContentIntent(pendingIntent)
+                            .setOnlyAlertOnce(true)
+                        with(NotificationManagerCompat.from(requireContext())) {
+                            notify(NOTIFICATION_ID, builder.build())
+                        }
+
+                    }
                 }
             }
             requestAdapter.setData(it)
@@ -102,15 +113,15 @@ class WhiteFlagFragment : Fragment() {
                 val dialog = AlertDialog.Builder(requireContext())
                 when(action){
                     getString(R.string.donate) -> {
-                            dialog.setTitle(getString(R.string.donate))
-                                .setMessage(getString(R.string.donateConfirmation))
-                                .setNeutralButton(getString(R.string.cancel), null)
-                                .setPositiveButton(getString(R.string.confirm)) { dialog, which ->
-                                    item.donorId = dbAuth.currentUser!!.uid
-                                    item.status = 2
-                                    requestModel.updateStatus(item.requestId!!, item.status)
-                                    requestModel.updateDonor(item.requestId, item.donorId!!)
-                                }.show()
+                        dialog.setTitle(getString(R.string.donate))
+                            .setMessage(getString(R.string.donateConfirmation))
+                            .setNeutralButton(getString(R.string.cancel), null)
+                            .setPositiveButton(getString(R.string.confirm)) { dialog, which ->
+                                item.donorId = dbAuth.currentUser!!.uid
+                                item.status = 2
+                                requestModel.updateStatus(item.requestId!!, item.status)
+                                requestModel.updateDonor(item.requestId, item.donorId!!)
+                            }.show()
                     }
                     getString(R.string.info) -> {
                         val infoDialogView = layoutInflater.inflate(R.layout.recipient_information_dialog, null, false)
@@ -195,8 +206,11 @@ class WhiteFlagFragment : Fragment() {
             }
 
         })
+    }
 
-        // Inflate the layout for this fragment
-        return binding.root
+    override fun onDestroyView() {
+        _binding = null
+        Log.d("Tag", "WFFragment.onDestroyView() has been called.")
+        super.onDestroyView()
     }
 }
