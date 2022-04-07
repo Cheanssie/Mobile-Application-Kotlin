@@ -4,10 +4,12 @@ import android.net.Uri
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.lamont.assignment.model.Request
 
 class RequestRepository() {
     var db : FirebaseFirestore = FirebaseFirestore.getInstance()
+    var dbStore : FirebaseStorage = FirebaseStorage.getInstance()
     var _requestList : MutableLiveData<MutableList<Request>> = MutableLiveData(mutableListOf())
 
     fun loadRequestList(): MutableLiveData<MutableList<Request>> {
