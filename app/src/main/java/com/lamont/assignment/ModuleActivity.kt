@@ -35,7 +35,7 @@ class ModuleActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
 
         //Check user status when auto login
-        checkUserStatus(sharedPreferences)
+        //checkUserStatus(sharedPreferences)
     }
 
     fun displayPopupMenu(view: View) {
@@ -56,25 +56,24 @@ class ModuleActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
-    fun checkUserStatus(sharedPreferences: SharedPreferences) {
-        db.collection("users").document(dbAuth.currentUser?.uid!!)
-            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
-                var email = sharedPreferences!!.getString("email", null)
-                var password = sharedPreferences!!.getString("password", null)
-                if (querySnapshot != null) {
-                    if(querySnapshot.get("email").toString() != email || querySnapshot.get("password").toString() != password) {
-                        dbAuth.signOut()
-                        val editPref = sharedPreferences.edit()
-                        editPref.remove("email")
-                        editPref.remove("password")
-                        editPref.remove("username")
-                        editPref.commit()
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-            }
-
-    }
+//    fun checkUserStatus(sharedPreferences: SharedPreferences) {
+//        db.collection("users").document(dbAuth.currentUser?.uid!!)
+//            .addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+//                var email = sharedPreferences!!.getString("email", null)
+//                var password = sharedPreferences!!.getString("password", null)
+//                if (querySnapshot != null) {
+//                    if(querySnapshot.get("email").toString() != email || querySnapshot.get("password").toString() != password) {
+//                        dbAuth.signOut()
+//                        val editPref = sharedPreferences.edit()
+//                        editPref.remove("email")
+//                        editPref.remove("password")
+//                        editPref.remove("username")
+//                        editPref.commit()
+//                        val intent = Intent(this, MainActivity::class.java)
+//                        startActivity(intent)
+//                    }
+//                }
+//            }
+//    }
 
 }

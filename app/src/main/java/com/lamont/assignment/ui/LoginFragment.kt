@@ -102,6 +102,8 @@ class LoginFragment : Fragment() {
                         .addOnSuccessListener {
                             if(!it.isEmpty) {
                                 dbAuth.sendPasswordResetEmail(emailInput.text.toString())
+
+
                                 Toast.makeText(requireContext(), getString(R.string.chkEmailPswd), Toast.LENGTH_SHORT).show()
                             } else {
                                 Toast.makeText(requireContext(), getString(R.string.emailNotExist), Toast.LENGTH_SHORT).show()
