@@ -70,7 +70,7 @@
             android:id="@+id/btnDonate"
             android:layout_width="85dp"
             android:layout_height="wrap_content"
-            android:text="Donate"
+            android:text="@string/donate"
             android:background="@drawable/custom_oval_button"
             android:textColor="@color/white"
             app:layout_constraintTop_toTopOf="@+id/cardRequest"

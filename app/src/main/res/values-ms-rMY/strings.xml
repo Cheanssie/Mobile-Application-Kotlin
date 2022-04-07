@@ -86,4 +86,8 @@
     <string name="usernameNoEdit">Nama  tidak boleh dikemas kini</string>
     <string name="UIDNoEdit">UID tidak boleh dikemas kini</string>
     <string name="donateConfirmation">Adakah anda setuju untuk menderma?</string>
+    <string name="old_password">Kata Laluan Lama</string>
+    <string name="new_password">Kata Laluan Baru</string>
+    <string name="confirm_new_password">Sahkan Kata Laluan Baru</string>
+    <string name="change_password">Tukar Kata Laluan</string>
 </resources>

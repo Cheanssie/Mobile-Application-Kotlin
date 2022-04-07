@@ -88,4 +88,8 @@
     <string name="usernameNoEdit">Username is not editable!</string>
     <string name="UIDNoEdit">UID is not editable!</string>
     <string name="donateConfirmation">Are you sure to donate?</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="change_password">Change Password</string>
 </resources>

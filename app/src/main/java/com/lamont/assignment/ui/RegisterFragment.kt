@@ -63,7 +63,7 @@ class RegisterFragment : Fragment(){
             if (username != "" && email != "" && password != "" && conPassword != "" && phone != "" && birthdate != "") {
                 addUser(username, email, password, conPassword, phone, birthdate)
             }  else {
-                Toast.makeText(requireContext(), "Please fill in all the fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.requireFillIn), Toast.LENGTH_SHORT).show()
             }
         }
 
