@@ -274,7 +274,7 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        _binding = null
+        //_binding = null
         Log.d("Tag", "ProfileFragment.onDestroyView() has been called.")
         super.onDestroyView()
     }
