@@ -1,5 +1,7 @@
 package com.lamont.assignment.repository
 
+import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lamont.assignment.model.Request
@@ -37,6 +39,12 @@ class RequestRepository() {
             .update("requestId", requestId)
     }
 
+    fun updateImgUri(requestId: String, imgUri: Uri) {
+        db.collection("request")
+            .document(requestId)
+            .update("imgUri", imgUri.toString())
+    }
+
     private fun readRequestList() {
         db.collection("request").addSnapshotListener { querySnapshot, firebaseFirestoreException ->
             firebaseFirestoreException?.let {
@@ -50,11 +58,11 @@ class RequestRepository() {
                     val name = document.get("owner").toString()
                     val desc= document.get("desc").toString()
                     val category = document.get("category").toString()
-                    val imgName = document.get("imgName").toString()
+                    val imgUri = document.get("imgUri").toString().toUri()
                     val status = document.get("status").toString().toIntOrNull()
                     val donor = document.get("donorId").toString()
                     val createdDate = document.get("createdDate").toString()
-                    val request = Request(requestId, ownerId, name, desc, category, imgName, donor, createdDate, status!!)
+                    val request = Request(requestId, ownerId, name, desc, category, imgUri, donor, createdDate, status!!)
                     requestData.add(request)
                 }
                 _requestList.value = requestData

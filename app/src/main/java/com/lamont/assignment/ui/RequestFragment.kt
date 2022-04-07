@@ -65,7 +65,6 @@ class RequestFragment : Fragment() {
         sharedPreferences = requireActivity().getSharedPreferences(getString(R.string.share_pref), Context.MODE_PRIVATE)
         db = FirebaseFirestore.getInstance()
         dbAuth = FirebaseAuth.getInstance()
-
         storageRef = FirebaseStorage.getInstance()
 
         binding.btnUploadImg.setOnClickListener {
@@ -112,9 +111,8 @@ class RequestFragment : Fragment() {
                 val username = sharedPreferences.getString("username", null)!!
                 val ownerId = dbAuth.currentUser!!.uid
                 val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
-                val imgName = "${username}_${formatter.format(Date())}" //Kae Lun_22_03_28_11_11_11
 
-                val request = Request(null, ownerId, username, description, category, imgName, null, formatter.format(Date()))
+                val request = Request(null, ownerId, username, description, category, null, null, formatter.format(Date()))
                 addRequest(request)
             }
         }
@@ -135,15 +133,26 @@ class RequestFragment : Fragment() {
 
         db.collection("request")
             .add(request)
-            .addOnSuccessListener {
-                RequestViewModel().updateId(it.id)
+            .addOnSuccessListener { requestResult ->
+                RequestViewModel.updateId(requestResult.id)
+                val storageFolderRef = storageRef.reference.child("images/${request.owner}_${request.createdDate}")
                 if(imgBit != null) {
                     val baos = ByteArrayOutputStream()
                     imgBit!!.compress(Bitmap.CompressFormat.JPEG, 100, baos)
                     val data = baos.toByteArray()
-                    storageRef.reference.child("images/${request.imgName}").putBytes(data)
+                    storageFolderRef.putBytes(data)
+                        .addOnSuccessListener {
+                            storageFolderRef.downloadUrl.addOnSuccessListener {
+                                RequestViewModel.updateImgUri(requestResult.id, it)
+                            }
+                        }
                 } else if(imgUri != null) {
-                    storageRef.reference.child("images/${request.imgName}").putFile(imgUri!!)
+                    storageFolderRef.putFile(imgUri!!)
+                        .addOnSuccessListener {
+                            storageFolderRef.downloadUrl.addOnSuccessListener {
+                                RequestViewModel.updateImgUri(requestResult.id, it)
+                            }
+                        }
                 }
                 Toast.makeText(requireActivity().applicationContext, getString(R.string.uploadSuccess), Toast.LENGTH_SHORT).show()
                 findNavController().navigateUp()

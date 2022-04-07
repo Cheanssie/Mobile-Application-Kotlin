@@ -13,10 +13,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Observer
@@ -111,6 +108,7 @@ class WhiteFlagFragment : Fragment() {
                 val item = requestModel.requestList.value!![position].copy()
                 val action = binding.requestRecycler.findViewHolderForAdapterPosition(position)!!.itemView.findViewById<Button>(R.id.btnDonate).text
                 val dialog = AlertDialog.Builder(requireContext())
+
                 when(action){
                     getString(R.string.donate) -> {
                         dialog.setTitle(getString(R.string.donate))
@@ -119,8 +117,8 @@ class WhiteFlagFragment : Fragment() {
                             .setPositiveButton(getString(R.string.confirm)) { dialog, which ->
                                 item.donorId = dbAuth.currentUser!!.uid
                                 item.status = 2
-                                requestModel.updateStatus(item.requestId!!, item.status)
-                                requestModel.updateDonor(item.requestId, item.donorId!!)
+                                RequestViewModel.updateStatus(item.requestId!!, item.status)
+                                RequestViewModel.updateDonor(item.requestId, item.donorId!!)
                             }.show()
                     }
                     getString(R.string.info) -> {
@@ -172,7 +170,7 @@ class WhiteFlagFragment : Fragment() {
                                     .setMessage(getString(R.string.contactForInfo))
                                     .setNegativeButton(getString(R.string.close), null)
                                     .setPositiveButton(getString(R.string.donated)) { dialog, which ->
-                                        requestModel.updateStatus(item.requestId!!, 3)
+                                        RequestViewModel.updateStatus(item.requestId!!, 3)
                                     }
                                     .show()
                             }
@@ -183,7 +181,7 @@ class WhiteFlagFragment : Fragment() {
                             .setMessage(getString(R.string.rmConfirmation))
                             .setNeutralButton(getString(R.string.cancel), null)
                             .setPositiveButton(getString(R.string.confirm)) { dialog, which ->
-                                requestModel.removeRequest(item.requestId!!)
+                                RequestViewModel.removeRequest(item.requestId!!)
                             }.show()
                     }
                     getString(R.string.received) -> {
@@ -191,7 +189,7 @@ class WhiteFlagFragment : Fragment() {
                             .setMessage(getString(R.string.finishConfirmation))
                             .setNeutralButton(getString(R.string.cancel), null)
                             .setPositiveButton(getString(R.string.confirm)) { dialog, which ->
-                                requestModel.removeRequest(item.requestId!!)
+                                RequestViewModel.removeRequest(item.requestId!!)
                             }.show()
                     }
 

@@ -1,6 +1,7 @@
 package com.lamont.assignment.adapter
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -17,6 +19,7 @@ import com.lamont.assignment.R
 import com.lamont.assignment.diffUtil.RequestDiffUtil
 import com.lamont.assignment.model.Request
 import com.squareup.picasso.Picasso
+import java.io.File
 
 class RequestAdapter(val context: Context): RecyclerView.Adapter<RequestAdapter.RequestViewHolder>() {
 
@@ -93,12 +96,9 @@ class RequestAdapter(val context: Context): RecyclerView.Adapter<RequestAdapter.
             holder.btnDonate.text = buttonText
 
             //Retrieve images
-            val storageRef =
-                FirebaseStorage.getInstance().reference.child("images/${request.imgName}")
-            storageRef.downloadUrl
-                .addOnSuccessListener {
-                    Picasso.with(context).load(it).into(holder.ivImg)
-                }
+            Picasso.with(context).load(request.imgUri).into(holder.ivImg)
+
+
         } else {
             holder.btnDonate.visibility = View.GONE
             holder.tvName.visibility = View.GONE
