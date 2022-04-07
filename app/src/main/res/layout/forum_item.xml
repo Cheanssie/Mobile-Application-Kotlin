@@ -2,11 +2,12 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="5dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardRequest"
-        android:layout_width="280dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/purple_card"
         app:cardCornerRadius="10dp"
@@ -56,6 +57,14 @@
                 app:layout_constraintTop_toBottomOf="@id/profilePic"
                 />
 
+            <ImageView
+                android:id="@+id/postImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/forumDesc"
+                app:layout_constraintStart_toStartOf="@id/forumDesc"/>
+
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,6 +97,5 @@
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
-
 
 </FrameLayout>

@@ -45,7 +45,7 @@ class ModuleActivity : AppCompatActivity() {
             val navController = findNavController(R.id.main_fragment)
             when(it.itemId) {
                 R.id.addForum -> {
-
+                    navController.navigate(R.id.postFragment)
                 }
                 else -> {
                     navController.navigate(R.id.requestFragment)

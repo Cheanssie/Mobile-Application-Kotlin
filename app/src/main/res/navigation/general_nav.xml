@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_forumFragment_to_requestFragment2"
             app:destination="@id/requestFragment" />
+        <action
+            android:id="@+id/action_forumFragment_to_postFragment"
+            app:destination="@+id/postFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -40,6 +43,9 @@
         <action
             android:id="@+id/action_profileFragment_to_requestFragment2"
             app:destination="@id/requestFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_postFragment"
+            app:destination="@+id/postFragment" />
     </fragment>
     <fragment
         android:id="@+id/quizFragment"
@@ -58,6 +64,9 @@
         <action
             android:id="@+id/action_quizFragment_to_requestFragment2"
             app:destination="@id/requestFragment" />
+        <action
+            android:id="@+id/action_quizFragment_to_postFragment"
+            app:destination="@+id/postFragment" />
     </fragment>
     <fragment
         android:id="@+id/whiteFlagFragment"
@@ -76,10 +85,18 @@
         <action
             android:id="@+id/action_whiteFlagFragment_to_requestFragment2"
             app:destination="@id/requestFragment" />
+        <action
+            android:id="@+id/action_whiteFlagFragment_to_postFragment"
+            app:destination="@+id/postFragment" />
     </fragment>
     <fragment
         android:id="@+id/requestFragment"
         android:name="com.lamont.assignment.ui.RequestFragment"
         android:label="fragment_request"
         tools:layout="@layout/fragment_request" />
+    <fragment
+        android:id="@+id/postFragment"
+        android:name="com.lamont.assignment.ui.PostFragment"
+        android:label="fragment_post"
+        tools:layout="@layout/fragment_post" />
 </navigation>
