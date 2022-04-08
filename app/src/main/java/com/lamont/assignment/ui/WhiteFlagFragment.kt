@@ -206,9 +206,4 @@ class WhiteFlagFragment : Fragment() {
         })
     }
 
-    override fun onDestroyView() {
-        //_binding = null
-        Log.d("Tag", "WFFragment.onDestroyView() has been called.")
-        super.onDestroyView()
-    }
 }

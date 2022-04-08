@@ -61,10 +61,17 @@ class LoginFragment : Fragment() {
         binding.loginButton.setOnClickListener {
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
+            val user = mutableMapOf<String, Any>(
+                "password" to binding.etPassword.text.toString()
+            )
 
             if (email != "" && password != "") {
                 dbAuth.signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener {
+                        db.collection("users").document(dbAuth.currentUser!!.uid)
+                            .update(user).addOnSuccessListener {
+                                Toast.makeText(requireContext(), "password success", Toast.LENGTH_SHORT).show()
+                            }
                         db.collection("users").document(dbAuth.currentUser!!.uid)
                             .get()
                             .addOnSuccessListener {
@@ -118,11 +125,6 @@ class LoginFragment : Fragment() {
 
     }
 
-    override fun onDestroyView() {
-        _binding = null
-        Log.d("Tag", "LoginFragment.onDestroyView() has been called.")
-        super.onDestroyView()
-    }
 
     private fun enterModuleActivity() {
         val intent = Intent(requireContext(), ModuleActivity::class.java)

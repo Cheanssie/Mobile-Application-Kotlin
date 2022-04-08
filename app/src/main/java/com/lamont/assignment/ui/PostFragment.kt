@@ -49,6 +49,7 @@ class PostFragment : Fragment() {
     companion object {
         const val IMAGE_REQUEST_CODE = 100
         const val CAMERA_REQUEST_CODE = 200
+        const val VIDEO_REQUEST_CODE = 300
     }
 
     override fun onCreateView(
@@ -72,18 +73,14 @@ class PostFragment : Fragment() {
 
         storageRef = FirebaseStorage.getInstance()
 
-        binding.btnUploadImg.setOnClickListener {
-            when (binding.ivImg.drawable) {
-                null -> {
-                    showDialog()
-                }
-                else -> {
-                    binding.ivImg.setImageDrawable(null)
-                    imgBit = null
-                    imgUri = null
-                    binding.btnUploadImg.text = getString(R.string.uploadPhoto)
-                }
-            }
+        binding.btnImg.setOnClickListener {
+            showDialog()
+        }
+
+        binding.btnVideo.setOnClickListener {
+            val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
+            intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 5)
+            startActivityForResult(intent, VIDEO_REQUEST_CODE)
         }
 
         binding.btnCancel.setOnClickListener {
@@ -122,11 +119,6 @@ class PostFragment : Fragment() {
 
     }
 
-    override fun onDestroyView() {
-        _binding = null
-        Log.d("Tag", "PostFragment.onDestroyView() has been called.")
-        super.onDestroyView()
-    }
 
     private fun showToast(text: String) {
         Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
@@ -180,12 +172,18 @@ class PostFragment : Fragment() {
             if (requestCode == IMAGE_REQUEST_CODE) {
                 imgUri = data?.data!!
                 binding.ivImg.setImageURI(imgUri)
-                binding.btnUploadImg.text = getString(R.string.remove)
+
             } else if (requestCode == CAMERA_REQUEST_CODE) {
                 imgBit = data?.extras?.get("data")!! as Bitmap
                 binding.ivImg.setImageBitmap(imgBit)
-                binding.btnUploadImg.text = getString(R.string.remove)
+
+            } else if(requestCode == VIDEO_REQUEST_CODE) {
+                binding.ivVideo.setVideoURI(data?.data)
+                binding.ivVideo.visibility = View.VISIBLE
+                binding.ivVideo.start()
             }
+            binding.btnVideo.visibility = View.GONE
+            binding.btnImg.visibility = View.GONE
         }
     }
 }

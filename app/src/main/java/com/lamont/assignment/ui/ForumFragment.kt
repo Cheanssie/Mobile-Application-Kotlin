@@ -72,10 +72,4 @@ class ForumFragment : Fragment() {
 
     }
 
-    override fun onDestroy() {
-        Log.d("Tag", "ForumFragment.onDestroy() has been called.")
-        _binding = null
-        super.onDestroy()
-    }
-
 }

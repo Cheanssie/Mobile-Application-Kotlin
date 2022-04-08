@@ -273,11 +273,6 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    override fun onDestroyView() {
-        //_binding = null
-        Log.d("Tag", "ProfileFragment.onDestroyView() has been called.")
-        super.onDestroyView()
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

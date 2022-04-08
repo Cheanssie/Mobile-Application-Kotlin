@@ -163,10 +163,4 @@ class RegisterFragment : Fragment(){
             }
     }
 
-    override fun onDestroyView() {
-        _binding = null
-        Log.d("Tag", "RegisterFragment.onDestroyView() has been called.")
-        super.onDestroyView()
-    }
-
 }

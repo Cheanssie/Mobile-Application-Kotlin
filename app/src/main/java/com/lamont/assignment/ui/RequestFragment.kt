@@ -119,12 +119,6 @@ class RequestFragment : Fragment() {
 
     }
 
-    override fun onDestroyView() {
-        _binding = null
-        Log.d("Tag", "RequestFragment.onDestroyView() has been called.")
-        super.onDestroyView()
-    }
-
     private fun showToast(text: String) {
         Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
     }
