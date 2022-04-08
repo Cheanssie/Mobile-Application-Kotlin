@@ -58,42 +58,6 @@ class WhiteFlagFragment : Fragment() {
         binding.requestRecycler.adapter = requestAdapter
 
         requestModel.loadRequestList().observe(requireActivity(), Observer {
-            for (request in it) {
-                if(request.ownerId == dbAuth.currentUser!!.uid && request.status == 3) {
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        val name = CHANNEL_ID
-                        val descriptionText = getString(R.string.descText)
-                        val importance = NotificationManager.IMPORTANCE_HIGH
-                        val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                            description = descriptionText
-                        }
-                        val notificationManager: NotificationManager =  activity?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                        notificationManager.createNotificationChannel(channel)
-
-                        Intent(requireContext(), ModuleActivity::class.java).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        }
-                        val pendingIntent = NavDeepLinkBuilder(requireContext())
-                            .setComponentName(ModuleActivity::class.java)
-                            .setGraph(R.navigation.general_nav)
-                            .setDestination(R.id.whiteFlagFragment)
-                            .createPendingIntent()
-
-
-                        val builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
-                            .setSmallIcon(R.drawable.logo_dark)
-                            .setContentTitle(CHANNEL_ID)
-                            .setContentText(descriptionText)
-                            .setPriority(NotificationCompat.PRIORITY_HIGH)
-                            .setContentIntent(pendingIntent)
-                            .setOnlyAlertOnce(true)
-                        with(NotificationManagerCompat.from(requireContext())) {
-                            notify(NOTIFICATION_ID, builder.build())
-                        }
-
-                    }
-                }
-            }
             requestAdapter.setData(it)
         })
 

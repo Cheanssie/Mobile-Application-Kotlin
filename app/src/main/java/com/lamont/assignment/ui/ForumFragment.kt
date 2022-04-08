@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -51,8 +52,10 @@ class ForumFragment : Fragment() {
                         val forumDesc = document.get("forumDesc").toString()
                         val postOwner = document.get("postOwner").toString()
                         val ivProfile = document.get("ivProfile").toString()
-                        val postImg = document.get("postImg").toString()
-                        val post = Post(null.toString(), ivProfile, postOwner, forumDesc, postImg)
+                        val imgUri = document.get("imgUri").toString().toUri()
+                        val videoUri = document.get("videoUri").toString().toUri()
+                        val createdDate = document.get("createdDate").toString()
+                        val post = Post(null.toString(), ivProfile, postOwner, forumDesc, imgUri, videoUri, createdDate)
                         postData.add(post)
                     }
                     postAdapter.setData(postData)

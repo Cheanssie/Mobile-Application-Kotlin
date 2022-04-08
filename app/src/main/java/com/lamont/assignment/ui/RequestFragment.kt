@@ -6,8 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,6 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -23,15 +27,20 @@ import com.lamont.assignment.R
 import com.lamont.assignment.databinding.FragmentRequestBinding
 import com.lamont.assignment.model.Request
 import com.lamont.assignment.viewModel.RequestViewModel
+import kotlinx.coroutines.currentCoroutineContext
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.max
 
 class RequestFragment : Fragment() {
 
     private var _binding: FragmentRequestBinding? = null
     private val binding get() = _binding!!
     private lateinit var sharedPreferences : SharedPreferences
+    lateinit var currentPhotoPath: String
 
     //Img Uri
     private var imgUri: Uri? = null
@@ -170,10 +179,26 @@ class RequestFragment : Fragment() {
             }
             .setPositiveButton(getString(R.string.camera)) { dialog, which ->
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                var photoFile: File? = null
+                photoFile = createImageFile()
+                val photoUri:Uri = FileProvider.getUriForFile(
+                    activity?.applicationContext!!,
+                    "com.example.android.fileprovider", photoFile!!
+                )
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
                 startActivityForResult(intent, CAMERA_REQUEST_CODE)
 
             }
             .show()
+    }
+
+    private fun createImageFile(): File? {
+        val timeStamp = SimpleDateFormat("yyyMMdd_HHmmss").format(Date())
+        val imageFileName = "IMAGE_" + timeStamp + "_"
+        val storageDir: File? = activity?.applicationContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val image = File.createTempFile(imageFileName, ".jpg", storageDir)
+        currentPhotoPath = image.absolutePath
+        return image
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -185,10 +210,11 @@ class RequestFragment : Fragment() {
                 binding.ivImg.setImageURI(imgUri)
                 binding.btnUploadImg.text = getString(R.string.remove)
             } else if (requestCode == CAMERA_REQUEST_CODE) {
-                imgBit = data?.extras?.get("data")!! as Bitmap
+                imgBit = BitmapFactory.decodeFile(currentPhotoPath)
                 binding.ivImg.setImageBitmap(imgBit)
                 binding.btnUploadImg.text = getString(R.string.remove)
             }
         }
     }
+
 }

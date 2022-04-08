@@ -95,7 +95,7 @@ class RequestAdapter(val context: Context): RecyclerView.Adapter<RequestAdapter.
             }
             holder.btnDonate.text = buttonText
 
-            //Retrieve images
+            //Retrieve image
             Picasso.with(context).load(request.imgUri).into(holder.ivImg)
 
 

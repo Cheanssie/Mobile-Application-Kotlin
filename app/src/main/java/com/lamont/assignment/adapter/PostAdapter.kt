@@ -4,22 +4,18 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.MutableLiveData
+import android.widget.*
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.DataSource
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.lamont.assignment.R
 import com.lamont.assignment.diffUtil.PostDiffUtil
-import com.lamont.assignment.diffUtil.RequestDiffUtil
 import com.lamont.assignment.model.Post
-import com.lamont.assignment.model.Request
 import com.squareup.picasso.Picasso
 
 class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
@@ -27,6 +23,9 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
     private lateinit var itemListener : OnItemClickListener
     private var dbAuth : FirebaseAuth = FirebaseAuth.getInstance()
 //    var _postList : MutableLiveData<MutableList<Post>> = MutableLiveData(mutableListOf())
+
+    private lateinit var player: ExoPlayer
+    private lateinit var playerView: PlayerView
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
@@ -42,6 +41,7 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
         val postOwner = view.findViewById<TextView>(R.id.postOwner)!!
         val ivProfile = view.findViewById<ImageView>(R.id.ivProfile)!!
         val postImg = view.findViewById<ImageView>(R.id.postImg)!!
+        val postVideo = view.findViewById<PlayerView>(R.id.postVideo)!!
 
         init {
             like.setOnClickListener {
@@ -80,16 +80,22 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
         holder.postOwner.text = post.postOwner
         holder.forumDesc.text = post.forumDesc
 
-        FirebaseStorage.getInstance().reference.child("profile/${post.ivProfile}").downloadUrl
-            .addOnSuccessListener {
-                Picasso.with(context).load(it).into(holder.ivProfile)
-            }
+        //Retrieve image or video
+        if (post.imgUri.toString() != "null") {
+            Picasso.with(context).load(post.imgUri).into(holder.postImg)
+        } else if (post.videoUri.toString() != "null") {
+            player = ExoPlayer.Builder(context).build()
+            holder.postVideo.player = player
+            val mediaItem = MediaItem.fromUri(post.videoUri.toString())
+            player.addMediaItem(mediaItem)
+            player.prepare()
 
-        if (post.postImg != null) {
-            FirebaseStorage.getInstance().reference.child("post/${post.postImg}").downloadUrl
-                .addOnSuccessListener {
-                    Picasso.with(context).load(it).into(holder.postImg)
-                }
+
+
+
+
+//            holder.postVideo.()
+//            holder.postVideo.visibility = View.VISIBLE
         }
     }
 

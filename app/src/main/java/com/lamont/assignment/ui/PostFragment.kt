@@ -9,6 +9,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -16,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -36,9 +38,11 @@ class PostFragment : Fragment() {
     private var _binding: FragmentPostBinding? = null
     private val binding get() = _binding!!
     private lateinit var sharedPreferences : SharedPreferences
+    lateinit var currentPhotoPath: String
 
     //Img Uri
     private var imgUri: Uri? = null
+    private var videoUri: Uri? = null
     private var  imgBit : Bitmap? = null
 
     //database
@@ -83,6 +87,19 @@ class PostFragment : Fragment() {
             startActivityForResult(intent, VIDEO_REQUEST_CODE)
         }
 
+        binding.btnRemove.setOnClickListener {
+            binding.ivVideo.setVideoURI(null)
+            binding.ivImg.setImageDrawable(null)
+            imgBit = null
+            imgUri = null
+            videoUri = null
+            it.visibility = View.GONE
+            binding.ivVideo.visibility = View.GONE
+            binding.btnVideo.visibility = View.VISIBLE
+            binding.btnImg.visibility = View.VISIBLE
+
+        }
+
         binding.btnCancel.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -103,7 +120,6 @@ class PostFragment : Fragment() {
                 val forumDesc = binding.etRequestDesc.text.toString()
                 val username = sharedPreferences.getString("username", null)!!
                 val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
-                val postImg = "${username}_${formatter.format(Date())}" //Kae Lun_22_03_28_11_11_11
                 val ivProfile = db.collection("users").document(dbAuth.currentUser?.uid!!)
                     .addSnapshotListener { doc, error ->
                         doc?.let {
@@ -112,7 +128,9 @@ class PostFragment : Fragment() {
                         }
                     }
 
-                val post = Post(null.toString(), ivProfile.toString(), username, forumDesc, postImg)
+                val post = Post(null.toString(), ivProfile.toString(), username, forumDesc, null, null, formatter.format(
+                    Date()
+                ))
                 addPost(post)
             }
         }
@@ -128,15 +146,46 @@ class PostFragment : Fragment() {
 
         db.collection("post")
             .add(post)
-            .addOnSuccessListener {
+            .addOnSuccessListener { postResult->
+                db.collection("post")
+                    .document(postResult.id)
+                    .update("postId", postResult.id)
+                val storageFolderRef = storageRef.reference.child("post/${post.postOwner}_${post.createdDate}")
                 if(imgBit != null) {
                     val baos = ByteArrayOutputStream()
                     imgBit!!.compress(Bitmap.CompressFormat.JPEG, 100, baos)
                     val data = baos.toByteArray()
-                    storageRef.reference.child("post/${post.postImg}").putBytes(data)
+                    storageFolderRef.putBytes(data)
+                        .addOnSuccessListener {
+                            storageFolderRef.downloadUrl
+                                .addOnSuccessListener {
+                                    db.collection("post")
+                                        .document(postResult.id)
+                                        .update("imgUri", it.toString())
+                                }
+                        }
                 } else if(imgUri != null) {
-                    storageRef.reference.child("post/${post.postImg}").putFile(imgUri!!)
+                    storageFolderRef.putFile(imgUri!!)
+                        .addOnSuccessListener {
+                            storageFolderRef.downloadUrl
+                                .addOnSuccessListener {
+                                    db.collection("post")
+                                        .document(postResult.id)
+                                        .update("imgUri", it.toString())
+                                }
+                        }
+                } else if (videoUri != null) {
+                    storageFolderRef.putFile(videoUri!!)
+                        .addOnSuccessListener {
+                            storageFolderRef.downloadUrl
+                                .addOnSuccessListener {
+                                    db.collection("post")
+                                        .document(postResult.id)
+                                        .update("videoUri", it.toString())
+                                }
+                        }
                 }
+
                 Toast.makeText(requireActivity().applicationContext, getString(R.string.uploadSuccess), Toast.LENGTH_SHORT).show()
                 findNavController().navigateUp()
             }
@@ -159,10 +208,25 @@ class PostFragment : Fragment() {
             }
             .setPositiveButton(getString(R.string.camera)) { dialog, which ->
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                var photoFile: File? = null
+                photoFile = createImageFile()
+                val photoUri:Uri = FileProvider.getUriForFile(
+                    activity?.applicationContext!!,
+                    "com.example.android.fileprovider", photoFile!!
+                )
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
                 startActivityForResult(intent, CAMERA_REQUEST_CODE)
-
             }
             .show()
+    }
+
+    private fun createImageFile(): File? {
+        val timeStamp = SimpleDateFormat("yyyMMdd_HHmmss").format(Date())
+        val imageFileName = "IMAGE_" + timeStamp + "_"
+        val storageDir: File? = activity?.applicationContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val image = File.createTempFile(imageFileName, ".jpg", storageDir)
+        currentPhotoPath = image.absolutePath
+        return image
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -172,18 +236,18 @@ class PostFragment : Fragment() {
             if (requestCode == IMAGE_REQUEST_CODE) {
                 imgUri = data?.data!!
                 binding.ivImg.setImageURI(imgUri)
-
             } else if (requestCode == CAMERA_REQUEST_CODE) {
-                imgBit = data?.extras?.get("data")!! as Bitmap
+                imgBit = BitmapFactory.decodeFile(currentPhotoPath)
                 binding.ivImg.setImageBitmap(imgBit)
-
             } else if(requestCode == VIDEO_REQUEST_CODE) {
-                binding.ivVideo.setVideoURI(data?.data)
+                videoUri = data?.data
+                binding.ivVideo.setVideoURI(videoUri)
                 binding.ivVideo.visibility = View.VISIBLE
                 binding.ivVideo.start()
             }
             binding.btnVideo.visibility = View.GONE
             binding.btnImg.visibility = View.GONE
+            binding.btnRemove.visibility = View.VISIBLE
         }
     }
 }
