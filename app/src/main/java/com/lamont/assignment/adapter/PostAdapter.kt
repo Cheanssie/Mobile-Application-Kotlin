@@ -83,7 +83,9 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
         //Retrieve image or video
         if (post.imgUri.toString() != "null") {
             Picasso.with(context).load(post.imgUri).into(holder.postImg)
+
         } else if (post.videoUri.toString() != "null") {
+            // this part
             player = ExoPlayer.Builder(context).build()
             holder.postVideo.player = player
             val mediaItem = MediaItem.fromUri(post.videoUri.toString())

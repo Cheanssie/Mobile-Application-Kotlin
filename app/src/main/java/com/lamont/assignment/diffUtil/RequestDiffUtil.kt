@@ -16,7 +16,7 @@ class RequestDiffUtil (
     }
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldRequestList[oldItemPosition] == newRequestList[newItemPosition]
+        return oldRequestList[oldItemPosition] === newRequestList[newItemPosition]
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
