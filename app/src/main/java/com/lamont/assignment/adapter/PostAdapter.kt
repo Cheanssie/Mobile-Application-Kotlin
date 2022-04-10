@@ -107,6 +107,19 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
                     }
             }
 
+        db.collection("like").whereEqualTo("postId", post.postId)
+            .addSnapshotListener {querySnapshot, firebaseFirestoreException ->
+                firebaseFirestoreException?.let {
+                    return@addSnapshotListener
+                }
+                querySnapshot?.let {
+                    if (!it.isEmpty) {
+                        holder.like.text = it.size().toString()
+                    }
+                }
+
+            }
+
         if (dbAuth.currentUser!!.uid == post.ownerId) {
             holder.btnDelete.visibility = View.VISIBLE
         }
