@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardQuizParent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <com.google.android.material.card.MaterialCardView
+        app:strokeWidth="3dp"
+        app:strokeColor="#BAA8A8A8"
+        android:id="@+id/cardQuiz"
+        android:layout_width="381dp"
+        android:layout_height="177dp"
+        android:backgroundTint="#E41A0761"
+        app:cardCornerRadius="40dp"
+        app:cardElevation="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ivQuizImage"
+                android:layout_width="176dp"
+                android:layout_height="137dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/quiz_iv_border"
+                android:padding="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.082"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/backgrounds/scenic[0]" />
+
+            <TextView
+                android:id="@+id/tvQuizTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Title"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                app:layout_constraintStart_toEndOf="@+id/ivQuizImage"
+                app:layout_constraintTop_toTopOf="@+id/ivQuizImage" />
+
+            <Button
+                android:id="@+id/joinBtn"
+                android:layout_width="150dp"
+                android:layout_height="54dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/radius_green"
+                android:text="button"
+                app:layout_constraintStart_toStartOf="@+id/tvQuizTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvQuizTitle" />
+
+            <TextView
+                android:id="@+id/tvQuizDuration"
+                android:layout_width="90dp"
+                android:layout_height="63dp"
+                android:layout_marginTop="10dp"
+                android:text="Duration"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/joinBtn"
+                app:layout_constraintTop_toBottomOf="@+id/joinBtn" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.QuizFragment">
+    tools:context=".ui.LeaderboardActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeToRefresh"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvQuiz"
+            android:id="@+id/rvLeaderboard"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
