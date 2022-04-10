@@ -71,7 +71,7 @@ class ModuleActivity : AppCompatActivity() {
         popupMenu.show()
     }
 
-    fun whiteFlagNotification() {
+    private fun whiteFlagNotification() {
         val requestModel = RequestViewModel()
         requestModel.loadRequestList().observe(this, Observer {
             for (request in it) {

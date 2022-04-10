@@ -68,10 +68,8 @@ class LoginFragment : Fragment() {
             if (email != "" && password != "") {
                 dbAuth.signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener {
-                        db.collection("users").document(dbAuth.currentUser!!.uid)
-                            .update(user).addOnSuccessListener {
-                                Toast.makeText(requireContext(), "password success", Toast.LENGTH_SHORT).show()
-                            }
+                        db.collection("users").document(dbAuth.currentUser!!.uid).update(user)
+
                         db.collection("users").document(dbAuth.currentUser!!.uid)
                             .get()
                             .addOnSuccessListener {

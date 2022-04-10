@@ -1,5 +1,6 @@
 package com.lamont.assignment.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +10,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.DataSource
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.lamont.assignment.R
 import com.lamont.assignment.diffUtil.PostDiffUtil
 import com.lamont.assignment.model.Post
@@ -22,30 +23,36 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
 
     private lateinit var itemListener : OnItemClickListener
     private var dbAuth : FirebaseAuth = FirebaseAuth.getInstance()
+    private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
 //    var _postList : MutableLiveData<MutableList<Post>> = MutableLiveData(mutableListOf())
 
     private lateinit var player: ExoPlayer
-    private lateinit var playerView: PlayerView
 
     interface OnItemClickListener {
-        fun onItemClick(position: Int)
+        fun onItemClick(position: Int, view: View)
     }
 
     private var oldPostList: MutableList<Post> = mutableListOf()
 
     class PostViewHolder(view: View, listener: OnItemClickListener): RecyclerView.ViewHolder(view) {
-//        val cardRequest = view.findViewById<ConstraintLayout>(R.id.cardRequest)!!
-//        val comment = view.findViewById<CardView>(R.id.comment)!!
-        val like = view.findViewById<TextView>(R.id.like)!!
+        val like = view.findViewById<Button>(R.id.like)!!
         val forumDesc = view.findViewById<TextView>(R.id.forumDesc)!!
         val postOwner = view.findViewById<TextView>(R.id.postOwner)!!
         val ivProfile = view.findViewById<ImageView>(R.id.ivProfile)!!
         val postImg = view.findViewById<ImageView>(R.id.postImg)!!
         val postVideo = view.findViewById<PlayerView>(R.id.postVideo)!!
+        val btnDelete = view.findViewById<ImageButton>(R.id.btnDelete)!!
+        val comment = view.findViewById<Button>(R.id.comment)!!
 
         init {
             like.setOnClickListener {
-                listener.onItemClick(adapterPosition)
+                listener.onItemClick(adapterPosition, it)
+            }
+            comment.setOnClickListener {
+                listener.onItemClick(adapterPosition, it)
+            }
+            btnDelete.setOnClickListener {
+                listener.onItemClick(adapterPosition, it)
             }
         }
     }
@@ -54,11 +61,11 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
         itemListener = listener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostAdapter.PostViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val adapterLayout = LayoutInflater.from(parent.context)
             .inflate(R.layout.forum_item, parent, false)
 
-        return PostAdapter.PostViewHolder(adapterLayout, itemListener)
+        return PostViewHolder(adapterLayout, itemListener)
     }
 
     override fun getItemCount(): Int {
@@ -73,12 +80,36 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
         diffResult.dispatchUpdatesTo(this)
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val post = oldPostList[position]
-        val currentUserId = dbAuth.currentUser!!.uid
 
         holder.postOwner.text = post.postOwner
         holder.forumDesc.text = post.forumDesc
+
+        db.collection("like")
+            .whereEqualTo("postId", post.postId)
+            .get()
+            .addOnSuccessListener{
+                    var exist = false
+                    for ( like in it ) {
+                        if (like["ownerId"] == dbAuth.currentUser!!.uid) {
+                            exist = true
+                            break
+                        }
+                    }
+                    if(exist) {
+                        holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.love_red, 0, 0, 0)
+                        holder.like.setTextColor(R.color.red)
+                    } else {
+                        holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.love_black, 0, 0, 0)
+                        holder.like.setTextColor(R.color.black)
+                    }
+            }
+
+        if (dbAuth.currentUser!!.uid == post.ownerId) {
+            holder.btnDelete.visibility = View.VISIBLE
+        }
 
         //Retrieve image or video
         if (post.imgUri.toString() != "null") {
@@ -90,14 +121,10 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
             holder.postVideo.player = player
             val mediaItem = MediaItem.fromUri(post.videoUri.toString())
             player.addMediaItem(mediaItem)
+            player.repeatMode = Player.REPEAT_MODE_ONE
+            player.playWhenReady = true
+            holder.postVideo.visibility = View.VISIBLE
             player.prepare()
-
-
-
-
-
-//            holder.postVideo.()
-//            holder.postVideo.visibility = View.VISIBLE
         }
     }
 

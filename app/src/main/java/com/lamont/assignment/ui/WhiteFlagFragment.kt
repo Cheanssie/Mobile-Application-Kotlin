@@ -97,9 +97,7 @@ class WhiteFlagFragment : Fragment() {
                                 infoDialogView.findViewById<TextView>(R.id.tvEmail).text = email
                                 infoDialogView.findViewById<ImageButton>(R.id.btnEmail).setOnClickListener {
                                     intent = Intent(Intent.ACTION_SENDTO)
-                                    intent.data = Uri.parse("mailto:")
-                                    intent.type = "message/rfc822"
-                                    intent.putExtra(Intent.EXTRA_EMAIL, email)
+                                    intent.data = Uri.parse("mailto:$email")
                                     startActivity(Intent.createChooser(intent, "Send"))
                                 }
 

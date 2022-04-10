@@ -18,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -120,23 +121,28 @@ class PostFragment : Fragment() {
                 val forumDesc = binding.etRequestDesc.text.toString()
                 val username = sharedPreferences.getString("username", null)!!
                 val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
-                val ivProfile = db.collection("users").document(dbAuth.currentUser?.uid!!)
-                    .addSnapshotListener { doc, error ->
-                        doc?.let {
-                            val localFile = File.createTempFile("tempImg", "jpg")
-                            FirebaseStorage.getInstance().reference.child("profile/${doc.data?.get("imgName")}").getFile(localFile)
-                        }
+                db.collection("users").document(dbAuth.currentUser!!.uid)
+                    .get()
+                    .addOnSuccessListener { doc->
+                       storageRef.reference.child("profile/${doc.data?.get("imgName")}").downloadUrl
+                            .addOnSuccessListener {
+                                val post = Post(null.toString(), it, username, forumDesc, null, null, formatter.format(
+                                    Date()), dbAuth.currentUser!!.uid)
+                                addPost(post)
+                            }
+                           .addOnFailureListener {
+                               val post = Post(null.toString(), null, username, forumDesc, null, null, formatter.format(
+                                   Date()), dbAuth.currentUser!!.uid)
+                               addPost(post)
+                           }
                     }
 
-                val post = Post(null.toString(), ivProfile.toString(), username, forumDesc, null, null, formatter.format(
-                    Date()
-                ))
-                addPost(post)
+
+
             }
         }
 
     }
-
 
     private fun showToast(text: String) {
         Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
