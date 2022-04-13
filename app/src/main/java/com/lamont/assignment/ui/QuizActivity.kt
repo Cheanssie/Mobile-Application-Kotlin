@@ -12,11 +12,13 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.database.*
 import com.google.firebase.database.DatabaseReference
 import com.lamont.assignment.R
-import com.lamont.assignment.model.Quiz
 import com.lamont.assignment.databinding.ActivityQuizBinding
+import com.lamont.assignment.model.Quiz
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
@@ -40,11 +42,18 @@ class QuizActivity : AppCompatActivity() {
     private var quizQuestions : MutableList<Quiz> = ArrayList()
     private var currentQuestion : Int = 0
     private var selectedAnswer : String = ""
-    private val FINAL_SECTOMILI_VALUE : Long = 60000
     private var timesUp : Boolean = false
     private var timePoints : Long = 0
     private var totalPoints : Long = 0
     private lateinit var timer: CountDownTimer
+
+    private val fragmentManager: FragmentManager = supportFragmentManager
+    private val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+    private val quizMenu = QuizFragment()
+
+    companion object {
+        private const val FINAL_SEC_TO_MILLISECOND : Long = 60000
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +61,7 @@ class QuizActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //initialing views to variables
-        var backBtn = findViewById<ImageView>(R.id.backBtn)
+        val backBtn = findViewById<ImageView>(R.id.backBtn)
 
         tvQuizQuestion = findViewById(R.id.tvQuizQuestion)
         pbQuestionNumber = findViewById(R.id.pbQuestionNumber)
@@ -71,7 +80,7 @@ class QuizActivity : AppCompatActivity() {
         getSelectedQuiz = intent.getStringExtra("selectedQuiz")
         getQuizDuration = intent.getLongExtra("duration", 0)
         //Prep timer in milliseconds
-        getQuizDuration *= FINAL_SECTOMILI_VALUE
+        getQuizDuration *= FINAL_SEC_TO_MILLISECOND
         //Initialize title
         selectedQuizTitle.text = getSelectedQuiz
 
@@ -82,12 +91,12 @@ class QuizActivity : AppCompatActivity() {
         dbReal.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for(snapshot in dataSnapshot.child(getSelectedQuiz.toString()).children) {
-                    var question: String = snapshot.child("question").value.toString()
-                    var qOpt1: String = snapshot.child("opt1").value.toString()
-                    var qOpt2: String = snapshot.child("opt2").value.toString()
-                    var qOpt3: String = snapshot.child("opt3").value.toString()
-                    var qOpt4: String = snapshot.child("opt4").value.toString()
-                    var answer = snapshot.child("answer").value.toString()
+                    val question: String = snapshot.child("question").value.toString()
+                    val qOpt1: String = snapshot.child("opt1").value.toString()
+                    val qOpt2: String = snapshot.child("opt2").value.toString()
+                    val qOpt3: String = snapshot.child("opt3").value.toString()
+                    val qOpt4: String = snapshot.child("opt4").value.toString()
+                    val answer = snapshot.child("answer").value.toString()
 
                     dbQuestion = Quiz(question, qOpt1, qOpt2, qOpt3, qOpt4, answer, "")
                     quizQuestions.add(dbQuestion)
@@ -117,7 +126,9 @@ class QuizActivity : AppCompatActivity() {
                             putExtra("incorrect", quizQuestions.size - correctAnswer)
                             putExtra("timesUp", timesUp)
                             putExtra("points", totalPoints)
+                            putExtra("quiz", getSelectedQuiz)
                             startActivity(this)
+                            finish()
                         }
                     }
                 }.start()
@@ -212,23 +223,20 @@ class QuizActivity : AppCompatActivity() {
     private fun correctAnswer(): Int {
         var correctAnswers = 0
         for (i in quizQuestions.indices){
-
             if(quizQuestions[i].answer == quizQuestions[i].selectedAnswer){
                 correctAnswers++
             }
-
         }
-        //db.collection("users").document(dbAuth.currentUser!!.uid).update("score", mark)
-
         return correctAnswers
     }
 
     //Back button function
     override fun onBackPressed() {
         super.onBackPressed()
-        Intent(this, QuizFragment::class.java).apply {
-            startActivity(this)
-        }
+        fragmentTransaction.replace(R.id.quizActFrame, quizMenu)
+            .addToBackStack(null)
+            .commit()
+        timer.cancel()
         finish()
     }
 
@@ -264,7 +272,7 @@ class QuizActivity : AppCompatActivity() {
         currentQuestion += 1
 
         when (quizQuestions.size) {
-            (currentQuestion + 1) -> nextBtn.text = "Complete"
+            (currentQuestion + 1) -> nextBtn.text = getString(R.string.completeBtn)
         }
 
         if(currentQuestion == quizQuestions.size){
@@ -276,6 +284,7 @@ class QuizActivity : AppCompatActivity() {
                 putExtra("incorrect", quizQuestions.size - correctAnswer)
                 putExtra("timesUp", timesUp)
                 putExtra("points", totalPoints)
+                putExtra("quiz", getSelectedQuiz)
                 startActivity(this)
             }
             finish()
@@ -286,7 +295,8 @@ class QuizActivity : AppCompatActivity() {
 
     //Displaying the question and resetting to its original state
     //Applying default theme
-    private fun resetQuestions(){
+    @SuppressLint("SetTextI18n")
+    private fun resetQuestions() {
         pbQuestionNumber.progress = currentQuestion
         Log.d("value", pbQuestionNumber.progress.toString())
         tvQuestionNumber.text = (currentQuestion + 1).toString() + "/" + quizQuestions.size
