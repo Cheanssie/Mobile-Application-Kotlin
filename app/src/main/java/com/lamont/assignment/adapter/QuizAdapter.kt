@@ -1,5 +1,6 @@
 package com.lamont.assignment.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -12,12 +13,13 @@ import com.bumptech.glide.Glide
 import com.lamont.assignment.R
 import com.lamont.assignment.model.QuizMenu
 
-class QuizAdapter(val context: Context,var quizQues: List<QuizMenu>) : RecyclerView.Adapter<QuizAdapter.QuizViewHolder>() {
+class QuizAdapter(val context: Context, private var quizQues: List<QuizMenu>) : RecyclerView.Adapter<QuizAdapter.QuizViewHolder>() {
 
     private lateinit var itemListener: OnItemClickListener
 
     interface OnItemClickListener{
-        fun onItemClicked(position: Int)
+        fun onQuizClicked(position: Int)
+        fun onLeaderClicked(position: Int)
     }
 
     fun setOnItemClickListener(listener: OnItemClickListener){
@@ -30,11 +32,15 @@ class QuizAdapter(val context: Context,var quizQues: List<QuizMenu>) : RecyclerV
             val joinBtn = itemView.findViewById<Button>(R.id.joinBtn)!!
             val tvQuizDuration = itemView.findViewById<TextView>(R.id.tvQuizDuration)!!
             val quizImage = itemView.findViewById<ImageView>(R.id.ivQuizImage)!!
+            val quizLeaderboardBtn = itemView.findViewById<Button>(R.id.quizLeaderboardBtn)!!
 
         init {
             //initialize button for selected quiz
             joinBtn.setOnClickListener{
-                listener.onItemClicked(adapterPosition)
+                listener.onQuizClicked(bindingAdapterPosition)
+            }
+            quizLeaderboardBtn.setOnClickListener {
+                listener.onLeaderClicked(bindingAdapterPosition)
             }
         }
     }
@@ -46,6 +52,7 @@ class QuizAdapter(val context: Context,var quizQues: List<QuizMenu>) : RecyclerV
         return QuizViewHolder(adapterLayout, itemListener)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: QuizViewHolder, position: Int) {
         //binding contents to views
         val quiz : QuizMenu = quizQues[position]
@@ -60,4 +67,5 @@ class QuizAdapter(val context: Context,var quizQues: List<QuizMenu>) : RecyclerV
     override fun getItemCount(): Int {
         return quizQues.size
     }
+
 }

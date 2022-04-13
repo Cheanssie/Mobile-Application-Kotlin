@@ -100,4 +100,19 @@
     <string name="writeComment">Tulis komen anda</string>
     <string name="noNetwork">Tiada sambungan rangkaian</string>
     <string name="nothing_here">Kosong...</string>
+    <string name="timesUpText">Masa Tamat !</string>
+    <string name="hello_blank_fragment">Halo fragment kosong</string>
+    <string name="completeBtn">Selesai</string>
+    <string name="quizCompletionText">Anda telah menyelesaikan quiz inI !</string>
+    <string name="contentDescription">TODO</string>
+    <string name="titleContentDescription">Tajuk</string>
+    <string name="buttonContentDescription">butang</string>
+    <string name="durationContentDescription">Tempoh</string>
+    <string name="gratitudeContentDescription">Mesej Syukur</string>
+    <string name="pointsContentDescription">Mata</string>
+    <string name="leaderboardContentDescription">Papan Pendahulu</string>
+    <string name="incorrect_answers">Jawapan Salah :</string>
+    <string name="correct_answers">Jawapan Betul :</string>
+    <string name="back_to_quiz_menu">Kembali ke Menu Kuiz</string>
+    <string name="name_contentDescription">Elon Musk</string>
 </resources>

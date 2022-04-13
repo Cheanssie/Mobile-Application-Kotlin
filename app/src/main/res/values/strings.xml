@@ -102,5 +102,20 @@
     <string name="upload_video">Upload Video</string>
     <string name="noNetwork">No Network Connection</string>
     <string name="nothing_here">Nothing Here...</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="completeBtn">Complete</string>
+    <string name="timesUpText">Time\'s Up !</string>
+    <string name="quizCompletionText">You have completed the quiz!</string>
+    <string name="contentDescription">TODO</string>
+    <string name="titleContentDescription">Title</string>
+    <string name="buttonContentDescription">button</string>
+    <string name="durationContentDescription">Duration</string>
+    <string name="gratitudeContentDescription">Gratitude Message</string>
+    <string name="pointsContentDescription">Points</string>
+    <string name="leaderboardContentDescription">Leaderboard</string>
+    <string name="incorrect_answers">Incorrect Answers :</string>
+    <string name="correct_answers">Correct Answers :</string>
+    <string name="back_to_quiz_menu">Back to Quiz Menu</string>
+    <string name="name_contentDescription">Elon Musk</string>
 
 </resources>

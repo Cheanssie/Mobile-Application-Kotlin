@@ -70,6 +70,9 @@
         <action
             android:id="@+id/action_quizFragment_to_postFragment"
             app:destination="@+id/postFragment" />
+        <action
+            android:id="@+id/action_whiteFlagFragment_to_leaderboardFragment"
+            app:destination="@id/leaderboardFragment"/>
     </fragment>
     <fragment
         android:id="@+id/whiteFlagFragment"
@@ -107,4 +110,9 @@
         android:name="com.lamont.assignment.ui.CommentFragment"
         android:label="fragment_comment"
         tools:layout="@layout/fragment_comment" />
+    <fragment
+        android:id="@+id/leaderboardFragment"
+        android:name="com.lamont.assignment.ui.LeaderboardFragment"
+        android:label="fragment_leaderboard"
+        tools:layout="@layout/fragment_leaderboard"/>
 </navigation>

@@ -58,10 +58,10 @@ class RegisterFragment : Fragment(){
             val conPassword = binding.etConPassword.text.toString()
             val phone = binding.etPhone.text.toString()
             val birthdate = binding.etDob.text.toString()
-
+            val quiz = mutableMapOf(" " to " ")
             binding.etEmail.setText(binding.etEmail.text.toString().lowercase())
             if (username != "" && email != "" && password != "" && conPassword != "" && phone != "" && birthdate != "") {
-                addUser(username, email, password, conPassword, phone, birthdate)
+                addUser(username, email, password, conPassword, phone, birthdate, quiz)
             }  else {
                 Toast.makeText(requireContext(), getString(R.string.requireFillIn), Toast.LENGTH_SHORT).show()
             }
@@ -79,7 +79,7 @@ class RegisterFragment : Fragment(){
         }
     }
 
-    private fun addUser(username:String, email:String, password:String, conPassword:String, phone:String, dob:String) {
+    private fun addUser(username:String, email:String, password:String, conPassword:String, phone:String, dob:String, quiz: MutableMap<String, String>) {
         val db = FirebaseFirestore.getInstance()
         val dbAuth = FirebaseAuth.getInstance()
         db.collection("users")
@@ -87,7 +87,7 @@ class RegisterFragment : Fragment(){
             .addOnSuccessListener {
                 val birthdate = SimpleDateFormat("dd/MM/yyyy").parse(dob.toString())
                 val age = (Date().time - birthdate.time)/(31556952000)
-                val user = User(username, email, password, phone, dob)
+                val user = User(username, email, password, phone, dob, quiz)
                 var error = false
 
                 for (doc in it) {

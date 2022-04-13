@@ -25,11 +25,6 @@
             android:screenOrientation="portrait"
             />
         <activity
-            android:name=".ui.LeaderboardActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            />
-        <activity
             android:name=".ui.QuizResult"
             android:exported="false"
             android:screenOrientation="portrait"
