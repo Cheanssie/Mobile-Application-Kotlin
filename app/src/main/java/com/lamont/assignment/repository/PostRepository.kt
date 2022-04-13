@@ -3,6 +3,7 @@ package com.lamont.assignment.repository
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.lamont.assignment.model.Post
 
 class PostRepository {
@@ -59,7 +60,7 @@ class PostRepository {
     }
 
     private fun readPostList() {
-        db.collection("post").orderBy("createdDate").addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+        db.collection("post").orderBy("createdDate", Query.Direction.DESCENDING).addSnapshotListener { querySnapshot, firebaseFirestoreException ->
             firebaseFirestoreException?.let {
                 return@addSnapshotListener
             }
