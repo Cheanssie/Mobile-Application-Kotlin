@@ -56,10 +56,11 @@ class QuizFragment : Fragment() {
                 }
 
                 //Inflate layout
-                quizAdapter = QuizAdapter(requireContext(),quizQues)
+                quizAdapter = QuizAdapter( this,quizQues)
                 binding.rvQuiz.adapter = quizAdapter
                 //User will be directed to selected quiz where relevant questions will be displayed
                 quizAdapter.setOnItemClickListener(object : QuizAdapter.OnItemClickListener{
+
                     override fun onQuizClicked(position: Int) {
                         selectedQuiz = quizQues[position].title
                         selectedQuizDuration = quizQues[position].duration

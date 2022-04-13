@@ -12,8 +12,9 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.lamont.assignment.R
 import com.lamont.assignment.model.QuizMenu
+import com.lamont.assignment.ui.QuizFragment
 
-class QuizAdapter(val context: Context, private var quizQues: List<QuizMenu>) : RecyclerView.Adapter<QuizAdapter.QuizViewHolder>() {
+class QuizAdapter(val context: QuizFragment, private var quizQues: List<QuizMenu>) : RecyclerView.Adapter<QuizAdapter.QuizViewHolder>() {
 
     private lateinit var itemListener: OnItemClickListener
 

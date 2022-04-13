@@ -76,8 +76,6 @@ class LeaderboardFragment : Fragment() {
         binding.leaderModuleBtn.text = "Return to Main Menu"
         binding.leaderModuleBtn.setOnClickListener{
             //Removes fragment from backstack
-            val manager = requireActivity().supportFragmentManager
-            manager.beginTransaction().remove(this).commit()
             activity?.let{
                 val intent = Intent(it, ModuleActivity::class.java)
                     it.startActivity(intent)
