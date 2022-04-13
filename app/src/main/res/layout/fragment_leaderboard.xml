@@ -30,12 +30,26 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvLeaderboard"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="600dp"
             android:layout_margin="15dp"
             android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
         </androidx.recyclerview.widget.RecyclerView>
 
+        <Button
+            android:id="@+id/leaderModuleBtn"
+            android:textColor="@color/theme_blue"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:text="@string/back_to_main_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginEnd="25dp"
+            android:layout_marginStart="25dp"/>
+
     </LinearLayout>
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 </FrameLayout>

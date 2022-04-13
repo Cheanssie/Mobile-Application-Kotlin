@@ -72,6 +72,7 @@ class QuizFragment : Fragment() {
                         }
                     }
 
+                    //User will be directed to leaderboard fragment within the quiz fragment (fragment to fragment)
                     override fun onLeaderClicked(position: Int) {
                         selectedQuiz = quizQues[position].title
                         val bundle = Bundle()

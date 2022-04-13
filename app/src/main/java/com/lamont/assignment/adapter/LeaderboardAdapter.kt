@@ -14,6 +14,8 @@ import com.lamont.assignment.model.Leaderboard
 
 class LeaderboardAdapter(val context: Context, private var leaderUser: List<Leaderboard>) : RecyclerView.Adapter<LeaderboardAdapter.LeaderboardViewHolder>()  {
 
+
+
     class LeaderboardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         //initialize views
         val ivBadgeIcon = itemView.findViewById<ImageView>(R.id.ivBadgeIcon)!!
@@ -32,6 +34,7 @@ class LeaderboardAdapter(val context: Context, private var leaderUser: List<Lead
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: LeaderboardViewHolder, position: Int) {
+        //Binding contents to views
         val leaderUsers : Leaderboard = leaderUser[position]
         if(position > 2){
             Glide.with(context)

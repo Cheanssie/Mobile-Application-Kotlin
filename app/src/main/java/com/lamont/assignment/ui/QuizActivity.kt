@@ -48,8 +48,6 @@ class QuizActivity : AppCompatActivity() {
     private lateinit var timer: CountDownTimer
 
     private val fragmentManager: FragmentManager = supportFragmentManager
-    private val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-    private val quizMenu = QuizFragment()
 
     companion object {
         private const val FINAL_SEC_TO_MILLISECOND : Long = 60000
@@ -230,16 +228,6 @@ class QuizActivity : AppCompatActivity() {
         return correctAnswers
     }
 
-    //Back button function
-    override fun onBackPressed() {
-        super.onBackPressed()
-        fragmentTransaction.replace(R.id.quizActFrame, quizMenu)
-            .addToBackStack(null)
-            .commit()
-        timer.cancel()
-        finish()
-    }
-
     //Displaying the correct answer upon validating selected option
     private fun answer(){
 
@@ -323,6 +311,18 @@ class QuizActivity : AppCompatActivity() {
         opt2.text = quizQuestions[currentQuestion].opt2
         opt3.text = quizQuestions[currentQuestion].opt3
         opt4.text = quizQuestions[currentQuestion].opt4
+    }
+
+    //Back button function
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        val quizMenu = QuizFragment()
+        fragmentTransaction.replace(R.id.quizActFrame, quizMenu)
+            .addToBackStack(null)
+            .commit()
+        timer.cancel()
+        finish()
     }
 
 }

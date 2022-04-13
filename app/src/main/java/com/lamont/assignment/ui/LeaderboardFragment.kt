@@ -1,5 +1,7 @@
 package com.lamont.assignment.ui
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.lamont.assignment.ModuleActivity
 import com.lamont.assignment.adapter.LeaderboardAdapter
 import com.lamont.assignment.databinding.FragmentLeaderboardBinding
 import com.lamont.assignment.model.Leaderboard
@@ -30,6 +33,7 @@ class LeaderboardFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -64,6 +68,18 @@ class LeaderboardFragment : Fragment() {
                 leaderboardAdapter = LeaderboardAdapter(requireContext(), leaderboard)
                 binding.rvLeaderboard.adapter = leaderboardAdapter
             }
+
+
+        //Return to main menu on click/press
+        binding.leaderModuleBtn.text = "Return to Main Menu"
+        binding.leaderModuleBtn.setOnClickListener{
+            val manager = requireActivity().supportFragmentManager
+            manager.beginTransaction().remove(this).commit()
+            activity?.let{
+                val intent = Intent(it, ModuleActivity::class.java)
+                    it.startActivity(intent)
+            }
+        }
 
         //Refreshing page
         binding.swipeToRefresh.setOnRefreshListener {
