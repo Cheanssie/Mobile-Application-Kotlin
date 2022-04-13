@@ -50,10 +50,12 @@ class LeaderboardFragment : Fragment() {
             .get()
             .addOnSuccessListener { it ->
                 for (document in it) {
+                    //Resetting points in case null appears
                         points = 0
                         val username: String = document.get("username").toString()
                         val userImg: String = document.get("imgName").toString()
                         val quizPoints: Map<*, *> = document.get("quiz") as Map<*, *>
+                    //Check if null, no = initialize points for leaderboard view else = points = 0
                         if(quizPoints.contains(quiz)) {
                             points = quizPoints[quiz] as Long
                         }
@@ -73,6 +75,7 @@ class LeaderboardFragment : Fragment() {
         //Return to main menu on click/press
         binding.leaderModuleBtn.text = "Return to Main Menu"
         binding.leaderModuleBtn.setOnClickListener{
+            //Removes fragment from backstack
             val manager = requireActivity().supportFragmentManager
             manager.beginTransaction().remove(this).commit()
             activity?.let{
@@ -86,5 +89,6 @@ class LeaderboardFragment : Fragment() {
             binding.swipeToRefresh.isRefreshing = false
             binding.rvLeaderboard.adapter = leaderboardAdapter
         }
+
     }
 }

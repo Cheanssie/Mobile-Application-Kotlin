@@ -85,7 +85,7 @@ class QuizActivity : AppCompatActivity() {
         //instantiate Realtime database
         val dbReal : DatabaseReference = FirebaseDatabase.getInstance("https://bewithyouth-28168-default-rtdb.asia-southeast1.firebasedatabase.app/").reference
 
-        //Collecting dt from Realtime database and creating Quiz objects
+        //Collecting data from Realtime database and creating Quiz objects
         dbReal.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for(snapshot in dataSnapshot.child(getSelectedQuiz.toString()).children) {
@@ -117,7 +117,9 @@ class QuizActivity : AppCompatActivity() {
                     //Correct answers are kept as usual for points collecting
                     override fun onFinish() {
                         val correctAnswer = correctAnswer()
+                        //Points formula = Correct answers multiply time left (0)
                         totalPoints = correctAnswer * timePoints
+                        //Times up flag on = different result message
                         timesUp = true
                         Intent(this@QuizActivity, QuizResult::class.java).apply{
                             putExtra("correct", correctAnswer)
@@ -264,14 +266,20 @@ class QuizActivity : AppCompatActivity() {
         }
 
         if(currentQuestion == quizQuestions.size){
+            //Cancels timer and collects time for points formula
             timer.cancel()
+            //Points formula = Correct answers multiply time left in seconds
             val correctAnswer = correctAnswer()
             totalPoints = correctAnswer * timePoints
             Intent(this, QuizResult::class.java).apply {
+                //Total correct and incorrect answers passed to Quiz Result activity
                 putExtra("correct", correctAnswer)
                 putExtra("incorrect", quizQuestions.size - correctAnswer)
+                //Check if times up flag is on
                 putExtra("timesUp", timesUp)
+                //Get total points accumulated
                 putExtra("points", totalPoints)
+                //Get selected quiz topic for database and leaderboard
                 putExtra("quiz", getSelectedQuiz)
                 startActivity(this)
             }
@@ -316,11 +324,13 @@ class QuizActivity : AppCompatActivity() {
     //Back button function
     override fun onBackPressed() {
         super.onBackPressed()
+        //New instance of fragment so contents will not be overlapped
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         val quizMenu = QuizFragment()
         fragmentTransaction.replace(R.id.quizActFrame, quizMenu)
             .addToBackStack(null)
             .commit()
+        //Cancels timer for quiz
         timer.cancel()
         finish()
     }

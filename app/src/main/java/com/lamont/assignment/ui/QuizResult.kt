@@ -106,19 +106,22 @@ class QuizResult : AppCompatActivity() {
         incorrectAns.text = getIncorrectAns.toString()
 
         val fragmentManager: FragmentManager = supportFragmentManager
-        val leaderboardFragment = LeaderboardFragment()
-        val quizMenu = QuizFragment()
 
         //Button to Quiz Main Menu
         quizMenuBtn.setOnClickListener {
+            //New instance of fragment so contents will not be overlapped
             val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+            val quizMenu = QuizFragment()
             fragmentTransaction.add(R.id.frameLayout, quizMenu).commit()
             finish()
         }
 
         //Button to Leaderboard page
         leaderboardBtn.setOnClickListener {
+            //New instance of fragment so contents will not be overlapped
             val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+            val leaderboardFragment = LeaderboardFragment()
+            //Passing data as bundle = arguments
             val bundle = Bundle()
             bundle.putString("quiz", quiz)
             leaderboardFragment.arguments = bundle
