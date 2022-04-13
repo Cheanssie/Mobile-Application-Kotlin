@@ -40,6 +40,7 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
         val postImg = view.findViewById<ImageView>(R.id.postImg)!!
         val postVideo = view.findViewById<PlayerView>(R.id.postVideo)!!
         val btnDelete = view.findViewById<ImageButton>(R.id.btnDelete)!!
+        val postDateTime = view.findViewById<TextView>(R.id.postDateTime)!!
         val comment = view.findViewById<Button>(R.id.comment)!!
 
         init {
@@ -83,6 +84,7 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
         val post = oldPostList[position]
 
         holder.postOwner.text = post.postOwner
+        holder.postDateTime.text = post.createdDate
         holder.forumDesc.text = post.forumDesc
 
         db.collection("like")

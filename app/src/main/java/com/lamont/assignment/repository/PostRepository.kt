@@ -59,7 +59,7 @@ class PostRepository {
     }
 
     private fun readPostList() {
-        db.collection("post").addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+        db.collection("post").orderBy("createdDate").addSnapshotListener { querySnapshot, firebaseFirestoreException ->
             firebaseFirestoreException?.let {
                 return@addSnapshotListener
             }

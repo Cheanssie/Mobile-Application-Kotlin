@@ -116,7 +116,7 @@ class PostFragment : Fragment() {
             if (validity) {
                 val forumDesc = binding.etRequestDesc.text.toString()
                 val username = sharedPreferences.getString("username", null)!!
-                val formatter = SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
+                val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
                 db.collection("users").document(dbAuth.currentUser!!.uid)
                     .get()
                     .addOnSuccessListener { doc->

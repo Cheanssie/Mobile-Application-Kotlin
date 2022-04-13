@@ -58,8 +58,20 @@
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@id/profilePicContainer"
                     app:layout_constraintTop_toTopOf="@id/profilePicContainer"
+                    app:layout_constraintBottom_toTopOf="@id/postDateTime"
+                    />
+
+                <TextView
+                    android:id="@+id/postDateTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:textSize="13sp"
+                    app:layout_constraintStart_toEndOf="@id/profilePicContainer"
+                    app:layout_constraintTop_toBottomOf="@id/postOwner"
                     app:layout_constraintBottom_toBottomOf="@id/profilePicContainer"
                     />
+
 
                 <ImageButton
                     android:id="@+id/btnDelete"
@@ -81,6 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:padding="5dp"
+                android:textColor="@color/black"
                 app:layout_constraintTop_toBottomOf="@id/profilePic"
                 />
 
