@@ -89,6 +89,7 @@
                         android:id="@+id/forumDesc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
                         android:paddingTop="5dp"
                         android:paddingHorizontal="10dp"
                         />
