@@ -134,78 +134,81 @@ class QuizActivity : AppCompatActivity() {
                 }.start()
                 //Reusable function for question calling / Resetting
                 resetQuestions()
+
+                //opt{1..4} = next button available upon click
+                //Validate selected answers. (green) correct else (red) wrong.
+                //Valid answer will be displayed
+                opt1.setOnClickListener {
+                    nextBtn.visibility = View.VISIBLE
+                    if(selectedAnswer.isEmpty()){
+                        selectedAnswer = opt1.text.toString()
+                        opt1.setTextColor(Color.WHITE)
+                        when(selectedAnswer){
+                            quizQuestions[currentQuestion].answer -> opt1.setBackgroundResource(R.drawable.correct_answer)
+                            else -> {
+                                opt1.setBackgroundResource(R.drawable.wrong_answer)
+                                answer()
+                            }
+                        }
+                    }
+                }
+
+                opt2.setOnClickListener {
+                    nextBtn.visibility = View.VISIBLE
+                    if(selectedAnswer.isEmpty()){
+                        opt2.setTextColor(Color.WHITE)
+                        selectedAnswer = opt2.text.toString()
+                        when(selectedAnswer){
+                            quizQuestions[currentQuestion].answer -> opt2.setBackgroundResource(R.drawable.correct_answer)
+                            else -> {
+                                opt2.setBackgroundResource(R.drawable.wrong_answer)
+                                answer()
+                            }
+                        }
+                    }
+                }
+
+                opt3.setOnClickListener {
+                    nextBtn.visibility = View.VISIBLE
+                    if(selectedAnswer.isEmpty()){
+                        opt3.setTextColor(Color.WHITE)
+                        selectedAnswer = opt3.text.toString()
+                        when(selectedAnswer){
+                            quizQuestions[currentQuestion].answer -> opt3.setBackgroundResource(R.drawable.correct_answer)
+                            else -> {
+                                opt3.setBackgroundResource(R.drawable.wrong_answer)
+                                answer()
+                            }
+                        }
+                    }
+                }
+
+                opt4.setOnClickListener {
+                    nextBtn.visibility = View.VISIBLE
+                    if(selectedAnswer.isEmpty()){
+                        opt4.setTextColor(Color.WHITE)
+                        selectedAnswer = opt4.text.toString()
+                        when(selectedAnswer){
+                            quizQuestions[currentQuestion].answer -> opt4.setBackgroundResource(R.drawable.correct_answer)
+                            else -> {
+                                opt4.setBackgroundResource(R.drawable.wrong_answer)
+                                answer()
+                            }
+                        }
+                    }
+                }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.d("error", databaseError.message)
 
             }
+
         })
+
         //Only visible upon selecting answer
         nextBtn.visibility = View.INVISIBLE
 
-        //opt{1..4} = next button available upon click
-        //Validate selected answers. (green) correct else (red) wrong.
-        //Valid answer will be displayed
-        opt1.setOnClickListener {
-            nextBtn.visibility = View.VISIBLE
-            if(selectedAnswer.isEmpty()){
-                selectedAnswer = opt1.text.toString()
-                opt1.setTextColor(Color.WHITE)
-                when(selectedAnswer){
-                    quizQuestions[currentQuestion].answer -> opt1.setBackgroundResource(R.drawable.correct_answer)
-                    else -> {
-                        opt1.setBackgroundResource(R.drawable.wrong_answer)
-                        answer()
-                    }
-                }
-            }
-        }
-
-        opt2.setOnClickListener {
-            nextBtn.visibility = View.VISIBLE
-            if(selectedAnswer.isEmpty()){
-                opt2.setTextColor(Color.WHITE)
-                selectedAnswer = opt2.text.toString()
-                when(selectedAnswer){
-                    quizQuestions[currentQuestion].answer -> opt2.setBackgroundResource(R.drawable.correct_answer)
-                    else -> {
-                        opt2.setBackgroundResource(R.drawable.wrong_answer)
-                        answer()
-                    }
-                }
-            }
-        }
-
-        opt3.setOnClickListener {
-            nextBtn.visibility = View.VISIBLE
-            if(selectedAnswer.isEmpty()){
-                opt3.setTextColor(Color.WHITE)
-                selectedAnswer = opt3.text.toString()
-                when(selectedAnswer){
-                    quizQuestions[currentQuestion].answer -> opt3.setBackgroundResource(R.drawable.correct_answer)
-                    else -> {
-                        opt3.setBackgroundResource(R.drawable.wrong_answer)
-                        answer()
-                    }
-                }
-            }
-        }
-
-        opt4.setOnClickListener {
-            nextBtn.visibility = View.VISIBLE
-            if(selectedAnswer.isEmpty()){
-                opt4.setTextColor(Color.WHITE)
-                selectedAnswer = opt4.text.toString()
-                when(selectedAnswer){
-                    quizQuestions[currentQuestion].answer -> opt4.setBackgroundResource(R.drawable.correct_answer)
-                    else -> {
-                        opt4.setBackgroundResource(R.drawable.wrong_answer)
-                        answer()
-                    }
-                }
-            }
-        }
 
         //Selected answers are kept in object for leaderboard points (stored in user's object)
         nextBtn.setOnClickListener {
