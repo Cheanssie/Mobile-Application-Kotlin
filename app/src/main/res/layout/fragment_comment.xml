@@ -57,9 +57,20 @@
                             android:text="@string/username"
                             android:textColor="@color/theme_blue"
                             android:textStyle="bold"
-                            app:layout_constraintBottom_toBottomOf="@id/imgCardView"
+                            app:layout_constraintBottom_toTopOf="@id/postDateTime"
                             app:layout_constraintStart_toEndOf="@id/imgCardView"
                             app:layout_constraintTop_toTopOf="@id/imgCardView" />
+
+                        <TextView
+                            android:id="@+id/postDateTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:textSize="13sp"
+                            app:layout_constraintStart_toEndOf="@id/imgCardView"
+                            app:layout_constraintTop_toBottomOf="@id/postOwner"
+                            app:layout_constraintBottom_toBottomOf="@id/imgCardView"
+                            />
 
                         <ImageButton
                             android:id="@+id/btnDelete"

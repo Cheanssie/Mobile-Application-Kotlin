@@ -60,11 +60,13 @@ class CommentFragment : Fragment() {
         val videoUri = arguments?.get("videoUri").toString()
         val ownerName = arguments?.get("ownerName").toString()
         val forumDesc = arguments?.get("forumDesc").toString()
-        val ivProfile = arguments?.get("ivProfile").toString().toUri()
+        val ivProfile = arguments?.get("ivProfile").toString()
+        val dateTime = arguments?.get("dateTime").toString()
 
-        binding.ivProfile.setImageURI(ivProfile)
         binding.postOwner.text = ownerName
         binding.forumDesc.text = forumDesc
+        binding.postDateTime.text = dateTime
+        Picasso.with(requireContext()).load(ivProfile).into(binding.ivProfile)
 
         val commentModel = CommentViewModel()
         commentAdapter = CommentAdapter(requireContext())

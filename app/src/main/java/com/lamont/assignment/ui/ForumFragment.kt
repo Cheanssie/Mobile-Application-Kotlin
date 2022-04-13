@@ -99,6 +99,8 @@ class ForumFragment : Fragment() {
                         bundle.putString("forumDesc", postModel.loadPostList().value?.get(position)!!.forumDesc)
                         bundle.putString("ownerName", postModel.loadPostList().value?.get(position)!!.postOwner)
                         bundle.putString("ivProfile", postModel.loadPostList().value?.get(position)!!.ivProfile.toString())
+                        bundle.putString("dateTime", postModel.loadPostList().value?.get(position)!!.createdDate.toString())
+
                         val navController = findNavController()
                         navController.navigate(R.id.commentFragment, bundle)
                     }
