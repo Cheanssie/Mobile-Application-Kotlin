@@ -9,11 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.lamont.assignment.ModuleActivity
 import com.lamont.assignment.adapter.LeaderboardAdapter
 import com.lamont.assignment.databinding.FragmentLeaderboardBinding
 import com.lamont.assignment.model.Leaderboard
+
 
 class LeaderboardFragment : Fragment() {
 
@@ -46,47 +46,43 @@ class LeaderboardFragment : Fragment() {
         val quiz : String = bundle!!.getString("quiz").toString()
 
         //Getting all users' points for the selected quiz to display
-        db.collection("users").orderBy("quiz", Query.Direction.DESCENDING)
+        db.collection("users")
             .get()
-            .addOnSuccessListener { it ->
-                for (document in it) {
+            .addOnSuccessListener { snapShot ->
+                for (document in snapShot) {
                     //Resetting points in case null appears
-                        points = 0
-                        val username: String = document.get("username").toString()
-                        val userImg: String = document.get("imgName").toString()
-                        val quizPoints: Map<*, *> = document.get("quiz") as Map<*, *>
+                    points = 0
+                    val username: String = document.get("username").toString()
+                    val quizPoints: Map<*, *> = document.get("quiz") as Map<*, *>
                     //Check if null, no = initialize points for leaderboard view else = points = 0
-                        if(quizPoints.contains(quiz)) {
-                            points = quizPoints[quiz] as Long
-                        }
-                        leaderboard.add(Leaderboard("", userImg, username, points))
+                    if(quizPoints.contains(quiz)) {
+                        points = quizPoints[quiz] as Long
+                    }
+                    leaderboard.add(Leaderboard("", username, points))
                 }
-
                 //Making sure leaderboard is displayed with correct positioning
-                leaderboard.sortByDescending {
-                    it.points
+                leaderboard.sortByDescending { leader ->
+                    leader.points
                 }
                 //Inflate recycler views with adapter
                 leaderboardAdapter = LeaderboardAdapter(requireContext(), leaderboard)
                 binding.rvLeaderboard.adapter = leaderboardAdapter
             }
 
-
-        //Return to main menu on click/press
-        binding.leaderModuleBtn.text = "Return to Main Menu"
-        binding.leaderModuleBtn.setOnClickListener{
-            //Removes fragment from backstack
-            activity?.let{
-                val intent = Intent(it, ModuleActivity::class.java)
-                    it.startActivity(intent)
+            //Return to main menu on click/press
+            binding.leaderModuleBtn.text = "Return to Main Menu"
+            binding.leaderModuleBtn.setOnClickListener{
+                //Removes fragment from backstack
+                activity?.let{
+                    val intent = Intent(it, ModuleActivity::class.java)
+                        it.startActivity(intent)
+                }
             }
-        }
 
-        //Refreshing page
-        binding.swipeToRefresh.setOnRefreshListener {
-            binding.swipeToRefresh.isRefreshing = false
-            binding.rvLeaderboard.adapter = leaderboardAdapter
-        }
-
+            //Refreshing page
+            binding.swipeToRefresh.setOnRefreshListener {
+                binding.swipeToRefresh.isRefreshing = false
+                binding.rvLeaderboard.adapter = leaderboardAdapter
+            }
     }
 }

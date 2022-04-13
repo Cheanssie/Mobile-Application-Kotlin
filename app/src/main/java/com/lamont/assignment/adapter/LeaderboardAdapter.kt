@@ -20,7 +20,6 @@ class LeaderboardAdapter(val context: Context, private var leaderUser: List<Lead
         //initialize views
         val ivBadgeIcon = itemView.findViewById<ImageView>(R.id.ivBadgeIcon)!!
         val tvLeaderPosition = itemView.findViewById<TextView>(R.id.tvLeaderPosition)!!
-        val ivUserImg = itemView.findViewById<ImageView>(R.id.ivUserImage)!!
         val tvLeaderName = itemView.findViewById<TextView>(R.id.tvLeaderName)!!
         val tvPoints = itemView.findViewById<TextView>(R.id.tvLeaderPoints)!!
     }
@@ -46,9 +45,6 @@ class LeaderboardAdapter(val context: Context, private var leaderUser: List<Lead
                 .into(holder.ivBadgeIcon)
         }
         holder.tvLeaderPosition.text = (position + 1).toString()
-        Glide.with(context)
-            .load(leaderUsers.userImg)
-            .into(holder.ivUserImg)
         holder.tvLeaderName.text = leaderUsers.username
         holder.tvPoints.text = leaderUsers.points.toString()
     }

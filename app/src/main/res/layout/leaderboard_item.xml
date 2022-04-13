@@ -39,46 +39,29 @@
                 android:id="@+id/tvLeaderPosition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="17sp"
                 android:textColor="@color/theme_blue"
+                android:textSize="17sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/ivBadgeIcon"
-                app:layout_constraintEnd_toStartOf="@+id/ivUserImage"
-                app:layout_constraintHorizontal_bias="0.135"
                 app:layout_constraintStart_toEndOf="@+id/ivBadgeIcon"
                 app:layout_constraintTop_toTopOf="@+id/ivBadgeIcon"
                 app:layout_constraintVertical_bias="0.454" />
-
-            <ImageView
-                android:id="@+id/ivUserImage"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="3dp"
-                android:layout_marginEnd="160dp"
-                android:layout_marginBottom="3dp"
-                android:contentDescription="@string/contentDescription"
-                android:padding="5dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvLeaderPoints"
-                app:layout_constraintStart_toEndOf="@id/ivBadgeIcon"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ImageContrastCheck"
-                tools:srcCompat="@mipmap/ic_launcher" />
 
             <TextView
                 android:id="@+id/tvLeaderName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="88dp"
                 android:padding="8dp"
                 android:text="@string/name_contentDescription"
-                android:textStyle="bold"
-                android:textSize="17sp"
                 android:textColor="@color/theme_blue"
+                android:textSize="17sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/ivUserImage"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+                app:layout_constraintStart_toEndOf="@+id/tvLeaderPosition"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvLeaderPoints"
