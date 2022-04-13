@@ -35,6 +35,7 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
 
     class PostViewHolder(view: View, listener: OnItemClickListener): RecyclerView.ViewHolder(view) {
         val like = view.findViewById<Button>(R.id.like)!!
+        val ivProfile = view.findViewById<ImageView>(R.id.ivProfile)
         val forumDesc = view.findViewById<TextView>(R.id.forumDesc)!!
         val postOwner = view.findViewById<TextView>(R.id.postOwner)!!
         val postImg = view.findViewById<ImageView>(R.id.postImg)!!
@@ -86,6 +87,7 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
         holder.postOwner.text = post.postOwner
         holder.postDateTime.text = post.createdDate
         holder.forumDesc.text = post.forumDesc
+        Picasso.with(context).load(post.ivProfile).into(holder.ivProfile)
 
         db.collection("like")
             .whereEqualTo("postId", post.postId)

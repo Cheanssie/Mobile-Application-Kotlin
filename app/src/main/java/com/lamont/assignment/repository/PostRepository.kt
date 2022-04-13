@@ -73,7 +73,7 @@ class PostRepository {
                     val videoUri = document.get("videoUri").toString().toUri()
                     val createdDate = document.get("createdDate").toString()
                     val ownerId = document.get("ownerId").toString()
-                    val ivProfile = document.get("ivProfile").toString().toUri()
+                    val ivProfile = document.get("ivProfile").toString()
                     val postId = document.get("postId").toString()
                     val post = Post(postId, ivProfile, postOwner, forumDesc, imgUri, videoUri, createdDate, ownerId)
                     postData.add(post)

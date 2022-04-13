@@ -122,7 +122,7 @@ class PostFragment : Fragment() {
                     .addOnSuccessListener { doc->
                         storageRef.reference.child("profile/${doc.data?.get("imgName")}").downloadUrl
                             .addOnSuccessListener {
-                                val post = Post(null.toString(), it, username, forumDesc, null, null, formatter.format(
+                                val post = Post(null.toString(), it.toString(), username, forumDesc, null, null, formatter.format(
                                     Date()), dbAuth.currentUser!!.uid)
                                 addPost(post)
                             }
@@ -141,7 +141,6 @@ class PostFragment : Fragment() {
     }
 
     private fun addPost(post: Post) {
-
         db.collection("post")
             .add(post)
             .addOnSuccessListener { postResult->
@@ -207,7 +206,7 @@ class PostFragment : Fragment() {
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 var photoFile: File? = null
                 photoFile = createImageFile()
-                val photoUri:Uri = FileProvider.getUriForFile(
+                val photoUri: Uri = FileProvider.getUriForFile(
                     activity?.applicationContext!!,
                     "com.example.android.fileprovider", photoFile!!
                 )
