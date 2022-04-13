@@ -16,13 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!--TextView
-            android:id="@+id/tvTitle"
-            android:text="Be With Youth"
-            style="@style/Toolbar.TitleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/-->
-
         <ImageView
             android:id="@+id/imgTitle"
             android:layout_width="wrap_content"

@@ -92,5 +92,15 @@
     <string name="new_password">New Password</string>
     <string name="confirm_new_password">Confirm New Password</string>
     <string name="change_password">Change Password</string>
+    <string name="like">LIKE</string>
+    <string name="comment">COMMENT</string>
+    <string name="writeComment">Write your comment</string>
+    <string name="showMore">More...</string>
+    <string name="showLess">Less...</string>
+    <string name="write_comment_here">Write Comment Here...</string>
+    <string name="send">SEND</string>
+    <string name="upload_video">Upload Video</string>
+    <string name="noNetwork">No Network Connection</string>
+    <string name="nothing_here">Nothing Here...</string>
 
 </resources>

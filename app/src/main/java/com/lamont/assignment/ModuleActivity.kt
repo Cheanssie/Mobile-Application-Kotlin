@@ -53,6 +53,11 @@ class ModuleActivity : AppCompatActivity() {
         whiteFlagNotification()
     }
 
+    override fun onStart() {
+        MainActivity.checkNetworkConnection(this)
+        super.onStart()
+    }
+
     fun displayPopupMenu(view: View) {
         val popupMenu = PopupMenu(applicationContext, findViewById(R.id.addPost))
         popupMenu.inflate(R.menu.post_menu)

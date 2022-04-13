@@ -81,8 +81,6 @@ class PostRepository {
             }
         }
     }
-
-
 }
 
 internal var _postList : MutableLiveData<MutableList<Post>>

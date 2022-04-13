@@ -27,7 +27,7 @@ class PostViewModel {
         }
 
         fun deletePost(postId: String) {
-           postRepo.deletePost(postId)
+            postRepo.deletePost(postId)
         }
 
     }

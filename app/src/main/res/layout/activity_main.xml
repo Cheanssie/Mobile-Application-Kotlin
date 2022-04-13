@@ -20,13 +20,6 @@
         app:layout_constraintTop_toTopOf="parent"
         >
 
-        <!--TextView
-            android:id="@+id/tvTitle"
-            android:text="Be With Youth"
-            style="@style/Toolbar.TitleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/-->
-
         <ImageView
             android:id="@+id/imgTitle"
             android:layout_width="wrap_content"
@@ -55,19 +48,5 @@
         app:navGraph="@navigation/account_nav" />
 
     </ScrollView>
-
-    <!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-<!--        android:id="@+id/loginRegister"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        android:background="#0F0241"-->
-<!--        app:menu="@menu/login_register"-->
-<!--        app:itemRippleColor="@color/white"-->
-<!--        app:itemIconTint="@color/icons_color"-->
-<!--        app:itemTextColor="@color/icons_color"-->
-<!--        />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

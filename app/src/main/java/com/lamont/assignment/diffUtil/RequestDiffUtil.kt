@@ -6,7 +6,7 @@ import com.lamont.assignment.model.Request
 class RequestDiffUtil (
     private val newRequestList : List<Request>,
     private val oldRequestList : List<Request>
-        ): DiffUtil.Callback(){
+): DiffUtil.Callback(){
     override fun getOldListSize(): Int {
         return oldRequestList.size
     }
@@ -25,7 +25,6 @@ class RequestDiffUtil (
                 false
 
             else -> true
-
         }
     }
 

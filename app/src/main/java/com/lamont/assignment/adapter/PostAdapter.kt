@@ -24,7 +24,6 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
     private lateinit var itemListener : OnItemClickListener
     private var dbAuth : FirebaseAuth = FirebaseAuth.getInstance()
     private var db: FirebaseFirestore = FirebaseFirestore.getInstance()
-//    var _postList : MutableLiveData<MutableList<Post>> = MutableLiveData(mutableListOf())
 
     private lateinit var player: ExoPlayer
 
@@ -38,7 +37,6 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
         val like = view.findViewById<Button>(R.id.like)!!
         val forumDesc = view.findViewById<TextView>(R.id.forumDesc)!!
         val postOwner = view.findViewById<TextView>(R.id.postOwner)!!
-        val ivProfile = view.findViewById<ImageView>(R.id.ivProfile)!!
         val postImg = view.findViewById<ImageView>(R.id.postImg)!!
         val postVideo = view.findViewById<PlayerView>(R.id.postVideo)!!
         val btnDelete = view.findViewById<ImageButton>(R.id.btnDelete)!!
@@ -57,7 +55,7 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
         }
     }
 
-    fun onItemClickListner(listener: PostAdapter.OnItemClickListener) {
+    fun onItemClickListener(listener: OnItemClickListener) {
         itemListener = listener
     }
 
@@ -91,20 +89,20 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
             .whereEqualTo("postId", post.postId)
             .get()
             .addOnSuccessListener{
-                    var exist = false
-                    for ( like in it ) {
-                        if (like["ownerId"] == dbAuth.currentUser!!.uid) {
-                            exist = true
-                            break
-                        }
+                var exist = false
+                for ( like in it ) {
+                    if (like["ownerId"] == dbAuth.currentUser!!.uid) {
+                        exist = true
+                        break
                     }
-                    if(exist) {
-                        holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.love_red, 0, 0, 0)
-                        holder.like.setTextColor(R.color.red)
-                    } else {
-                        holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.love_black, 0, 0, 0)
-                        holder.like.setTextColor(R.color.black)
-                    }
+                }
+                if(exist) {
+                    holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.love_red, 0, 0, 0)
+                    holder.like.setTextColor(R.color.red)
+                } else {
+                    holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.love_black, 0, 0, 0)
+                    holder.like.setTextColor(R.color.black)
+                }
             }
 
         db.collection("like").whereEqualTo("postId", post.postId)
@@ -115,9 +113,10 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
                 querySnapshot?.let {
                     if (!it.isEmpty) {
                         holder.like.text = it.size().toString()
+                    } else {
+                        holder.like.text = context.getString(R.string.like)
                     }
                 }
-
             }
 
         if (dbAuth.currentUser!!.uid == post.ownerId) {
@@ -136,6 +135,7 @@ class PostAdapter(val context: Context): RecyclerView.Adapter<PostAdapter.PostVi
             player.addMediaItem(mediaItem)
             player.repeatMode = Player.REPEAT_MODE_ONE
             player.playWhenReady = true
+            player.volume = 0f
             holder.postVideo.visibility = View.VISIBLE
             player.prepare()
         }

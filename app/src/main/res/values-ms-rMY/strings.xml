@@ -90,4 +90,14 @@
     <string name="new_password">Kata Laluan Baru</string>
     <string name="confirm_new_password">Sahkan Kata Laluan Baru</string>
     <string name="change_password">Tukar Kata Laluan</string>
+    <string name="like">SUKA</string>
+    <string name="comment">KOMEN</string>
+    <string name="write_comment_here">Komen di sini...</string>
+    <string name="showMore">Lebih...</string>
+    <string name="showLess">Kurang...</string>
+    <string name="send">HANTAR</string>
+    <string name="upload_video">Muat Naik Video</string>
+    <string name="writeComment">Tulis komen anda</string>
+    <string name="noNetwork">Tiada sambungan rangkaian</string>
+    <string name="nothing_here">Kosong...</string>
 </resources>

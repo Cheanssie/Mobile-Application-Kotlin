@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
@@ -18,7 +17,6 @@ import com.lamont.assignment.R
 import com.lamont.assignment.adapter.PostAdapter
 import com.lamont.assignment.databinding.FragmentForumBinding
 import com.lamont.assignment.viewModel.PostViewModel
-import com.lamont.assignment.viewModel.RequestViewModel
 
 class ForumFragment : Fragment() {
 
@@ -30,7 +28,7 @@ class ForumFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         Log.d("Tag", "ForumFragment.onCreateView() has been called.")
         _binding = FragmentForumBinding.inflate(inflater, container, false)
 
@@ -48,11 +46,17 @@ class ForumFragment : Fragment() {
         binding.forumRecycler.adapter = postAdapter
 
         postModel.loadPostList().observe(requireActivity(), Observer {
+            if(it.isEmpty()){
+                binding.emptyContainer.visibility = View.VISIBLE
+            } else {
+                binding.emptyContainer.visibility = View.GONE
+            }
+
             postAdapter.setData(it)
         })
 
         var db : FirebaseFirestore = FirebaseFirestore.getInstance()
-        postAdapter.onItemClickListner(object: PostAdapter.OnItemClickListener{
+        postAdapter.onItemClickListener(object: PostAdapter.OnItemClickListener{
             @SuppressLint("ResourceAsColor")
             override fun onItemClick(position: Int, view: View) {
                 when (view.id) {
@@ -88,8 +92,15 @@ class ForumFragment : Fragment() {
                             }
                     }
                     R.id.comment -> {
+                        val bundle = Bundle()
+                        bundle.putString("postId", postModel.loadPostList().value?.get(position)!!.postId)
+                        bundle.putString("imgUri", postModel.loadPostList().value?.get(position)!!.imgUri.toString())
+                        bundle.putString("videoUri", postModel.loadPostList().value?.get(position)!!.videoUri.toString())
+                        bundle.putString("forumDesc", postModel.loadPostList().value?.get(position)!!.forumDesc)
+                        bundle.putString("ownerName", postModel.loadPostList().value?.get(position)!!.postOwner)
+                        bundle.putString("ivProfile", postModel.loadPostList().value?.get(position)!!.ivProfile.toString())
                         val navController = findNavController()
-                        navController.navigate(R.id.commentFragment)
+                        navController.navigate(R.id.commentFragment, bundle)
                     }
                     R.id.btnDelete -> {
                         val dialog = AlertDialog.Builder(requireContext())

@@ -33,7 +33,8 @@
             android:textColorHint="#757575"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:importantForAutofill="no" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -100,6 +101,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent">
+
             <ImageButton
                 android:id="@+id/btnImg"
                 android:layout_width="70dp"
@@ -115,14 +117,14 @@
                 android:id="@+id/btnVideo"
                 android:layout_width="70dp"
                 android:layout_height="match_parent"
-                android:text="Upload Video"
+                android:text="@string/upload_video"
                 android:scaleType="centerInside"
                 android:adjustViewBounds="true"
                 android:maxHeight="200dp"
                 android:src="@drawable/ic_baseline_videocam_24"
                 />
-        </LinearLayout>
 
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

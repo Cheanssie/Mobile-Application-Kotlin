@@ -18,17 +18,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.lamont.assignment.R
 import com.lamont.assignment.databinding.FragmentPostBinding
-import com.lamont.assignment.databinding.FragmentRequestBinding
 import com.lamont.assignment.model.Post
-import com.lamont.assignment.model.Request
-import com.lamont.assignment.viewModel.RequestViewModel
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.text.SimpleDateFormat
@@ -124,24 +120,20 @@ class PostFragment : Fragment() {
                 db.collection("users").document(dbAuth.currentUser!!.uid)
                     .get()
                     .addOnSuccessListener { doc->
-                       storageRef.reference.child("profile/${doc.data?.get("imgName")}").downloadUrl
+                        storageRef.reference.child("profile/${doc.data?.get("imgName")}").downloadUrl
                             .addOnSuccessListener {
                                 val post = Post(null.toString(), it, username, forumDesc, null, null, formatter.format(
                                     Date()), dbAuth.currentUser!!.uid)
                                 addPost(post)
                             }
-                           .addOnFailureListener {
-                               val post = Post(null.toString(), null, username, forumDesc, null, null, formatter.format(
-                                   Date()), dbAuth.currentUser!!.uid)
-                               addPost(post)
-                           }
+                            .addOnFailureListener {
+                                val post = Post(null.toString(), null, username, forumDesc, null, null, formatter.format(
+                                    Date()), dbAuth.currentUser!!.uid)
+                                addPost(post)
+                            }
                     }
-
-
-
             }
         }
-
     }
 
     private fun showToast(text: String) {
@@ -205,7 +197,6 @@ class PostFragment : Fragment() {
             .setTitle(getString(R.string.selectPhoto))
             .setMessage(getString(R.string.getPhotoMethod))
             .setNeutralButton(getString(R.string.cancel)) { dialog, which ->
-
             }
             .setNegativeButton(getString(R.string.gallery)) { dialog, which ->
                 val intent = Intent(Intent.ACTION_PICK)
