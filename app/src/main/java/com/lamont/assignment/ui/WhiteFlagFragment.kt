@@ -17,6 +17,7 @@ import com.lamont.assignment.adapter.RequestAdapter
 import com.lamont.assignment.databinding.FragmentWhiteFlagBinding
 import com.lamont.assignment.viewModel.RequestViewModel
 import com.lamont.assignment.R
+import com.lamont.assignment.model.Request
 
 class WhiteFlagFragment : Fragment() {
 
@@ -46,7 +47,14 @@ class WhiteFlagFragment : Fragment() {
         binding.requestRecycler.adapter = requestAdapter
 
         requestModel.loadRequestList().observe(requireActivity(), Observer {
-            if(it.isEmpty()){
+            var existRequest = false
+            for (request in it) {
+                if(request.ownerId == dbAuth.currentUser!!.uid || request.donorId == dbAuth.currentUser!!.uid || request.donorId == "null") {
+                    existRequest = true
+                    break
+                }
+            }
+            if(!existRequest){
                 binding.emptyContainer.visibility = View.VISIBLE
             } else {
                 binding.emptyContainer.visibility = View.GONE
