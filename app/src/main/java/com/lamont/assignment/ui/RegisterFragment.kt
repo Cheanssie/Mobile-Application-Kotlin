@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +32,10 @@ class RegisterFragment : Fragment(){
     companion object {
         const val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
         const val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$"
+
+        fun isValidEmail(email: String): Boolean {
+            return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        }
     }
 
     override fun onCreateView(
@@ -102,7 +108,12 @@ class RegisterFragment : Fragment(){
                             error = true
                             break
                         }
-                        !email.matches(emailPattern.toRegex()) -> {
+//                        !email.matches(emailPattern.toRegex()) -> {
+//                            Toast.makeText(requireContext(), getString(R.string.emailInvalid),Toast.LENGTH_SHORT).show()
+//                            error = true
+//                            break
+//                        }
+                        !isValidEmail(email) -> {
                             Toast.makeText(requireContext(), getString(R.string.emailInvalid),Toast.LENGTH_SHORT).show()
                             error = true
                             break

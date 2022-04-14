@@ -144,8 +144,13 @@ class ProfileFragment : Fragment() {
                                     error = true
                                     break
                                 }
-                                !email.matches(RegisterFragment.emailPattern.toRegex()) -> {
-                                    Toast.makeText(requireContext(), getString(R.string.emailInvalid), Toast.LENGTH_SHORT).show()
+//                                !email.matches(RegisterFragment.emailPattern.toRegex()) -> {
+//                                    Toast.makeText(requireContext(), getString(R.string.emailInvalid), Toast.LENGTH_SHORT).show()
+//                                    error = true
+//                                    break
+//                                }
+                                !RegisterFragment.isValidEmail(email) -> {
+                                    Toast.makeText(requireContext(), getString(R.string.emailInvalid),Toast.LENGTH_SHORT).show()
                                     error = true
                                     break
                                 }
