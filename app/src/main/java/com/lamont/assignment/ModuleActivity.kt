@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -135,6 +136,7 @@ class ModuleActivity : AppCompatActivity() {
                         editPref.commit()
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
+                        Toast.makeText(this, getString(R.string.relogin_message), Toast.LENGTH_SHORT).show()
                     }
                 }
             }

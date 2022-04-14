@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Assignment</string>
+    <string name="app_name" translatable="false">BeWithYouth</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="home">Home</string>
     <string name="white_flag">White Flag</string>
@@ -118,5 +118,6 @@
     <string name="back_to_quiz_menu">Back to Quiz Menu</string>
     <string name="name_contentDescription">Elon Musk</string>
     <string name="back_to_main_menu">Back to Main Menu</string>
+    <string name="relogin_message">Please login again(Email/Password changed)</string>
 
 </resources>
