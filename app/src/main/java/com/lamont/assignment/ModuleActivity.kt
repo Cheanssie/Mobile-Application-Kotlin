@@ -136,7 +136,7 @@ class ModuleActivity : AppCompatActivity() {
                         editPref.commit()
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
-                        Toast.makeText(this, getString(R.string.relogin_message), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this.applicationContext, getString(R.string.relogin_message), Toast.LENGTH_SHORT).show()
                     }
                 }
             }
