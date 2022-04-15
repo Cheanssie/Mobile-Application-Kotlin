@@ -68,22 +68,26 @@ class PostFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("Tag", "PostFragment.onViewCreated() has been called.")
 
+        //Declaring necessary variables for data access
         sharedPreferences = requireActivity().getSharedPreferences(getString(R.string.share_pref), Context.MODE_PRIVATE)
         db = FirebaseFirestore.getInstance()
         dbAuth = FirebaseAuth.getInstance()
-
         storageRef = FirebaseStorage.getInstance()
 
+        //When image upload imageButton is clicked, show dialog to prompt for method of insert image
+        //Methods are taking photo using camera or from gallery
         binding.btnImg.setOnClickListener {
-            showDialog()
+            imageUploadDialog()
         }
 
+        //Turn on camera to capture a maximum of 5 seconds video
         binding.btnVideo.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_VIDEO_CAPTURE)
             intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 5)
             startActivityForResult(intent, VIDEO_REQUEST_CODE)
         }
 
+        //Remove the image/video from the view
         binding.btnRemove.setOnClickListener {
             binding.ivVideo.setVideoURI(null)
             binding.ivImg.setImageDrawable(null)
@@ -97,14 +101,17 @@ class PostFragment : Fragment() {
 
         }
 
+        //Cancel to post a forum, return to previous fragment
         binding.btnCancel.setOnClickListener {
             findNavController().navigateUp()
         }
 
+        //Submit post, add into database
+        //Only succeed if description is not empty
         binding.btnSubmit.setOnClickListener {
             val validity: Boolean
             when {
-                binding.etRequestDesc.text.toString() == "" -> {
+                binding.etDesc.text.toString() == "" -> {
                     validity = false
                     showToast("Please describe your request!")
                 }
@@ -114,12 +121,13 @@ class PostFragment : Fragment() {
             }
 
             if (validity) {
-                val forumDesc = binding.etRequestDesc.text.toString()
+                val forumDesc = binding.etDesc.text.toString()
                 val username = sharedPreferences.getString("username", null)!!
                 val formatter = SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault())
                 db.collection("users").document(dbAuth.currentUser!!.uid)
                     .get()
                     .addOnSuccessListener { doc->
+                        //Obtaining user profile picture URI, to ease in showing out in post recycler view
                         storageRef.reference.child("profile/${doc.data?.get("imgName")}").downloadUrl
                             .addOnSuccessListener {
                                 val post = Post(null.toString(), it.toString(), username, forumDesc, null, null, formatter.format(
@@ -140,6 +148,7 @@ class PostFragment : Fragment() {
         Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
     }
 
+    //Add post with checking of existence of image/video, only upload exist content
     private fun addPost(post: Post) {
         db.collection("post")
             .add(post)
@@ -191,7 +200,8 @@ class PostFragment : Fragment() {
             }
     }
 
-    private fun showDialog() {
+    //Function for image upload dialog
+    private fun imageUploadDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.selectPhoto))
             .setMessage(getString(R.string.getPhotoMethod))
@@ -216,6 +226,7 @@ class PostFragment : Fragment() {
             .show()
     }
 
+    //Function to obtain the real size of image while not thumbnail only
     private fun createImageFile(): File? {
         val timeStamp = SimpleDateFormat("yyyMMdd_HHmmss").format(Date())
         val imageFileName = "IMAGE_" + timeStamp + "_"

@@ -72,15 +72,17 @@ class RequestFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("Tag", "RequestFragment.onViewCreated() has been called.")
 
+        //Declaring necessary variables for data access
         sharedPreferences = requireActivity().getSharedPreferences(getString(R.string.share_pref), Context.MODE_PRIVATE)
         db = FirebaseFirestore.getInstance()
         dbAuth = FirebaseAuth.getInstance()
         storageRef = FirebaseStorage.getInstance()
 
+        //Call function to determine methods of uploading image (Gallery/Camera)
         binding.btnUploadImg.setOnClickListener {
             when (binding.ivImg.drawable) {
                 null -> {
-                    showDialog()
+                    imageUploadDialog()
                 }
                 else -> {
                     binding.ivImg.setImageDrawable(null)
@@ -91,10 +93,12 @@ class RequestFragment : Fragment() {
             }
         }
 
+        //Return to previous fragment when cancel is clicked
         binding.btnCancel.setOnClickListener {
             findNavController().navigateUp()
         }
 
+        //Submit request with validation that required fields are not empty
         binding.btnSubmit.setOnClickListener {
             val validity: Boolean
             when {
@@ -133,6 +137,7 @@ class RequestFragment : Fragment() {
         Toast.makeText(requireContext(), text, Toast.LENGTH_SHORT).show()
     }
 
+    //Add request, with image if it exists
     private fun addRequest(request: Request) {
 
         db.collection("request")
@@ -166,7 +171,8 @@ class RequestFragment : Fragment() {
             }
     }
 
-    private fun showDialog() {
+    //Function to obtain the real size of image while not thumbnail only
+    private fun imageUploadDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.selectPhoto))
             .setMessage(getString(R.string.getPhotoMethod))
@@ -194,6 +200,7 @@ class RequestFragment : Fragment() {
             .show()
     }
 
+    //Obtaining real size image from camera capture
     private fun createImageFile(): File? {
         val timeStamp = SimpleDateFormat("yyyMMdd_HHmmss").format(Date())
         val imageFileName = "IMAGE_" + timeStamp + "_"

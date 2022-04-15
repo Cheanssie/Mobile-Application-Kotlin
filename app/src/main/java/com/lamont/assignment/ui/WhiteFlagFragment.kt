@@ -41,11 +41,15 @@ class WhiteFlagFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("Tag", "WFFragment.onViewCreated() has been called.")
 
+        //Declaring necessary fields for data access
         dbAuth = FirebaseAuth.getInstance()
+
+        //Declaring request view model and recycler view
         val requestModel = RequestViewModel()
         requestAdapter = RequestAdapter(requireContext())
         binding.requestRecycler.adapter = requestAdapter
 
+        //Load request, if empty display image and empty message to notify users
         requestModel.loadRequestList().observe(requireActivity(), Observer {
             var existRequest = false
             for (request in it) {
@@ -63,11 +67,13 @@ class WhiteFlagFragment : Fragment() {
 
         })
 
+        //Refreshing fragment
         binding.swipeToRefresh.setOnRefreshListener {
             binding.swipeToRefresh.isRefreshing = false
             binding.requestRecycler.adapter = requestAdapter
         }
 
+        //Function applied when different button's action is clicked
         requestAdapter.onItemClickListener(object: RequestAdapter.OnItemClickListener{
             override fun onItemClick(position: Int) {
                 val item = requestModel.requestList.value!![position].copy()
@@ -75,6 +81,8 @@ class WhiteFlagFragment : Fragment() {
                 val dialog = AlertDialog.Builder(requireContext())
 
                 when(action){
+                    //The user who clicks this will be asked for confirmation
+                        //If confirm, the user will be donor for the requester
                     getString(R.string.donate) -> {
                         dialog.setTitle(getString(R.string.donate))
                             .setMessage(getString(R.string.donateConfirmation))
@@ -86,6 +94,9 @@ class WhiteFlagFragment : Fragment() {
                                 RequestViewModel.updateDonor(item.requestId, item.donorId!!)
                             }.show()
                     }
+                    //Only the donor able to view requester information such as tel, address and email
+                    //There is a button next to each data field, when click, will intent implicitly to contact the requester
+                    //Exp: click tel button, will intent to phone dial to the requester
                     getString(R.string.info) -> {
                         val infoDialogView = layoutInflater.inflate(R.layout.recipient_information_dialog, null, false)
                         val db = FirebaseFirestore.getInstance()
@@ -136,8 +147,8 @@ class WhiteFlagFragment : Fragment() {
                                     }
                                     .show()
                             }
-
                     }
+                    //Requester can remove the request if he/she feels does not need it anymore
                     getString(R.string.remove) -> {
                         dialog.setTitle(getString(R.string.rmReq))
                             .setMessage(getString(R.string.rmConfirmation))
@@ -146,6 +157,8 @@ class WhiteFlagFragment : Fragment() {
                                 RequestViewModel.removeRequest(item.requestId!!)
                             }.show()
                     }
+                    //Requester confirmation
+                    //if click, meaning he/she has received the donation, the request will be terminated automatically
                     getString(R.string.received) -> {
                         dialog.setTitle(getString(R.string.reqFulfilled))
                             .setMessage(getString(R.string.finishConfirmation))
@@ -154,10 +167,11 @@ class WhiteFlagFragment : Fragment() {
                                 RequestViewModel.removeRequest(item.requestId!!)
                             }.show()
                     }
-
+                    //Backup fields, not using yet
                     getString(R.string.n_a) -> {
                         Toast.makeText(requireContext(), getString(R.string.otherAccpeted), Toast.LENGTH_SHORT).show()
                     }
+                    //Will be displayed to the donor, to show the request is done and pending for requester confirmation
                     getString(R.string.done) -> {
                         Toast.makeText(requireContext(), getString(R.string.pendForConfirmation), Toast.LENGTH_SHORT).show()
                     }

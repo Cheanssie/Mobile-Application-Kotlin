@@ -24,6 +24,7 @@ class ForumFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var postAdapter : PostAdapter
     lateinit var dbAuth : FirebaseAuth
+    lateinit var db : FirebaseFirestore
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,11 +41,16 @@ class ForumFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("Tag", "ForumFragment.onViewCreated() has been called.")
 
+        //Declaring necessary variable for data access
         dbAuth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+
+        //Declaring view model for post & recycle view
         val postModel = PostViewModel()
         postAdapter = PostAdapter(requireContext())
         binding.forumRecycler.adapter = postAdapter
 
+        //Load posts, if empty, an empty image will be show to notify the users
         postModel.loadPostList().observe(requireActivity(), Observer {
             if(it.isEmpty()){
                 binding.emptyContainer.visibility = View.VISIBLE
@@ -55,10 +61,11 @@ class ForumFragment : Fragment() {
             postAdapter.setData(it)
         })
 
-        var db : FirebaseFirestore = FirebaseFirestore.getInstance()
+        //Enable the clicking of post in recycler view
         postAdapter.onItemClickListener(object: PostAdapter.OnItemClickListener{
             @SuppressLint("ResourceAsColor")
             override fun onItemClick(position: Int, view: View) {
+                //Check the action when user click, whether it is like, comment or delete
                 when (view.id) {
                     R.id.like -> {
                         val postId = postModel.loadPostList().value?.get(position)!!.postId
@@ -117,6 +124,7 @@ class ForumFragment : Fragment() {
             }
         })
 
+        //Page refresh function
         binding.swipeToRefresh.setOnRefreshListener {
             binding.swipeToRefresh.isRefreshing = false
             binding.forumRecycler.adapter = postAdapter

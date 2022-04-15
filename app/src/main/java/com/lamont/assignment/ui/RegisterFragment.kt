@@ -30,6 +30,7 @@ class RegisterFragment : Fragment(){
     lateinit var sharedPreferences : SharedPreferences
 
     companion object {
+        //Using to validate particular fields
         const val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
         const val passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$"
 
@@ -57,6 +58,7 @@ class RegisterFragment : Fragment(){
             navController.navigate(R.id.loginFragment)
         }
 
+        //Submitting information to be validated, if valid, an account will be created
         binding.registerButton.setOnClickListener {
             val username = binding.etUsername.text.toString()
             val email = binding.etEmail.text.toString().lowercase()
@@ -78,6 +80,7 @@ class RegisterFragment : Fragment(){
         val month = systemCal.get(Calendar.MONTH)
         val day = systemCal.get(Calendar.DAY_OF_MONTH)
 
+        //Show datePicker for DateOfBirth
         binding.etDob.setOnClickListener {
             DatePickerDialog(requireContext(), DatePickerDialog.OnDateSetListener{ view, mYear, mMonth, mDay ->
                 binding.etDob.setText("$mDay/$mMonth/$mYear")
@@ -85,6 +88,7 @@ class RegisterFragment : Fragment(){
         }
     }
 
+    //Add user with validations
     private fun addUser(username:String, email:String, password:String, conPassword:String, phone:String, dob:String, quiz: MutableMap<String, String>) {
         val db = FirebaseFirestore.getInstance()
         val dbAuth = FirebaseAuth.getInstance()

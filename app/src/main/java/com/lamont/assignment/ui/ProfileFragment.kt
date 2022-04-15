@@ -58,12 +58,14 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("Tag", "ProfileFragment.onViewCreated() has been called.")
 
+        //Declaring necessary variables for data access
         db = FirebaseFirestore.getInstance()
         dbAuth = FirebaseAuth.getInstance()
         dbStorage = FirebaseStorage.getInstance()
-        val storageRef = dbStorage.reference
         sharedPreferences = requireActivity().getSharedPreferences(getString(R.string.share_pref), Context.MODE_PRIVATE)
+        val storageRef = dbStorage.reference
 
+        //Obtaining all the user's information
         db.collection("users").document(dbAuth.currentUser?.uid!!)
             .addSnapshotListener { doc, error ->
                 doc?.let {
@@ -86,6 +88,7 @@ class ProfileFragment : Fragment() {
                 }
             }
 
+        //Edit profile when edit button is clicked
         binding.editProfile.setOnClickListener {
 
             if (binding.editProfile.text == getString(R.string.edit)) {
@@ -228,6 +231,7 @@ class ProfileFragment : Fragment() {
             }
         }
 
+        //Logout the current user
         binding.logout.setOnClickListener {
             if (binding.logout.text == "Logout") {
                 dbAuth.signOut()
@@ -241,6 +245,7 @@ class ProfileFragment : Fragment() {
             }
         }
 
+        //Change password when changePassword button is clicked, using dialog
         binding.changePassword.setOnClickListener {
             val dialogView = layoutInflater.inflate(R.layout.reset_password, null, false)
             val dialog = AlertDialog.Builder(requireContext())

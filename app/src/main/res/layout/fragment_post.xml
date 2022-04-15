@@ -21,7 +21,7 @@
         android:padding="20dp">
 
         <EditText
-            android:id="@+id/etRequestDesc"
+            android:id="@+id/etDesc"
             android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:background="@drawable/custom_input"

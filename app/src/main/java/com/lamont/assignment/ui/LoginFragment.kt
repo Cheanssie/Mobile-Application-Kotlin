@@ -21,6 +21,8 @@ import com.lamont.assignment.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
 
+    //Login function utilize both sharedPreferences and Firebase Authentication
+
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
     private lateinit var sharedPreferences: SharedPreferences
@@ -42,22 +44,28 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("Tag", "LoginFragment.onViewCreated() has been called.")
 
+        //Declaring necessary variable for data access
         sharedPreferences = requireActivity().getSharedPreferences(getString(R.string.share_pref), Context.MODE_PRIVATE)
         db = FirebaseFirestore.getInstance()
         dbAuth = FirebaseAuth.getInstance()
 
+        //Get the email and password stored in sharedPreferences
         val email = sharedPreferences.getString("email", null)
         val password = sharedPreferences.getString("password", null)
 
+        //Enter into modules if email and password are not empty in sharedPreferences
+        //Checking will be done in module activity to avoid always auto login even email/password is changed on other devices
         if (email != null && password != null) {
             enterModuleActivity()
         }
 
+        //Direct to register fragment
         binding.registerButton.setOnClickListener {
             val navController = findNavController()
             navController.navigate(R.id.registerFragment)
         }
 
+        //Login, will go through all the validation, if success enter into modules activity
         binding.loginButton.setOnClickListener {
             val email = binding.etEmail.text.toString()
             val password = binding.etPassword.text.toString()
@@ -91,6 +99,7 @@ class LoginFragment : Fragment() {
             }
         }
 
+        //Forgot password via email, only if the email(account) exists
         binding.forgotPassword.setOnClickListener {
             val dialog = AlertDialog.Builder(requireContext())
             val emailLayout = layoutInflater.inflate(R.layout.cutom_edit_text, null, false)
@@ -107,8 +116,6 @@ class LoginFragment : Fragment() {
                         .addOnSuccessListener {
                             if(!it.isEmpty) {
                                 dbAuth.sendPasswordResetEmail(emailInput.text.toString())
-
-
                                 Toast.makeText(requireContext(), getString(R.string.chkEmailPswd), Toast.LENGTH_SHORT).show()
                             } else {
                                 Toast.makeText(requireContext(), getString(R.string.emailNotExist), Toast.LENGTH_SHORT).show()

@@ -46,15 +46,23 @@ class CommentFragment : Fragment() {
         return binding.root
     }
 
+    override fun onStart() {
+        super.onStart()
+        //Remove the visibility of the floating action button
+        activity?.findViewById<FloatingActionButton>(R.id.addPost)?.hide()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("Tag", "CommentFragment.onViewCreated() has been called.")
-        activity?.findViewById<FloatingActionButton>(R.id.addPost)?.hide()
+
+
+        //Declaring necessary variable for data access
         db = FirebaseFirestore.getInstance()
         dbAuth = FirebaseAuth.getInstance()
         sharedPreferences = requireActivity().getSharedPreferences(getString(R.string.share_pref), Context.MODE_PRIVATE)
 
-
+        //Obtaining the particular post's information
         val postId = arguments?.get("postId").toString()
         val imgUri = arguments?.get("imgUri").toString()
         val videoUri = arguments?.get("videoUri").toString()
@@ -63,15 +71,18 @@ class CommentFragment : Fragment() {
         val ivProfile = arguments?.get("ivProfile").toString()
         val dateTime = arguments?.get("dateTime").toString()
 
+        //Placing the data into respective view
         binding.postOwner.text = ownerName
         binding.forumDesc.text = forumDesc
         binding.postDateTime.text = dateTime
         Picasso.with(requireContext()).load(ivProfile).into(binding.ivProfile)
 
+        //Declaring comment view model and recycle view
         val commentModel = CommentViewModel()
         commentAdapter = CommentAdapter(requireContext())
         binding.commentRecycler.adapter = commentAdapter
 
+        //Observe live data, update if there is any change
         commentModel.loadCommentList().observe(requireActivity(), Observer {
             val filteredComment = mutableListOf<Comment>()
             it.forEach {
@@ -82,6 +93,7 @@ class CommentFragment : Fragment() {
             commentAdapter.setData(filteredComment)
         })
 
+        //Send comment when comment is written
         binding.btnSend.setOnClickListener {
             val validity: Boolean
             when {
@@ -101,11 +113,13 @@ class CommentFragment : Fragment() {
             }
         }
 
+        //Checking the content height, if exceeds a value, show more/less feature is activated
         binding.forumDesc.measure(0, 0)
         if (binding.forumDesc.measuredHeight > 200) {
             binding.showMode.visibility = View.VISIBLE
         }
 
+        //Checking existence of image or video, if exist the view will be visible, else vice versa
         if (imgUri != "null") {
             Picasso.with(requireContext()).load(imgUri).into(binding.postImg)
             binding.showMode.visibility = View.VISIBLE
@@ -123,6 +137,7 @@ class CommentFragment : Fragment() {
             player.prepare()
         }
 
+        //Show mode feature, allow users to expand or compact the view if the content is too long
         binding.showMode.setOnClickListener {
             val showModeView = binding.showMode
             when(showModeView.text.toString()) {
@@ -146,15 +161,11 @@ class CommentFragment : Fragment() {
                 }
             }
         }
-
-        commentAdapter.onItemClickListener(object: CommentAdapter.OnItemClickListener{
-            override fun onItemClick(position: Int, view: View) {
-            }
-        })
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        //When comment fragment is destroyed, floating action button appears
         activity?.findViewById<FloatingActionButton>(R.id.addPost)?.show()
     }
 }
