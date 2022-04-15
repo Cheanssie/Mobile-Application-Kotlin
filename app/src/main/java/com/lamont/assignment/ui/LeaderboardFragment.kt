@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.lamont.assignment.ModuleActivity
 import com.lamont.assignment.adapter.LeaderboardAdapter
@@ -22,6 +23,7 @@ class LeaderboardFragment : Fragment() {
         private lateinit var leaderboardAdapter : LeaderboardAdapter
         private var leaderboard : MutableList<Leaderboard> = ArrayList()
         private var points : Long = 0
+        private lateinit var dbAuth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,12 +41,13 @@ class LeaderboardFragment : Fragment() {
 
         //Instantiate Firebase database
         val db : FirebaseFirestore = FirebaseFirestore.getInstance()
+        dbAuth = FirebaseAuth.getInstance()
 
         //Getting passed data from QuizResult as bundle
         val bundle = arguments
         Log.d("bundle", bundle.toString())
         val quiz : String = bundle!!.getString("quiz").toString()
-
+        val userScore: Long = bundle.getLong("points")
         //Getting all users' points for the selected quiz to display
         db.collection("users")
             .get()
@@ -70,6 +73,8 @@ class LeaderboardFragment : Fragment() {
             }
 
             //Return to main menu on click/press
+
+            binding.tvUserScore.text = " Your current score : $userScore !"
             binding.leaderModuleBtn.text = "Return to Main Menu"
             binding.leaderModuleBtn.setOnClickListener{
                 //Removes fragment from backstack

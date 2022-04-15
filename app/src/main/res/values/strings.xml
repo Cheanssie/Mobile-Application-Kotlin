@@ -119,5 +119,6 @@
     <string name="name_contentDescription">Elon Musk</string>
     <string name="back_to_main_menu">Back to Main Menu</string>
     <string name="relogin_message">Please login again(Email/Password changed)</string>
+    <string name="your_current_score_0">Your current score : 0</string>
 
 </resources>

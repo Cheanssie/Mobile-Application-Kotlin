@@ -124,6 +124,7 @@ class QuizResult : AppCompatActivity() {
             //Passing data as bundle = arguments
             val bundle = Bundle()
             bundle.putString("quiz", quiz)
+            bundle.putLong("points", getPoints)
             leaderboardFragment.arguments = bundle
             fragmentTransaction.replace(R.id.frameLayout, leaderboardFragment)
                 .addToBackStack(null)
