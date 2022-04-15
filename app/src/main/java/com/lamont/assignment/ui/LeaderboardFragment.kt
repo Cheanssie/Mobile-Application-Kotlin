@@ -48,6 +48,8 @@ class LeaderboardFragment : Fragment() {
         Log.d("bundle", bundle.toString())
         val quiz : String = bundle!!.getString("quiz").toString()
         val userScore: Long = bundle.getLong("points")
+        var quizTaken = bundle.getBoolean("complete")
+
         //Getting all users' points for the selected quiz to display
         db.collection("users")
             .get()
@@ -72,9 +74,14 @@ class LeaderboardFragment : Fragment() {
                 binding.rvLeaderboard.adapter = leaderboardAdapter
             }
 
-            //Return to main menu on click/press
+        //Shows button visibility if quiz is taken, else only return to main menu
+            if(quizTaken) {
+                binding.tvUserScore.text = " Your current score : $userScore !"
+            }else{
+                binding.tvUserScore.visibility = View.INVISIBLE
+            }
 
-            binding.tvUserScore.text = " Your current score : $userScore !"
+        //Return to main menu on click/press
             binding.leaderModuleBtn.text = "Return to Main Menu"
             binding.leaderModuleBtn.setOnClickListener{
                 //Removes fragment from backstack

@@ -47,6 +47,7 @@ class QuizResult : AppCompatActivity() {
         val getTimesUp : Boolean = intent.getBooleanExtra("timesUp", false)
         val getPoints : Long = intent.getLongExtra("points", 0)
         val quiz : String = intent.getStringExtra("quiz").toString()
+        val quizTaken: Boolean = intent.getBooleanExtra("complete", true)
         Log.d("quiz", quiz)
 
         //Display appropriate message as gratitude message/result message
@@ -125,6 +126,7 @@ class QuizResult : AppCompatActivity() {
             val bundle = Bundle()
             bundle.putString("quiz", quiz)
             bundle.putLong("points", getPoints)
+            bundle.putBoolean("complete", quizTaken)
             leaderboardFragment.arguments = bundle
             fragmentTransaction.replace(R.id.frameLayout, leaderboardFragment)
                 .addToBackStack(null)

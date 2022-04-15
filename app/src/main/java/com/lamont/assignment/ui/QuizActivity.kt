@@ -136,7 +136,7 @@ class QuizActivity : AppCompatActivity() {
                 resetQuestions()
 
                 //opt{1..4} = next button available upon click
-                //Validate selected answers. (green) correct else (red) wrong.
+                //Validate selected answers. (green) correct else (red) incorrect.
                 //Valid answer will be displayed
                 opt1.setOnClickListener {
                     nextBtn.visibility = View.VISIBLE
@@ -273,6 +273,7 @@ class QuizActivity : AppCompatActivity() {
             timer.cancel()
             //Points formula = Correct answers multiply time left in seconds
             val correctAnswer = correctAnswer()
+            val quizTaken = true
             totalPoints = correctAnswer * timePoints
             Intent(this, QuizResult::class.java).apply {
                 //Total correct and incorrect answers passed to Quiz Result activity
@@ -284,6 +285,8 @@ class QuizActivity : AppCompatActivity() {
                 putExtra("points", totalPoints)
                 //Get selected quiz topic for database and leaderboard
                 putExtra("quiz", getSelectedQuiz)
+                //Flag for user's quiz completion
+                putExtra("complete", quizTaken)
                 startActivity(this)
             }
             finish()

@@ -1,7 +1,6 @@
 package com.lamont.assignment.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +32,7 @@ class QuizAdapter(val context: QuizFragment, private var quizQues: List<QuizMenu
             val joinBtn = itemView.findViewById<Button>(R.id.joinBtn)!!
             val tvQuizDuration = itemView.findViewById<TextView>(R.id.tvQuizDuration)!!
             val quizImage = itemView.findViewById<ImageView>(R.id.ivQuizImage)!!
-            val quizLeaderboardBtn = itemView.findViewById<Button>(R.id.quizLeaderboardBtn)!!
+            private val quizLeaderboardBtn = itemView.findViewById<Button>(R.id.quizLeaderboardBtn)!!
 
         init {
             //initialize button for selected quiz
