@@ -113,7 +113,7 @@ class ForumFragment : Fragment() {
                     }
                     R.id.btnDelete -> {
                         val dialog = AlertDialog.Builder(requireContext())
-                        dialog.setTitle(getString(R.string.donate))
+                        dialog.setTitle(getString(R.string.remove))
                             .setMessage(getString(R.string.rmConfirmation))
                             .setNeutralButton(getString(R.string.cancel), null)
                             .setPositiveButton(getString(R.string.confirm)) { dialog, which ->

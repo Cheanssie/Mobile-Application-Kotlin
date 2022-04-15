@@ -46,9 +46,9 @@ class QuizResult : AppCompatActivity() {
         val getIncorrectAns = intent.getIntExtra("incorrect", 0)
         val getTimesUp : Boolean = intent.getBooleanExtra("timesUp", false)
         val getPoints : Long = intent.getLongExtra("points", 0)
-        val quiz : String = intent.getStringExtra("quiz").toString()
+        val quizTitle : String = intent.getStringExtra("quiz").toString()
         val quizTaken: Boolean = intent.getBooleanExtra("complete", true)
-        Log.d("quiz", quiz)
+        Log.d("quiz", quizTitle)
 
         //Display appropriate message as gratitude message/result message
         if(getTimesUp) {
@@ -87,19 +87,18 @@ class QuizResult : AppCompatActivity() {
                 val quizPoints: MutableMap<String, Long> =
                     it.get("quiz") as MutableMap<String, Long>
                 //Check for null
-                if (quizPoints.contains(quiz)) {
-                    if (quizPoints[quiz]!! < getPoints) {
-                        quizPoints[quiz] = getPoints
+                if (quizPoints.contains(quizTitle)) {
+                    if (quizPoints[quizTitle]!! < getPoints) {
+                        quizPoints[quizTitle] = getPoints
                         dbResult.collection("users").document(dbAuth.currentUser!!.uid)
                             .update("quiz", quizPoints)
                     }
                 } else {
-                    quizPoints[quiz] = getPoints
+                    quizPoints[quizTitle] = getPoints
                     dbResult.collection("users").document(dbAuth.currentUser!!.uid)
                         .update("quiz", quizPoints)
                 }
             }
-
 
         //Displaying total correct, incorrect answers and points accumulated
         points.text = "Total Points : $getPoints"
@@ -124,7 +123,7 @@ class QuizResult : AppCompatActivity() {
             val leaderboardFragment = LeaderboardFragment()
             //Passing data as bundle = arguments
             val bundle = Bundle()
-            bundle.putString("quiz", quiz)
+            bundle.putString("quiz", quizTitle)
             bundle.putLong("points", getPoints)
             bundle.putBoolean("complete", quizTaken)
             leaderboardFragment.arguments = bundle
