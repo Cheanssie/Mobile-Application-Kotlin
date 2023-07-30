@@ -16,4 +16,3 @@ The White-Flag Module is a lifeline for users in need of immediate support and a
 
 ## Quiz Module:
 The Quiz Module adds an element of fun and continuous learning to the app. 
-a
