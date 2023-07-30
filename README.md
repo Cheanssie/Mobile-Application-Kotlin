@@ -1,6 +1,6 @@
 "Be With Youth" is more than just a mobile app; it is a powerful tool for uplifting the youth and promoting human development in our society. Developed in Kotlin, this app offers a versatile and user-friendly platform for communication, support, and education. By leveraging the app's features, young individuals can embark on a journey of personal growth, build resilience, and make meaningful connections.
 
-![WhatsApp Image 2023-07-30 at 22 41 05](https://github.com/LamontChean/BeWithYouth-Mobile-Application/assets/101232039/0871ab47-c210-4503-9ce3-6ffcee131b69)
+![WhatsApp Image 2023-07-30 at 22 41 05](https://github.com/LamontChean/BeWithYouth-Android-Mobile-Application/assets/101232039/a91751fa-b0b1-4c12-bc76-0729110427e1)
 
 Key Features:
 
